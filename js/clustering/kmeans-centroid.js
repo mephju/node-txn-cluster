@@ -73,7 +73,7 @@ Centroid.prototype.recompute = function(callback) {
 
 
 Centroid.prototype.copy = function() {
-	var c = new Centroid(this.id)
+	var c = new Centroid(this.id, this.featureVector)
 	c.vector = this.vector.slice(0)
 	//c.txnIds = this.txnIds.slice(0)
 	return c
