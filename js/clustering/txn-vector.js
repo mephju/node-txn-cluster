@@ -102,15 +102,6 @@ var similarity = function(seqs, frequentSeq) {
 		var simSetSim 		= setOps.setSim(seqs[i], frequentSeq)
 		var sim 			= (simLevenshtein * 2 + simSetSim) / 3
 
-		// if(simLevenshtein != 0 || simSetSim != 0)  {
-		// 	console.log('lev %d --- setsim %d', simLevenshtein, simSetSim)
-		// }
-		// if(simLevenshtein != 0 && simSetSim == 0) {
-		// 	console.log('cmp', seqs[i])
-		// 	console.log('cmp', frequentSeq)
-		// 	console.log('---')
-		// }
-
 		if(sim > max) {
 			max = sim
 			//optimization: if one seq is already close enough, just use that value

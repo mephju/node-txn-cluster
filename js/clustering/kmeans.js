@@ -1,7 +1,7 @@
 var config 		= require('../config')
 var help 		= require('./help')
 var kmCentroid 	= require('./kmeans-centroid')
-var kmLevenshtein = require('./kmeans-lev')
+var kmTxn 		= require('./kmeans-txn')
 var async 		= require('async')
 var txnVectorDb = require('./txn-vector-db')
 var centroidsOld = []
@@ -30,58 +30,9 @@ var initCentroids = function(freqSeqs) {
 
 
 
-var clusterTxnCosine = function(centroids, txnId, callback) {
-	async.waterfall([
-		function(next) {
-			txnVectorDb.getTxnVector(txnId, next)
-		},
-		function(vectorValues, next) {
-
-			//console.log('clusterTxn', vectorValues)
-
-			var bestMatch = { 
-				centroidId: 0, 
-				sim:0 
-			}
-
-			centroids.forEach(function(centroid) {
-				var sim = centroid.simCosine(vectorValues)
-				if(sim > bestMatch.sim) {
-					bestMatch.sim = sim
-					bestMatch.centroidId = centroid.id
-				}
-			})
-		
-
-			//console.log('cluster txnid', txnId, bestMatch)
-			centroids[bestMatch.centroidId].txnIds.push(txnId)
-			next(null)
-		},
-
-	], callback)
-}
 
 
-
-
-var clusterCosine = function(txnIds, callback) {
-	cluster(
-		txnIds, 
-		clusterTxnCosine, 
-		callback
-	);
-}
-
-var clusterLevenshtein = function(txnIds, callback) {
-	cluster(
-		txnIds, 
-		kmLevenshtein.clusterTxnLevenshtein, 
-		callback
-	);
-}
-
-
-var cluster = function(txnIds, clusterTxnFn, callback) {
+var cluster = function(txnIds, callback) {
 	var centroidsNew = kmCentroid.copyCentroids(centroidsOld)
 
 	console.log('kmeans.cluster', txnIds.length, centroidsNew.length)
@@ -89,7 +40,7 @@ var cluster = function(txnIds, clusterTxnFn, callback) {
 	async.eachSeries(
 		txnIds,
 		function(txnId, next) {
-			clusterTxnFn(centroidsNew, txnId, next)
+			kmTxn.clusterTxn(centroidsNew, txnId, next)
 		},
 		function(err) {
 			if(err) {
@@ -97,7 +48,7 @@ var cluster = function(txnIds, clusterTxnFn, callback) {
 			} 
 			else if(needsMoreClustering(centroidsOld , centroidsNew)) {
 				centroidsOld = centroidsNew
-				repeatCluster(txnIds, clusterTxnFn, centroidsOld, callback)
+				repeatCluster(txnIds, centroidsOld, callback)
 			} 
 			else {
 				callback(null, centroidsOld)
@@ -107,14 +58,14 @@ var cluster = function(txnIds, clusterTxnFn, callback) {
 }
 
 
-var repeatCluster = function(txnIds, clusterTxnFn, centroids, callback) {
+var repeatCluster = function(txnIds, centroids, callback) {
 	async.eachSeries(
 		centroids,
 		function(centroid, next) {
 			centroid.recompute(next)
 		},
 		function(err) {
-			cluster(txnIds, clusterTxnFn, callback)	
+			cluster(txnIds, callback)	
 		}
 	);
 	
@@ -142,6 +93,5 @@ var needsMoreClustering = function(centroidsOld, centroidsNew) {
 
 
 
-exports.clusterCosine = clusterCosine
-exports.clusterLevenshtein = clusterLevenshtein
+exports.cluster = cluster
 exports.initCentroids = initCentroids

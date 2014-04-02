@@ -55,13 +55,14 @@ exports.insertTxns = function(table, feedbackGroups, callback) {
 	
 	function insertIntoTxns(groups, callback) {
 
+		var insertStmt = db.prepare(sql.insertTxnStmt())
 		async.eachSeries(
 			groups,
 			function(group, next) {
-				//console.log(group)
+			
 				var userId = group[0]['user_id']
 
-				db.run(sql.insertTxnStmt(table), userId, function(e) {
+				insertStmt.run(userId, function(e) {
 					e && console.log(e)
 					var txnId = this.lastID
 					insertIntoTxnItems(txnId, group, next)
@@ -77,11 +78,11 @@ exports.insertTxns = function(table, feedbackGroups, callback) {
 	function insertIntoTxnItems(txnId, group, callback) {
 
 		console.log('txnBuilder.insertIntoTxnItems %d, %d', txnId, group.length)
-		
+		var insertStmt = db.prepare(sql.insertTxnItemStmt())
 		async.eachSeries(
 			group,
 			function(feedbackRow, next) {
-				db.run(sql.insertTxnItemStmt(table), [txnId, feedbackRow['item_id']], next)
+				insertStmt.run([txnId, feedbackRow['item_id']], next)
 			}, 
 			function(err) {
 				callback(err)
@@ -156,9 +157,9 @@ exports.getTxn = function(txnId, callback) {
 
 
 
-exports.getAllTxnIds = function(dataset, callback) {
+exports.getAllTxnIds = function( callback) {
 	getTxnIdsHelper(
-		sql.getAllTxnIds(dataset.dbTable),
+		sql.getAllTxnIds(),
 		callback
 	);
 }

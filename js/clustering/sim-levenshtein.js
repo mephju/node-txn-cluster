@@ -3,8 +3,8 @@
 var levenshtein = function(s, t) {
     // degenerate cases
     //if (s == t) return 0;
-    if (s.length == 0) return 0;
-    if (t.length == 0) return 0;
+    if (s.length == 0) return t.length;
+    if (t.length == 0) return s.length;
  
     // create two work vectors of integer distances
     var v0 = new Array(t.length + 1);

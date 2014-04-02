@@ -11,25 +11,25 @@ exports.db = db
 
 
 
-
+var insertFeedbackStmt = null
 
 
 var prepare = exports.prepare = function(dataset, callback) {
 
-	db.serialize()
+	
 		
-	console.log('preparing feedback tables for ' + dataset.dbTable)
-
-	var table = dataset.dbTable
+	console.log('preparing feedback tables  ')
 
 	async.series([
+		function(next) {
+			db.serialize(next)
+		},
 		function(next) {
 			if(dataset.dbTable.indexOf('last') != -1) {
 				dbLastFm.init(db, next)	
 			} else {
 				next(null)
 			}
-			
 		},
 		function(next) {
 			console.log('createFeedbackStmt')
@@ -37,13 +37,19 @@ var prepare = exports.prepare = function(dataset, callback) {
 			
 		},
 		function(next) {
+			insertFeedbackStmt = db.prepare('INSERT INTO feedback VALUES(?, ?, ?)', next)
+		},
+		function(next) {
 			db.run('DELETE FROM feedback', next)
+		},
+		function(next) {
+			db.run('PRAGMA journal_mode = OFF', next)
 		}
 	], 
 	function(err) {
 		
 		if(err) {
-			err.where = 'db.js'
+			err.where = '/db.js'
 		} else {
 			console.log('prepared')
 		}
@@ -55,10 +61,9 @@ var prepare = exports.prepare = function(dataset, callback) {
 
 
 
-//TODO Add callback here
+
 var insertItem = function(table, record, callback) {
-	db.run(
-		'INSERT INTO feedback VALUES(?, ?, ?)', 
+	insertFeedbackStmt.run(
 		[record[0], record[1], record[3]], //user, item, timestamp 
 		callback
 	);
@@ -98,7 +103,7 @@ exports.insert = function(table, records, callback) {
 				insertItems(table, records.slice(0), next)
 			} 
 			else {
-				dbLastFm.insertRows(table, records.slice(0), function(newRecords) {
+				dbLastFm.insertRows(records, function(newRecords) {
 					insertItems(table, newRecords, next)
 				})
 			}

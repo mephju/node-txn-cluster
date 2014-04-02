@@ -17,7 +17,7 @@ var countSeqs = function(dataset, callback) {
 		dataset, 
 		function onBatchAvailable(txnIdBatch, txnBatch, next) {
 			console.log('onBatchAvailable', txnIdBatch.length)
-			var txnSeqStore	= seqFind.inTxnBatch2(txnBatch)
+			var txnSeqStore	= seqFind.inTxnBatch(txnBatch)
 			seqStore.store(txnSeqStore, dataset, next)
 		},
 		function(err) {
@@ -26,14 +26,6 @@ var countSeqs = function(dataset, callback) {
 		}
 	);
 }
-
-
-
-
-
-
-
-
 
 // 	getIds for dataset
 // 	create id batches

@@ -12,7 +12,7 @@ var sequenceApp		= require('./sequences/app')
 var clusterApp		= require('./clustering/app')
 
 
-
+var startTime = new Date().getTime()
 
 async.series([
 	function(next) {
@@ -39,6 +39,7 @@ async.series([
 function(err, results){
 	err && console.log(err)
 	console.log('finished', datasetDefs.dataset())
+	console.log('time: ', (new Date().getTime() - startTime) / 1000)
 })
 
 

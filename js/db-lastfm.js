@@ -29,53 +29,79 @@ exports.init = function(db, callback) {
 			db.run(createLastFmItemTable, next)
 		},
 		function(next) {
-			db.prepare('INSERT INTO last_fm_items(artist, song) VALUES(?, ?)', next)
+			insertLastFmItem = db.prepare('INSERT INTO last_fm_items(artist, song) VALUES(?, ?)', next)
 		},
 		function(next) {
-			db.prepare('SELECT item_id FROM last_fm_items WHERE artist=? AND song=?', next)
+			getLastFmItemId = db.prepare('SELECT item_id FROM last_fm_items WHERE artist=? AND song=?', next)
 		},
 	],callback)
 }
 
 
-var insItems = function(recs, callback) {
-	var record = recs.shift()
-	if(record == null) {
-		callback()
-	} else {
-		var bindParams = [record[3], record[5]]
-		insertLastFmItem.run(bindParams, function(e) {
-			insItems(recs, callback)
-		})
-	}
+var insItems = function(records, callback) {
+
+	async.eachSeries(
+		records,
+		function(record, next) {
+			var bindParams = [record[3], record[5]]
+			insertLastFmItem.run(bindParams, function(err) {
+				console.log('insItems', this.lastID)
+				next(null)
+			})
+		},
+		function(err) {
+			console.log('dblastfm.insItems', err)
+			callback(err)
+		}
+	);
 }
 
 
 
 var updateItemIds = function(recs, newRecords, callback) {
-	var record = recs.shift()
-	if(record == null) {
-		callback(newRecords)
-	} else {
-		var bindParams = [record[3], record[5]]
-		getLastFmItemId.get(bindParams, function(e, row) {
-
-			var itemId = row['item_id']
-			newRecords.push([record[0], itemId, null, new Date(record[1]).getTime()/1000])
-			updateItemIds(recs, newRecords, callback)
-		})
-	}
+	async.eachSeries(
+		recs,
+		function(record, next) {
+			updateId(record, newRecords, next)
+		},
+		function(err) {
+			callback(err, newRecords)
+		}
+	);
 }
 
 
+var updateId = function(record, newRecords, callback) {
+	var bindParams = [ record[3], record[5] ]
 
-exports.insertRows = function(table, records, callback) {
-	
-	insItems(records.slice(0), function() {
-		console.log('dbLastFm.insItems')
-		updateItemIds(records.slice(0), [], function(updatedRecords) {
-	
+	async.waterfall([
+		function(next) {
+			console.log('find', bindParams)
+			getLastFmItemId.get(bindParams, next)
+		},
+		function(row, next) {
+			if(!next && row) {
+				next = row
+			} else {
+				console.log(row)
+				var itemId = row['item_id']
+				newRecords.push([record[0], itemId, null, new Date(record[1]).getTime()/1000])
+			}
+			next(null)
+				
+		}
+	], next);
+}
+
+
+exports.insertRows = function(records, callback) {
+
+	async.waterfall([
+		function(next) {
+			insItems(records.slice(0), next)
+		},
+		function(updatedRecords, next) {
 			callback(updatedRecords)
-		})
-	})
+		}
+	])
 }

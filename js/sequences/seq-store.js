@@ -68,59 +68,34 @@ var storeCounts = function(seqCounts, callback) {
 
 	console.log('inserting counts of %d seqs', sequences.length)
 
-	var insertStmt = sql.sequences.makeInsertStmt()
-	var updateStmt = sql.sequences.makeUpdateStmt()
+	var insertStmt = db.prepare(sql.sequences.makeInsertStmt())
+	var updateStmt = db.prepare(sql.sequences.makeUpdateStmt())
 
-	async.eachSeries(
-		sequences,
-		function(seq, next) {
-
-			var params = {
-				sequenceString: seq.toString(),
-				count: 			seqCounts[seq.toString()],
-				insertStmt: 	insertStmt,
-				updateStmt: 	updateStmt
-			}
-			
-			insertSeqCount(params, next)
-		},
-		function(err) {
-			console.log('inserted')
-			callback(err)
-		}
-		
-	);
-}
-
-
-var insertSeqCount = function(params, callback) {
 	async.waterfall([
 		function(next) {
-			db.run(params.updateStmt, params.count, params.sequenceString, function(err) {
-				next(err, this.changes)
-			})
+			console.log('storeCount: sequences')
+			async.eachSeries(
+				sequences,
+				function(sequence, next) {
+					insertStmt.run( sequence, next)		
+				},
+				next
+			);
 		},
-		function(changes, next) {
-			if(changes === 0) {
-				db.run(params.insertStmt, params.sequenceString, function(err1) {
-					db.run(params.updateStmt, params.count, params.sequenceString, function(err2) {
-						next(err1 || err2, changes)
-					})			
-				})	
-			} else {
-				next(null)
-			}
-			
-		},
-		function(changes, next) {
-			next(null)
+		function(next) {
+			console.log('storeCount: counts')
+			async.eachSeries(
+				sequences,
+				function(sequence, next) {
+					var count = seqCounts[sequence]
+					updateStmt.run(count, sequence, next)
+				},
+				next
+			);
 		}
-		
-	], function(err) {
-		err && console.log(err)
-		callback(err)
-	})
+	], callback)
 }
+
 
 
 

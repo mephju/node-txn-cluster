@@ -48,7 +48,7 @@ function Centroid(id, freqSeqs) {
 
 
 Centroid.prototype.init = function(vectorSize) {
-	for(var i=0; i<vectorSize; i++) {
+	for(var i=0; i<this.featureVector.length; i++) {
 		this.vector[i] = Math.random()	
 	}
 	return this
@@ -75,7 +75,6 @@ Centroid.prototype.recompute = function(callback) {
 Centroid.prototype.copy = function() {
 	var c = new Centroid(this.id, this.featureVector)
 	c.vector = this.vector.slice(0)
-	//c.txnIds = this.txnIds.slice(0)
 	return c
 }
 
@@ -91,18 +90,17 @@ Centroid.prototype.distanceLevenshtein = function(allSeqs) {
 
 	allSeqs.forEach(function(seq) {
 
-		instance.featureVector.forEach(function(featureSeq) {
-			distance += simLevenshtein.distance(seq, featureSeq)
-			console.log(
-				'seqoftxn: %s  ----  seqofvector %s == %d', 
-				seq.toString(), 
-				featureSeq.toString(),
-				distance
-			);
-		})
+		for(var i=0; i<instance.featureVector.length; i++) {
+			var d = simLevenshtein.distanceNorm(
+				seq, 
+				instance.featureVector[i])
+			//console.log('distance', instance.featureVector[i], seq, d, instance.vector[i])
+			distance += (d == 0)
+				? 1-instance.vector[i] 
+				: instance.vector[i] * d
+		}		
 	})
 	return distance
-	
 }
 
 

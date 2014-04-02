@@ -41,11 +41,10 @@ var insertBatch = function(txnIdBatch, vectorBatch, callback) {
 
 
 var insertBatchHelp = function(txnIdBatch, vectorBatch, callback) {
-
+	var insertBatchStmt = db.prepare(sql.table.txnVector.insert())
 	async.times(txnIdBatch.length, function(i, next) {
 		//console.log('inserting txnvector ', i, txnIdBatch[i], vectorBatch[i])
-		db.run(
-			sql.table.txnVector.insert(dataset.dbTable), 
+		insertBatchStmt.run( 
 			[txnIdBatch[i], JSON.stringify(vectorBatch[i])],
 			next
 		);
@@ -71,8 +70,6 @@ var getTxnVectors = function(onBatch, callback) {
 
 
 var getTxnVectorHelp = function(onBatch, callback) {
-	//+1 for txnid that's going to be saved
-
 
 	var txnVectors = []
 	db.each(
@@ -136,7 +133,7 @@ var getTxnVector = function(txnId, callback) {
 
 var getManyTxnVectors = function(txnIds, callback) {
 
-	var sqlstmt = sql.table.txnVector.getManyTxnVectors(dataset.dbTable) + 
+	var sqlstmt = sql.table.txnVector.getManyTxnVectors() + 
 		'(' + txnIds.toString() + ')'
 
 	db.all(

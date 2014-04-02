@@ -6,10 +6,9 @@ var db 			= new sqlite3.Database(dataset.db())
 var config		= require('../config')
 
 
-//console.log(sql)
-//
-var insertSql = sql.cluster.insert(dataset.dbTable) 
 
+var insertClusterStmt = null
+var insertCentroidStmt = null
 
 
 var insert = function(centroids, callback) {
@@ -28,6 +27,12 @@ var insert = function(centroids, callback) {
 		},
 		function(next) {
 			db.run('BEGIN TRANSACTION', next)
+		},
+		function(next) {
+			insertClusterStmt = db.prepare(sql.cluster.insert(), next)
+		},
+		function(next) {
+			insertCentroidStmt = db.prepare(sql.centroid.insert(), next)
 		},
 		function(next) {
 			bulkInsertClusters(centroids, next)
@@ -57,11 +62,13 @@ var bulkInsertClusters = function(centroids, callback) {
 }
 
 
+
+
 var insertOneCluster = function(centroid, callback) {
 	async.eachSeries(
 		centroid.txnIds,
 		function(txnId, next) {
-			db.run(insertSql, centroid.id, txnId, next)
+			insertClusterStmt.run(centroid.id, txnId, next)
 		},
 		function(err) {
 			callback(err)
@@ -75,8 +82,7 @@ var bulkInsertCentroids = function(centroids, callback) {
 	async.eachSeries(
 		centroids,
 		function(centroid, next) {
-			db.run(
-				sql.centroid.insert(dataset.dbTable), 
+			insertCentroidStmt.run(
 				centroid.id, 
 				JSON.stringify(centroid.vector),
 				next

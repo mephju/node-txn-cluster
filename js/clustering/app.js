@@ -1,7 +1,9 @@
 var txnVector 		= require('./txn-vector')
-var txnVectorDb   	= require('./txn-vector-db')
+var txnVectorDb		= require('./txn-vector-db')
+var txnDb			= require('../transactions/db')
 var async 			= require('async')
 var kmeans 			= require('./kmeans')
+var kmTxn 			= require('./kmeans-txn')
 var sequenceDb		= require('../sequences/seq-store')
 var dataset 		= require('../dataset-defs').dataset()
 var clusterDb		= require('./cluster-db')
@@ -42,14 +44,15 @@ var cluster = function(callback) {
 			txnVectorDb.getTxnVectorIds(next)
 		},
 		function(txnIds, next) {
-			kmeans.clusterCosine(txnIds, next)	
+			kmeans.cluster(txnIds, next)	
 		},
 		function(centroids, next) {
-			txnVectorDb.getNonVectorIds(next);
+			txnVectorDb.getNonVectorIds(function(err, txnIds) {
+				next(err, centroids, txnIds)
+			}) 
 		},
-		function(txnIds, next) {
-			console.log('got txnids for clusterLevenshtein', txnIds.length)
-			kmeans.clusterLevenshtein(txnIds, next)	
+		function(centroids, txnIds, next) {
+			assignTxnsToCentroids(txnIds, centroids, next)
 		},
 		function(centroids) {
 			console.log('clusterLevenshtein finished')
@@ -57,6 +60,20 @@ var cluster = function(callback) {
 		}
 	], 
 	callback)
+}
+
+
+
+var assignTxnsToCentroids = function(txnIds, centroids, callback) {
+	async.eachSeries(
+		txnIds,
+		function(txnId, next) {
+			kmTxn.clusterTxnLevenshtein(centroids, txnId, next)
+		},
+		function(err) {
+			callback(err, centroids)
+		}
+	)
 }
 
 

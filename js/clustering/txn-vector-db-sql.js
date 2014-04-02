@@ -7,8 +7,6 @@ exports.table = {
 			return 	'CREATE TABLE IF NOT EXISTS txn_vector(' + 
 					'txn_id INTEGER PRIMARY KEY NOT NULL, ' + 
 					'vector TEXT NOT NULL)'
-				
-			
 		},
 		drop: function() {
 			return 'DROP TABLE IF EXISTS txn_vector'
