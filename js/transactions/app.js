@@ -20,7 +20,7 @@ var buildTxns = function(callback) {
 
 }
 
-var getTxnBatches = function(dataset, onBatch, callback) {
+var getTxnBatches = function(onBatch, callback) {
 	async.waterfall([
 		function(next) { 
 			db.getAllTxnIds(next) 

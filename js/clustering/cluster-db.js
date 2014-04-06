@@ -11,7 +11,7 @@ var insertClusterStmt = null
 var insertCentroidStmt = null
 
 
-var insert = function(centroids, callback) {
+var insert = function(centroidColl, callback) {
 	async.waterfall([
 		function(next) {
 			db.run(sql.cluster.drop(), next)
@@ -35,10 +35,10 @@ var insert = function(centroids, callback) {
 			insertCentroidStmt = db.prepare(sql.centroid.insert(), next)
 		},
 		function(next) {
-			bulkInsertClusters(centroids, next)
+			bulkInsertClusters(centroidColl, next)
 		},
 		function(next) {
-			bulkInsertCentroids(centroids, next)
+			bulkInsertCentroids(centroidColl, next)
 		},
 		function(next) {
 			db.run('END TRANSACTION', next)
@@ -49,9 +49,9 @@ var insert = function(centroids, callback) {
 
 
 
-var bulkInsertClusters = function(centroids, callback) {
+var bulkInsertClusters = function(centroidColl, callback) {
 	async.eachSeries(
-		centroids,
+		centroidColl.centroids,
 		function(centroid, next) {
 			insertOneCluster(centroid, next)
 		},
@@ -78,9 +78,9 @@ var insertOneCluster = function(centroid, callback) {
 
 
 
-var bulkInsertCentroids = function(centroids, callback) {
+var bulkInsertCentroids = function(centroidColl, callback) {
 	async.eachSeries(
-		centroids,
+		centroidColl.centroids,
 		function(centroid, next) {
 			insertCentroidStmt.run(
 				centroid.id, 
@@ -95,7 +95,23 @@ var bulkInsertCentroids = function(centroids, callback) {
 }
 
 
+//callback(err [,centroidVectors])
+var getCentroidRows = function(callback) {
+	async.waterfall([
+		function(next) {
+			console.log('getCentroidRows','SELECT');
+			db.all('SELECT * FROM centroid;', next);
+		},
+		function(rows, next) {
+			console.log('getCentroidRows', rows.length)
+			callback(null, rows)
+		}
+	], callback)
+}
+
+
 
 
 
 exports.insert = insert
+exports.getCentroidRows = getCentroidRows

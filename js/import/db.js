@@ -1,5 +1,5 @@
 var sqlite3 	= require('sqlite3').verbose();
-var dataset 	= require('./dataset-defs').dataset()
+var dataset 	= require('../dataset-defs').dataset()
 var db 			= new sqlite3.Database(dataset.db())
 var dbLastFm 	= require('./db-lastfm')
 var sql 		= require('./sql')
@@ -14,7 +14,7 @@ exports.db = db
 var insertFeedbackStmt = null
 
 
-var prepare = exports.prepare = function(dataset, callback) {
+var prepare = exports.prepare = function(callback) {
 
 	
 		
@@ -62,7 +62,7 @@ var prepare = exports.prepare = function(dataset, callback) {
 
 
 
-var insertItem = function(table, record, callback) {
+var insertItem = function(record, callback) {
 	insertFeedbackStmt.run(
 		[record[0], record[1], record[3]], //user, item, timestamp 
 		callback
@@ -76,7 +76,7 @@ var insertItems = function(table, records, callback) {
 	async.eachSeries(
 		records,
 		function(record, next) {
-			insertItem(table, record, next)
+			insertItem(record, next)
 		},
 		function(err) {
 			callback(err)
@@ -103,9 +103,7 @@ exports.insert = function(table, records, callback) {
 				insertItems(table, records.slice(0), next)
 			} 
 			else {
-				dbLastFm.insertRows(records, function(newRecords) {
-					insertItems(table, newRecords, next)
-				})
+				insertLastFm(records, next)
 			}
 		},
 		function(next) {
@@ -114,6 +112,36 @@ exports.insert = function(table, records, callback) {
 		}
 	],
 	callback);
+}
+
+
+
+var insertLastFm = function(records, callback) {
+	async.eachSeries(
+		records,
+		function(record, next) {
+			async.waterfall([
+				function(next) {
+					dbLastFm.insertLfmItem(record, next)
+				},
+				function(itemId, next) {
+					var r = [ 
+						record[0], 
+						itemId, 
+						null, 
+						new Date(record[1]).getTime()/1000 
+					]; 
+					//console.log('insertLastFmItem', r, record)
+					insertItem(r, next)
+				}
+			], next)
+		},
+		function(err) {
+			console.log('insertLastFm.finished', err)
+			callback(err)
+		}
+	);
+		
 }
 
 

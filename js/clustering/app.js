@@ -9,10 +9,15 @@ var dataset 		= require('../dataset-defs').dataset()
 var clusterDb		= require('./cluster-db')
 
 
+var lg = function() {
+	console.log('clustering/app.js', arguments)
+}
+
+
 
 
 var start = function(callback) {
-	
+
 	async.waterfall([
 		function(next) {
 			txnVector.buildVectors(next)
@@ -27,9 +32,9 @@ var start = function(callback) {
 			console.log('cluster')
 			cluster(next)
 		},
-		function(centroids, next){
-			console.log('clustering finished', centroids.length)
-			clusterDb.insert(centroids, next)
+		function(centroidColl, next){
+			console.log('clustering finished', centroidColl.centroids.length)
+			clusterDb.insert(centroidColl, next)
 		}
 	],
 	function(err) {
@@ -38,40 +43,34 @@ var start = function(callback) {
 	}) 
 }
 
-var cluster = function(callback) {
-	async.waterfall([
-		function(next) {
-			txnVectorDb.getTxnVectorIds(next)
-		},
-		function(txnIds, next) {
-			kmeans.cluster(txnIds, next)	
-		},
-		function(centroids, next) {
-			txnVectorDb.getNonVectorIds(function(err, txnIds) {
-				next(err, centroids, txnIds)
-			}) 
-		},
-		function(centroids, txnIds, next) {
-			assignTxnsToCentroids(txnIds, centroids, next)
-		},
-		function(centroids) {
-			console.log('clusterLevenshtein finished')
-			callback(null, centroids)
-		}
-	], 
-	callback)
-}
+// var cluster = function(callback) {
+// 	async.waterfall([
+// 		function(next) {
+// 			txnDb.getAllTxnIds(next)
+// 		}
+// 		function(txnIds, next) {
+// 			lg('kmeans.cluster')
+// 			kmeans.cluster(txnIds, next)	
+// 		},
+// 		function(centroidColl, next) {
+// 			console.log('clusterLevenshtein finished')
+// 			callback(null, centroidColl)
+// 		}
+// 	], 
+// 	callback)
+// }
 
 
 
-var assignTxnsToCentroids = function(txnIds, centroids, callback) {
+var assignTxnsToCentroids = function(txnIds, centroidColl, callback) {
 	async.eachSeries(
 		txnIds,
 		function(txnId, next) {
-			kmTxn.clusterTxnLevenshtein(centroids, txnId, next)
+			console.log('start Levenshtein clustering')
+			kmTxn.clusterTxnLevenshtein(centroidColl, txnId, next)
 		},
 		function(err) {
-			callback(err, centroids)
+			callback(err, centroidColl)
 		}
 	)
 }
@@ -79,3 +78,32 @@ var assignTxnsToCentroids = function(txnIds, centroids, callback) {
 
 
 exports.start = start
+
+
+
+var cluster = function(callback) {
+	async.waterfall([
+		function(next) {
+			lg('getTxnVectorIds')
+			txnVectorDb.getTxnVectorIds(next)
+		},
+		function(txnIds, next) {
+			lg('kmeans.cluster')
+			kmeans.cluster(txnIds, next)	
+		},
+		function(centroidColl, next) {
+			lg('getNonVectorIds')
+			txnVectorDb.getNonVectorIds(function(err, txnIds) {
+				next(err, centroidColl, txnIds)
+			}) 
+		},
+		function(centroidColl, txnIds, next) {
+			assignTxnsToCentroids(txnIds, centroidColl, next)
+		},
+		function(centroidColl) {
+			console.log('clusterLevenshtein finished')
+			callback(null, centroidColl)
+		}
+	], 
+	callback)
+}

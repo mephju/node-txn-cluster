@@ -1,7 +1,6 @@
 var async 			= require('async')
 var txnVectorDb		= require('./txn-vector-db')
-var levenshtein  	= require('./sim-levenshtein')
-var setOps			= require('./sim-set-sim')
+var similarity		= require('./sim')
 var config			= require('../config')
 var sequenceDb 		= require('../sequences/seq-store')
 var seqFind			= require('../sequences/seq-find')
@@ -27,15 +26,8 @@ var buildVectors = function(callback) {
 			sequenceDb.getFreqSeqs(next)
 		},
 		function(frequentSeqs, next) {
-
-			freqSeqs = frequentSeqs.map(function(freqSeq) {
-				return freqSeq.split(',').map(function(numstring) {
-					return parseInt(numstring)
-				})
-			})
-
+			freqSeqs = frequentSeqs
 			txnApp.getTxnBatches(
-				dataset,
 				onTxnBatch,
 				next
 			);
@@ -61,7 +53,6 @@ var onTxnBatch = function(txnIdBatch, txnBatch, callback) {
  * Build a vector for every txn in txnBatch.
  * A few optimisations take place:
  * 	
- * 	1. we only compute Levenshtein distance for sequences of same length
  */
 var buildVectorBatch = function(txnBatch, freqSeqs) {
 	return txnBatch.map(function(txn) {
@@ -70,9 +61,7 @@ var buildVectorBatch = function(txnBatch, freqSeqs) {
 		var seqs = seqFind.findSeqs(txn,1)
 		
 		for(var i=0; i<freqSeqs.length; i++) {
-			var filtered 	= filterToLength(txn, seqs, freqSeqs[i].length)
-			var sim 		= similarity(filtered, freqSeqs[i]);
-			
+			var sim = similarity.calcSim(txn, freqSeqs[i]);
 
 			if(sim > 0) {
 				var elem = {}
@@ -91,28 +80,6 @@ var buildVectorBatch = function(txnBatch, freqSeqs) {
 
 
 
-
-
-var similarity = function(seqs, frequentSeq) {
-
-	var max = 0;
-	for(var i=0; i<seqs.length; i++) {
-		
-		var simLevenshtein 	= 1 - levenshtein.distanceNorm(seqs[i], frequentSeq)
-		var simSetSim 		= setOps.setSim(seqs[i], frequentSeq)
-		var sim 			= (simLevenshtein * 2 + simSetSim) / 3
-
-		if(sim > max) {
-			max = sim
-			//optimization: if one seq is already close enough, just use that value
-			if(max >= 0.5) {
-				return max
-			}
-		}
-	}
-
-	return max
-}
 
 
 var triangularNum = function(n) {
@@ -144,3 +111,26 @@ var filterToLength = function(txn, seqs, n) {
 exports.buildVectors = buildVectors
 exports.buildVectorBatch = buildVectorBatch
 exports.filterToLength = filterToLength
+
+
+
+//var similarity = function(txn, frequentSeq) {
+
+// 	var max = 0;
+// 	//for(var i=0; i<seqs.length; i++) {
+		
+// 		var simLevenshtein 	= 1 - levenshtein.distanceNorm(txn, frequentSeq)
+// 		var simSetSim 		= setOps.setSim(txn, frequentSeq)
+// 		var sim 			= (simLevenshtein * 2 + simSetSim) / 3
+// 	return sim
+// 		if(sim > max) {
+// 			max = sim
+// 			//optimization: if one seq is already close enough, just use that value
+// 			if(max >= 0.5) {
+// 				return max
+// 			}
+// 		}
+// 	//}
+
+// 	return max
+// }

@@ -109,20 +109,31 @@ var createFreqSeqView = function(dataset, callback) {
 	);
 }
 
+
+
+//callback(err [,freqSeqs])
 var getFreqSeqs = function(callback) {
 	db.all(
 		sql.sequences.getFrequent(),
 		function(err, rows) {
 			rows = rows || []
 			var freqSeqs = rows.map(function(row) {
-
-				return row.sequence
+				return row.sequence.split(',').map(function(numstring) {
+					return parseInt(numstring)
+				})
 			})
+			
 			console.log('getFreqSeqs.num', freqSeqs.length)
 			callback(err, freqSeqs)
 		}
 	);
 }
+
+
+
+// getFreqSeqs(function(err, frequents) {
+// 	console.log('f', frequents)
+// })
 
 exports.getFreqSeqs = getFreqSeqs
 exports.createFreqSeqView = createFreqSeqView

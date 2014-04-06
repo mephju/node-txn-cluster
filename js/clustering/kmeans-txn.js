@@ -4,8 +4,7 @@ var async 		= require('async')
 var txnVectorDb = require('./txn-vector-db')
 
 
-// Decides whether to use levenshtein or cosine
-var clusterTxn = function(centroids, txnId, callback) {
+var clusterTxn = function(centroidColl, txnId, callback) {
 	async.waterfall([
 		function(next) {
 			txnVectorDb.getTxnVector(txnId, next)
@@ -14,7 +13,7 @@ var clusterTxn = function(centroids, txnId, callback) {
 
 			var params = {
 				txnId: txnId,
-				centroids: centroids,
+				centroidColl: centroidColl,
 			}
 			params.vectorValues = vectorValues
 			clusterTxnCosine(params, next)
@@ -25,36 +24,28 @@ var clusterTxn = function(centroids, txnId, callback) {
 
 
 
-var clusterTxnLevenshtein = function(centroids, txnId, callback) {
+var clusterTxnLevenshtein = function(centroidColl, txnId, callback) {
 	async.waterfall([
 		function(next) {
 			txnDb.getTxn(txnId, next)
 		},
 		function(txn, next) {
-			var allSeqs = seqFind.findSeqs(txn, 1)
 
 			var bestMatch = { 
 				centroidId: 0, 
-				distance: 100000000 
+				sim: 100000000 
 			}
 
-			centroids.forEach(function(centroid) {
-				var distance = centroid.distanceLevenshtein(allSeqs)
-				if(distance === 0) {
-					console.log('##################################')
-					console.log('clusterTxnLevenshtein txnid', txnId, allSeqs)
-					console.log('##################################')
-				}
+			centroidColl.centroids.forEach(function(centroid) {
+				var sim = centroid.sim(txn)
 				
-				if(distance <= bestMatch.distance) {
-					bestMatch.distance 		= distance
+				if(sim >= bestMatch.sim) {
+					bestMatch.sim 			= sim
 					bestMatch.centroidId 	= centroid.id
 					//console.log('new best centroid', centroid.id)
 				}
 			})
-
-			//console.log('clusterTxnLevenshtein txnid', txnId, txn, bestMatch)
-			centroids[bestMatch.centroidId].txnIds.push(txnId)
+			centroidColl.centroids[bestMatch.centroidId].txnIds.push(txnId)
 			next(null)
 		},
 
@@ -71,7 +62,7 @@ var clusterTxnCosine = function(params, callback) {
 				sim: 0 
 			}
 
-			params.centroids.forEach(function(centroid) {
+			params.centroidColl.centroids.forEach(function(centroid) {
 				var sim = centroid.simCosine(params.vectorValues)
 				if(sim > bestMatch.sim) {
 					bestMatch.sim = sim
@@ -79,7 +70,7 @@ var clusterTxnCosine = function(params, callback) {
 				}
 			})
 			//console.log('cluster txnid', txnId, bestMatch)
-			params.centroids[bestMatch.centroidId].txnIds.push(params.txnId)
+			params.centroidColl.centroids[bestMatch.centroidId].txnIds.push(params.txnId)
 			next(null)
 		},
 

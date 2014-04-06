@@ -1,7 +1,8 @@
 var async 			= require('async')
 var txnVectorDb 	= require('./txn-vector-db')
 var simCosine 		= require('./sim-cosine')
-var simLevenshtein 	= require('./sim-levenshtein')
+
+var sim 			= require('./sim')
 
 
 
@@ -84,34 +85,29 @@ Centroid.prototype.simCosine = function(vectorValues) {
 	return sim
 }
 
-Centroid.prototype.distanceLevenshtein = function(allSeqs) {
-	var distance = 0
-	var instance = this
 
-	allSeqs.forEach(function(seq) {
 
-		for(var i=0; i<instance.featureVector.length; i++) {
-			var d = simLevenshtein.distanceNorm(
-				seq, 
-				instance.featureVector[i])
-			//console.log('distance', instance.featureVector[i], seq, d, instance.vector[i])
-			distance += (d == 0)
-				? 1-instance.vector[i] 
-				: instance.vector[i] * d
-		}		
-	})
-	return distance
+
+
+Centroid.prototype.sim = function(txn) {
+	var similarity = 0
+
+	for(var i=0; i<this.featureVector.length; i++) {
+		
+		var featureSim 	= this.vector[i]
+		var feature 	= this.featureVector[i]
+		var s = sim.calcSim(
+			txn, 
+			feature
+		);
+		//distance += (1-featureSim + featureSim * d + d) / 3
+		// similarity += (s === 0)
+		// 		? 1-featureSim 
+		// 		: featureSim * s
+		similarity += s * featureSim
+	}
+	return similarity / this.featureVector.length
 }
 
 
-
-
-var copyCentroids = function(centroids) {
-	return centroids.map(function(centroid) {
-		return centroid.copy()
-	})
-}
-
-
-exports.copyCentroids = copyCentroids,
 exports.Centroid = Centroid

@@ -60,4 +60,22 @@ describe('kmeans-centroid', function() {
 		var d = c.distanceLevenshtein(featureVector)
 		assert.equal(d, 2)	
 	})
+
+	it('', function() {
+
+		var t = [[ 3701 ],[ 1220 ],[ 2115 ],[ 1517 ], [ 596 ],  [ 2012 ],   [ 2161 ],  [ 1375 ] ]
+
+		var c = new Centroid(0, featureVector)
+		c.init()
+		c.vector[0] = 1
+		c.vector[1] = 1
+		var d = c.distanceLevenshtein(t)	
+	})
+
+
+	
+
+
+
+
 })

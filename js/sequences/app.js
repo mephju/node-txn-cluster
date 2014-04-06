@@ -14,7 +14,6 @@ var seqStore		= require('./seq-store')
 
 var countSeqs = function(dataset, callback) {
 	txnApp.getTxnBatches(
-		dataset, 
 		function onBatchAvailable(txnIdBatch, txnBatch, next) {
 			console.log('onBatchAvailable', txnIdBatch.length)
 			var txnSeqStore	= seqFind.inTxnBatch(txnBatch)

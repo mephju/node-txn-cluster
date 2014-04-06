@@ -32,7 +32,7 @@ var findSeqs = function(txn, min, allSeqs) {
 	);
 
 	for(var len=min; len <= max; len++) {
-		findSeqsOfLength(allSeqs, len, txn)
+		findSeqsOfLength(len, txn, allSeqs)
 	}
 
 	return allSeqs;
@@ -40,15 +40,17 @@ var findSeqs = function(txn, min, allSeqs) {
 }
 
 
-var findSeqsOfLength = function(seqs, len, txn) {	
+var findSeqsOfLength = function(len, txn, seqs) {	
+	seqs = seqs || []
 	for(var i=0; i+len<=txn.length; i++) {
 		var seq = txn.slice(i, i+len)
 		seqs.push(seq)
 	}
-
+	return seqs
 	//console.log('found %d distinct sequences in txn', seqs.length)
 }
 
 
 exports.inTxnBatch = inTxnBatch
 exports.findSeqs = findSeqs
+exports.findSeqsOfLength = findSeqsOfLength

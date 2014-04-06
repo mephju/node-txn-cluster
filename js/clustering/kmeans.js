@@ -1,10 +1,12 @@
 var config 		= require('../config')
 var help 		= require('./help')
 var kmCentroid 	= require('./kmeans-centroid')
+var kmCentroidCollection 	= require('./kmeans-centroid-collection')
+var CentroidCollection 		= kmCentroidCollection.CentroidCollection
 var kmTxn 		= require('./kmeans-txn')
 var async 		= require('async')
 var txnVectorDb = require('./txn-vector-db')
-var centroidsOld = []
+var centroidsOld = null
 
 //
 // 1. init centroids
@@ -16,16 +18,16 @@ var centroidsOld = []
 // 4. done
 // 
 // 			
+const INIT_RANDOM = true
 
 var initCentroids = function(freqSeqs) {
 	var vectorSize = freqSeqs.length
 	console.log('kmeans.initentroids', vectorSize, config.NUM_CENTROIDS)
-	
-	for(var k=0; k<config.NUM_CENTROIDS; k++) {	
-		var c = new kmCentroid.Centroid(k, freqSeqs)
-		c.init(vectorSize)
-		centroidsOld[k] = c
-	}
+
+	var initRandom = true
+	var centroidColl = new CentroidCollection(freqSeqs, INIT_RANDOM)
+
+	centroidsOld = centroidColl
 }
 
 
@@ -33,9 +35,9 @@ var initCentroids = function(freqSeqs) {
 
 
 var cluster = function(txnIds, callback) {
-	var centroidsNew = kmCentroid.copyCentroids(centroidsOld)
+	var centroidsNew = centroidsOld.copy()
 
-	console.log('kmeans.cluster', txnIds.length, centroidsNew.length)
+	console.log('kmeans.cluster', txnIds.length, centroidsNew.centroids.length)
 
 	async.eachSeries(
 		txnIds,
@@ -68,7 +70,6 @@ var repeatCluster = function(txnIds, centroids, callback) {
 			cluster(txnIds, callback)	
 		}
 	);
-	
 }
 
 
@@ -76,10 +77,10 @@ var repeatCluster = function(txnIds, centroids, callback) {
 
 
 var needsMoreClustering = function(centroidsOld, centroidsNew) {
-	var len = centroidsOld.length
+	var len = centroidsOld.centroids.length
 	for(var i=0; i<len; i++) {
-		var arr1 = centroidsOld[i].txnIds
-		var arr2 = centroidsNew[i].txnIds
+		var arr1 = centroidsOld.centroids[i].txnIds
+		var arr2 = centroidsNew.centroids[i].txnIds
 
 		//console.log('needs clustering', arr1.length, arr2.length)
 		if(!help.arrayEqual(arr1, arr2)) { 
