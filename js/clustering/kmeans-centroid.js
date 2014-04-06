@@ -79,12 +79,6 @@ Centroid.prototype.copy = function() {
 	return c
 }
 
-Centroid.prototype.simCosine = function(vectorValues) {
-	//console.log(this.vector)
-	var sim = simCosine.sim(vectorValues, this.vector)
-	return sim
-}
-
 
 
 

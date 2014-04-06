@@ -42,7 +42,7 @@ var cluster = function(txnIds, callback) {
 	async.eachSeries(
 		txnIds,
 		function(txnId, next) {
-			kmTxn.clusterTxn(centroidsNew, txnId, next)
+			kmTxn.clusterTxnLevenshtein(centroidsNew, txnId, next)
 		},
 		function(err) {
 			if(err) {

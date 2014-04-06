@@ -19,9 +19,9 @@ var lg = function() {
 var start = function(callback) {
 
 	async.waterfall([
-		function(next) {
-			txnVector.buildVectors(next)
-		},
+		// function(next) {
+		// 	txnVector.buildVectors(next)
+		// },
 		function(next) {
 			console.log('getFreqSeqs')
 			sequenceDb.getFreqSeqs(next)
