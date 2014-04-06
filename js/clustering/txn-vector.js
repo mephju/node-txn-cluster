@@ -58,7 +58,6 @@ var buildVectorBatch = function(txnBatch, freqSeqs) {
 	return txnBatch.map(function(txn) {
 
 		var vector = []
-		var seqs = seqFind.findSeqs(txn,1)
 		
 		for(var i=0; i<freqSeqs.length; i++) {
 			var sim = similarity.calcSim(txn, freqSeqs[i]);

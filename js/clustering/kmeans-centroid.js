@@ -1,6 +1,5 @@
 var async 			= require('async')
 var txnVectorDb 	= require('./txn-vector-db')
-var simCosine 		= require('./sim-cosine')
 
 var sim 			= require('./sim')
 

@@ -20,18 +20,9 @@ var clusterTxnLevenshtein = function(centroidColl, txnId, callback) {
 				sim: 100000000 
 			}
 
-			
+			var centroid = centroidColl.findBestMatch(txn)
+			centroid.txnIds.push(txnId)
 
-			centroidColl.centroids.forEach(function(centroid) {
-				var sim = centroid.sim(txn)
-				
-				if(sim >= bestMatch.sim) {
-					bestMatch.sim 			= sim
-					bestMatch.centroidId 	= centroid.id
-					//console.log('new best centroid', centroid.id)
-				}
-			})
-			centroidColl.centroids[bestMatch.centroidId].txnIds.push(txnId)
 			next(null)
 		},
 
@@ -39,7 +30,5 @@ var clusterTxnLevenshtein = function(centroidColl, txnId, callback) {
 }
 
 
-}
-
 exports.clusterTxnLevenshtein = clusterTxnLevenshtein
-exports.clusterTxn = clusterTxn
+

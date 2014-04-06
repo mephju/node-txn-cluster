@@ -186,3 +186,24 @@ var getTxnIdsHelper = function(sql, callback) {
 	);
 }
 
+
+exports.getManyTxns = getManyTxns
+
+var getManyTxns = function(txnIds, callback) {
+	var txns = []
+	var sqlstmt = 'SELECT * FROM transactions WHERE txn_id IN' + 
+		'(' + txnIds.toString() + ')'
+
+	async.eachSeries(
+		txnIds,
+		function(txnId, next) {
+			getTxn(txnId, function(err, txn) {
+				txn && txns.push(txn)
+				next(err)
+			})
+		},
+		function(err) {
+			callback(err, txns)
+		}
+	)		
+}

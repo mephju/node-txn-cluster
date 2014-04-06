@@ -12,7 +12,7 @@ var inTxnBatch = function(txnBatch) {
 	var allSeqs = []
 
 	for(var i=0; i<txnBatch.length; i++) {
-		findSeqs(txnBatch[i], config.MIN_SEQUENCE_SIZE, allSeqs)
+		findSeqs(txnBatch[i], 1, allSeqs)
 	}
 
 	console.log('inTxnBatch.found', allSeqs.length)
