@@ -4,7 +4,8 @@ var dataset		= require('../dataset-defs').dataset()
 var db 			= exports.db = new sqlite3.Database(dataset.db())
 var sql 		= require('./sql')
 var async 		= require('async')
-
+var rootDb		= require('../db')
+var config		= require('../config')
 
 
 
@@ -156,12 +157,39 @@ exports.getTxn = function(txnId, callback) {
 
 
 
+var getTxnIdsForValidation = function(callback) {
+	async.waterfall([
+		function(next) {
+			rootDb.getTableSize('txns', next)
+		},
+		function(size, next) {
+			var validationSize = Math.ceil(size*config.VALIDATION_SET_SIZE)
+			getTxnIdsHelper(sql.getAllTxnIds(validationSize), callback);
+		}
+	], callback)
+}
 
-exports.getAllTxnIds = function( callback) {
-	getTxnIdsHelper(
-		sql.getAllTxnIds(),
-		callback
-	);
+
+
+
+
+//
+// Returns all txn ids from the training set which are actually about 80% 
+// of all txns
+//
+
+var getAllTxnIds = function(callback) {
+	 
+	async.waterfall([
+		function(next) {
+			rootDb.getTableSize('txns', next)
+		},
+		function(size, next) {
+			var trainingSize = Math.floor(size*config.TRAINING_SET_SIZE)
+			console.log(config.TRAINING_SET_SIZE, trainingSize)
+			getTxnIdsHelper(sql.getAllTxnIds(trainingSize), callback);
+		}
+	], callback)	
 }
 
 exports.getTxnIds = function(dataset, callback) {
@@ -187,7 +215,7 @@ var getTxnIdsHelper = function(sql, callback) {
 }
 
 
-exports.getManyTxns = getManyTxns
+
 
 var getManyTxns = function(txnIds, callback) {
 	var txns = []
@@ -207,3 +235,8 @@ var getManyTxns = function(txnIds, callback) {
 		}
 	)		
 }
+
+exports.getManyTxns = getManyTxns
+exports.getTxnIdsForValidation = getTxnIdsForValidation
+exports.getTxnIdsForTraining = getAllTxnIds
+exports.getAllTxnIds = getAllTxnIds

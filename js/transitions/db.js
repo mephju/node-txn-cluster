@@ -20,5 +20,16 @@ var insertTransMatrix = function(transMatrix, callback) {
 	})
 }
 
+var getTransMatrix = function(callback) {
+	async.waterfall([
+		function(next) {
+			db.get('SELECT matrix FROM transition', next)
+		},
+		function(row, next) {
+			callback(null, JSON.parse(row.matrix))
+		},
+	], callback)
+}
 
+exports.getTransMatrix = getTransMatrix
 exports.insertTransMatrix = insertTransMatrix

@@ -30,17 +30,17 @@ sequences.getFrequent = function() {
 	);	
 }
 
-sequences.createFrequentSequencesStmt = function(count) {
-	return util.format(
-		'CREATE VIEW IF NOT EXISTS frequent_sequences ' +
-		'AS ' +
-		'SELECT 		rowid as sequence_id, sequence, count ' +
-		'FROM 			sequences ' +
-		'WHERE 			count>=%d ' +
-		'ORDER BY    	sequence_id',
-		count
-	);
-}
+// sequences.createFrequentSequencesStmt = function(count) {
+// 	return util.format(
+// 		'CREATE VIEW IF NOT EXISTS frequent_sequences ' +
+// 		'AS ' +
+// 		'SELECT 		rowid as sequence_id, sequence, count ' +
+// 		'FROM 			sequences ' +
+// 		'WHERE 			count>=%d ' +
+// 		'ORDER BY    	sequence_id',
+// 		count
+// 	);
+// }
 
 
 

@@ -1,3 +1,51 @@
+
+-- get 10 most popular items in the training set
+
+SELECT 	 		item_id 
+	FROM(
+	SELECT 		count(*) 
+	AS 			count, 
+				item_id 
+	FROM 		txn_items 
+	WHERE 		txn_id 
+	IN(
+		SELECT 	txn_id 
+		FROM 	txns 
+		LIMIT 	1000
+	)
+	GROUP BY 	item_id 
+	ORDER BY 	count 
+	DESC
+	LIMIT 		10
+);
+
+-- get 4 random items of cluster 0 and 8 random items of cluster 1
+
+SELECT *
+FROM(
+	SELECT 			item_id 
+	FROM 			cluster 
+	NATURAL JOIN 	txn_items 
+	WHERE 			cluster_id=0 
+	ORDER BY 		random() 
+	LIMIT 4
+)
+UNION ALL
+SELECT *
+FROM(
+	SELECT 			item_id
+	FROM 			cluster 
+	NATURAL JOIN 	txn_items 
+	WHERE 			cluster_id=1 
+	ORDER BY 		random() 
+	LIMIT 8
+);
+
+
+
+
+
+
 -- Get frequent sequence_ids of a particular txn_id
 SELECT 			frequent.sequence_id, a.sequence_id
 FROM			last_fm_frequent_sequence_ids AS frequent

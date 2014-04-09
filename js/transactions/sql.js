@@ -51,7 +51,7 @@ exports.getTxnIdsStmt = function() {
 	return stmt
 }
 
-exports.getAllTxnIds = function() {
-	var stmt = 'SELECT txn_id FROM txns'
+exports.getAllTxnIds = function(limit) {
+	var stmt = 'SELECT txn_id FROM txns LIMIT ' + limit
 	return stmt
 }

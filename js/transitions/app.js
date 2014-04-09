@@ -21,6 +21,7 @@ var buildTransMatrix = function(callback) {
 		}
 	], function(err) {
 		console.log('finished building transition matrix', err || '')
+		callback(err)
 	})
 }
 

@@ -113,5 +113,11 @@ var getCentroidRows = function(callback) {
 
 
 
+
+
+
+
+
+
 exports.insert = insert
 exports.getCentroidRows = getCentroidRows

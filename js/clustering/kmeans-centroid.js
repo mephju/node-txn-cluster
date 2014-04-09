@@ -93,10 +93,6 @@ Centroid.prototype.sim = function(txn) {
 			txn, 
 			feature
 		);
-		//distance += (1-featureSim + featureSim * d + d) / 3
-		// similarity += (s === 0)
-		// 		? 1-featureSim 
-		// 		: featureSim * s
 		similarity += s * featureSim
 	}
 	return similarity / this.featureVector.length

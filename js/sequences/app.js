@@ -43,8 +43,8 @@ exports.findSequences = function(callback) {
 		function(next) {
 			countSeqs(dataset, next)
 		},
-		function(next) { 
-			seqStore.createFreqSeqView(dataset, next)
+		function(next) {
+			seqStore.createFrequentSequences(next)
 		}
 	], 
 	function(err) { 

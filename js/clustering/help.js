@@ -18,5 +18,45 @@ var cmp = function(a,b) {
 }
 
 
-exports.arrayEqual 	= arrayEqual
-exports.numCmp 		= cmp
+
+
+
+
+
+
+var intersect = function(array1, array2) {
+   var result = [];
+   
+   var a = array1.slice(0).sort(cmp);
+   var b = array2.slice(0).sort(cmp);
+   
+   var aLast = a.length - 1;
+   var bLast = b.length - 1;
+   
+   while (aLast >= 0 && bLast >= 0) {
+      if (a[aLast] > b[bLast] ) {
+         a.pop();
+         aLast--;
+      } else if (a[aLast] < b[bLast] ){
+         b.pop();
+         bLast--;
+      } else /* they're equal */ {
+         result.push(a.pop());
+         b.pop();
+         aLast--;
+         bLast--;
+      }
+   }
+   return result;
+}
+
+var unionNum = function(array1, array2, intersectNum) {
+   return array1.length + 
+      array2.length - 
+      intersectNum;
+}
+
+exports.unionNum           = unionNum
+exports.arrayEqual         = arrayEqual
+exports.numCmp             = cmp
+exports.intersect          = intersect

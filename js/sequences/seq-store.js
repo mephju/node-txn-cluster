@@ -6,7 +6,7 @@ var seqCount	= require('./seq-count')
 var dataset 	= require('../dataset-defs').dataset()
 var db 			= new sqlite3.Database(dataset.db())
 var config		= require('../config')
-
+var help		= require('../clustering/help')
 exports.db = db
 
 
@@ -99,22 +99,85 @@ var storeCounts = function(seqCounts, callback) {
 
 
 
-var createFreqSeqView = function(dataset, callback) {
-	var stmt = sql.sequences.createFrequentSequencesStmt(config.MIN_SEQUENCE_FREQUENCY);
-	console.log('createFreqSeqView', stmt)
+var createFrequentSequences = function(callback) {
+	async.waterfall([
+		function(next) {
+			db.run('DROP TABLE IF EXISTS frequent_sequences', next)
+		},
+		function(next) {
+			db.run('CREATE TABLE IF NOT EXISTS frequent_sequences(sequence)', next)
+		},
+		function(next) {
+			getFreqSeqsUnfiltered(next)
+		},
+		function(freqSeqs, next) {
+			var filteredFreqSeqs = filterSequences(freqSeqs)
+			insertFrequentSeqs(filteredFreqSeqs, next)
+		}
+	], callback)
+}
 
-	db.run(
-		stmt, 
-		callback
+
+//
+//Only keep sequences which are not contained within other frequent sequences
+//
+var filterSequences = function(sequences) {
+	var filtered = []
+	var len = sequences.length
+	var s = sequences
+
+	for(var i=0; i<len; i++) {
+		var include = true
+		
+		for(var h=0; h<len; h++) {
+			var intersect = help.intersect(s[i], s[h])
+			//console.log('i %d --- h %d === intersection %d', i, h, intersect.length)	
+			if(i !== h && intersect.length === s[i].length) {
+
+				include = false
+				break;
+				// h = 0;
+				// i = i < len-1 ? i+1 : i; //increase i if not exceeds length
+			}
+		}	
+		
+		if(include) {
+			filtered.push(s[i])
+		}
+	}
+	return filtered;
+}
+
+var insertFrequentSeqs = function(sequences, callback) {
+	console.log('insertFrequentSeqs', sequences.length)
+	db.run('BEGIN TRANSACTION')
+	
+	async.eachSeries(
+		sequences,
+		function(sequence, next) {
+			db.run('INSERT INTO frequent_sequences(sequence) VALUES(?)', sequence.toString(), next)
+		},
+		function(err) {
+			db.run('END TRANSACTION', callback)
+		}
 	);
 }
 
 
 
-//callback(err [,freqSeqs])
+
 var getFreqSeqs = function(callback) {
+	getFrequentHelp('SELECT sequence FROM frequent_sequences', callback)
+}
+
+//callback(err [,freqSeqs])
+var getFreqSeqsUnfiltered = function(callback) {
+	getFrequentHelp(sql.sequences.getFrequent(), callback)
+}
+
+var getFrequentHelp = function(stmt, callback) {
 	db.all(
-		sql.sequences.getFrequent(),
+		stmt,
 		function(err, rows) {
 			rows = rows || []
 			var freqSeqs = rows.map(function(row) {
@@ -122,8 +185,7 @@ var getFreqSeqs = function(callback) {
 					return parseInt(numstring)
 				})
 			})
-			
-			console.log('getFreqSeqs.num', freqSeqs.length)
+			console.log('getFrequentHelp.num', freqSeqs.length)
 			callback(err, freqSeqs)
 		}
 	);
@@ -136,8 +198,8 @@ var getFreqSeqs = function(callback) {
 // })
 
 exports.getFreqSeqs = getFreqSeqs
-exports.createFreqSeqView = createFreqSeqView
+exports.createFrequentSequences = createFrequentSequences
 
 
 
-
+//console.log(filterSequences([[5], [5,1],[1,2,3],[1],[1,2]]))
