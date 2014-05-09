@@ -2,6 +2,7 @@ var txnBuilder = require('./txn-builder')
 var db = require('./db')
 var async = require('async')
 var config = require('../config')
+var help = require('../help')
 
 //	fetch all user ids
 //	for each user id 
@@ -20,17 +21,37 @@ var buildTxns = function(callback) {
 
 }
 
-var getTxnBatches = function(onBatch, callback) {
-	async.waterfall([
-		function(next) { 
-			db.getAllTxnIds(next) 
-		},
-		function(txnIds, next) {
-			var txnIdBatches = makeIdBatches(txnIds)
-			forTxnIdBatches(txnIdBatches, onBatch, next)
-		},
-	], callback)
+
+
+//
+// getTxnBatches(txnIds, onBatch, callback)
+// getTxnBatches(onBatch, callback)
+// onBatch(idbatch, txnbatch, next);
+// 
+var getTxnBatches = function() {
+
+	var arglen = arguments.length
+	var callback = arguments[arglen-1]
+	var onBatch = null
+
+	var processIdBatches = function(txnIds, next) {
+		var txnIdBatches = help.toBatches(txnIds)
+		forTxnIdBatches(txnIdBatches, onBatch, next)
+	}
+
+	if(arglen === 3) {
+		var txnIds = arguments[0]
+		onBatch = arguments[1]
+		processIdBatches(txnIds, callback)
+	} else if(arglen === 2) {
+		onBatch = arguments[0]
+		async.waterfall([
+			db.getAllTxnIds,
+			processIdBatches
+		], callback)
+	}
 }
+
 
 
 
@@ -46,9 +67,10 @@ var forTxnIdBatches = function(txnIdBatches, onBatch, callback) {
 		function(txnIdBatch,  next) {
 			async.waterfall([
 				function(next) {
-					getTxnBatch(txnIdBatch, next)
+					db.getManyTxns(txnIdBatch, next)
 				},
 				function(txnBatch, next) {
+					console.log('got batch from db', txnIdBatch.length)
 					onBatch(txnIdBatch, txnBatch, next)
 				}
 			],
@@ -62,43 +84,3 @@ var forTxnIdBatches = function(txnIdBatches, onBatch, callback) {
 
 
 
-// Split txnIds into batches of txnIds to make batch processing on them
-var makeIdBatches = function(txnIds) {
-
-	console.log('makeIdBatches for %d', txnIds.length)
-
-	var txnIdBatches = []
-	var txnIdBatch = []
-	for(var i=0; i<txnIds.length; i++) {
-		txnIdBatch.push(txnIds[i])
-		
-		if(txnIdBatch.length === config.TXN_ID_BATCH_SIZE || i === txnIds.length-1) {
-			txnIdBatches.push(txnIdBatch)
-			txnIdBatch = []
-		}
-	}
-	console.log('created %d id batches', txnIdBatches.length)
-	return txnIdBatches
-}
-
-
-
-
-
-
-var getTxnBatch = function(txnIdBatch,callback) {
-	var txnBatch = []
-	async.eachSeries(
-		txnIdBatch,
-		function(txnId, next) {
-			db.getTxn(txnId, function(err, txn) {
-				txnBatch.push(txn)
-				next(err)
-			})
-		},
-		function(err) {
-			console.log('getTxnBatch',err)
-			callback(err, txnBatch)
-		}
-	);
-}

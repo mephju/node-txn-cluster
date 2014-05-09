@@ -4,18 +4,78 @@ var db 			= exports.db = new sqlite3.Database(dataset.db())
 var async		= require('async')
 var util		= require('util')
 
+
+
+
+// var getItemsSql = function(id, num) {
+// 	return util.format(
+// 		'SELECT 		item_id ' +
+// 		'FROM 			cluster_items ' +
+// 		'WHERE 			cluster_id=%d ' +
+// 		'ORDER BY 		count DESC ' +
+// 		'LIMIT 			%d',
+// 		id,
+// 		num
+// 	);
+// }
+
+
+
+var getItemsSql = function(id, num) {
+	return util.format(
+		'SELECT 		item_id ' +
+		'FROM 			cluster_items ' +
+		'WHERE 			cluster_id=%d ' +
+		'ORDER BY 		random() ' +
+		'LIMIT 			%d',
+		id,
+		num
+	);
+}
+
+
+
+var createViewClusterItems = function() {
+	return 'CREATE TABLE IF NOT EXISTS cluster_items AS  '  +
+	'SELECT 		cluster_id, item_id, count ' +
+	'FROM 			cluster  ' +
+	'NATURAL JOIN 	txn_items ' +
+	'NATURAL JOIN(  SELECT 		item_id, count(*)  ' +
+	'				AS 			count ' +
+	'				FROM 		feedback ' +
+	'				GROUP BY 	item_id ' +
+	'				ORDER BY 	count DESC) ' +
+	'ORDER BY  		cluster_id ASC, ' +
+	'				count DESC; ';
+}
+
+
+
+
+
+var buildClusterItemsView = function(callback) {
+	async.waterfall([
+		function(next) {
+			db.run('DROP TABLE IF EXISTS cluster_items', next)
+		},
+		function(next) {
+			db.run(
+				createViewClusterItems(),
+				next
+			);
+		},
+		function() {
+			callback(null)
+		}
+	], callback)
+}
+
+
+
+//get random amount of items from a certain cluster
 var buildRecomSql = function(itemsPerCluster) {
 	var stmts = itemsPerCluster.map(function(num, id) {
-		return util.format(
-			'SELECT 		item_id ' +
-			'FROM 			cluster ' +
-			'NATURAL JOIN 	txn_items ' +
-			'WHERE 			cluster_id=%d ' +
-			'ORDER BY 		random() ' +
-			'LIMIT 			%d',
-			id,
-			num
-		);
+		return getItemsSql(id, num)
 	})
 
 	stmts = stmts.map(function(stmt) {
@@ -28,11 +88,10 @@ var buildRecomSql = function(itemsPerCluster) {
 
 }
 
-var getRecommendations = function(itemsPerCluster, callback) {
+var getRecommendations = function(numRecommsPerCluster, callback) {
 	async.waterfall([
 		function(next) {
-			var sql = buildRecomSql(itemsPerCluster)
-			//console.log(sql)
+			var sql = buildRecomSql(numRecommsPerCluster)
 			db.all(sql, next)
 		},
 		function(rows, next) {
@@ -45,5 +104,22 @@ var getRecommendations = function(itemsPerCluster, callback) {
 
 
 
+var getItemsForCluster = function(clusterId, callback) {
+	console.log('getItemsForCluster', clusterId)
+	async.waterfall([
+		function(next) {
+			var sql = getItemsSql(clusterId, 9999999999)
+			db.all(sql, next)
+		},
+		function(rows, next) {
+			console.log('getItemsForCluster.gotRows', rows.length)
+			callback(null, rows.map(function(row) {
+				return row['item_id']
+			}))
+		}
+	], callback)	
+}
 
+exports.buildClusterItemsView = buildClusterItemsView
 exports.getRecommendations = getRecommendations
+exports.getItemsForCluster = getItemsForCluster

@@ -84,17 +84,21 @@ Centroid.prototype.copy = function() {
 
 Centroid.prototype.sim = function(txn) {
 	var similarity = 0
+	var vector = this.vector
 
-	for(var i=0; i<this.featureVector.length; i++) {
+	this.featureVector.forEach(function(feature, i) {
 		
-		var featureSim 	= this.vector[i]
-		var feature 	= this.featureVector[i]
-		var s = sim.calcSim(
-			txn, 
-			feature
-		);
-		similarity += s * featureSim
-	}
+		var featureSim = vector[i]
+		
+		if(featureSim !== 0) {
+		
+			var s = sim.calcSim(
+				txn, 
+				feature
+			);
+			similarity += s * featureSim
+		}
+	})
 	return similarity / this.featureVector.length
 }
 

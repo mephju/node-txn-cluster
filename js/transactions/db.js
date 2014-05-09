@@ -163,8 +163,11 @@ var getTxnIdsForValidation = function(callback) {
 			rootDb.getTableSize('txns', next)
 		},
 		function(size, next) {
-			var validationSize = Math.ceil(size*config.VALIDATION_SET_SIZE)
-			getTxnIdsHelper(sql.getAllTxnIds(validationSize), callback);
+			var trainingSetSize = Math.floor(size*config.TRAINING_SET_SIZE)
+			getTxnIdsHelper(
+				'SELECT txn_id from txns LIMIT 999999999 OFFSET ' + trainingSetSize, 
+				callback
+			);
 		}
 	], callback)
 }
@@ -218,22 +221,25 @@ var getTxnIdsHelper = function(sql, callback) {
 
 
 var getManyTxns = function(txnIds, callback) {
+	console.log('get many txns', txnIds.length)
 	var txns = []
-	var sqlstmt = 'SELECT * FROM transactions WHERE txn_id IN' + 
+	var sqlstmt = 'SELECT item_ids FROM txn_item_groups WHERE txn_id IN' + 
 		'(' + txnIds.toString() + ')'
 
-	async.eachSeries(
-		txnIds,
-		function(txnId, next) {
-			getTxn(txnId, function(err, txn) {
-				txn && txns.push(txn)
-				next(err)
-			})
-		},
-		function(err) {
-			callback(err, txns)
+	db.all(sqlstmt, function(err, rows) {
+		if(err) {
+			console.log(err)
+			callback(err)
+		} else {
+			console.log('got txns', rows.length)
+			callback(null, rows.map(function(row) {
+				return row['item_ids'].split(/,/).map(function(itemIdString) {
+					return parseInt(itemIdString)
+				})
+			}))
 		}
-	)		
+
+	})
 }
 
 exports.getManyTxns = getManyTxns

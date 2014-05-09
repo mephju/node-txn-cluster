@@ -1,3 +1,26 @@
+CREATE VIEW IF NOT EXISTS cluster_items AS 
+	SELECT 			cluster_id, item_id, count
+	FROM 			cluster 
+	NATURAL JOIN 	txn_items
+	NATURAL JOIN(   SELECT 		item_id, count(*) 
+					AS 			count
+					FROM 		feedback
+					GROUP BY 	item_id
+					ORDER BY 	count DESC)
+	ORDER BY  		cluster_id ASC,
+					count DESC;
+
+
+
+-- Create a view of txns where all item ids of a txn
+-- are aggrefated into one cell
+CREATE VIEW txn_item_groups AS
+	SELECT 		txn_id, group_concat(item_id) 
+	AS  		item_ids
+	FROM 		txn_items
+	GROUP BY 	txn_id
+	ORDER BY 	rowid;
+
 
 -- get 10 most popular items in the training set
 

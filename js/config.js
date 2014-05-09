@@ -1,14 +1,15 @@
 
-exports.TXN_VECTOR_BATCH_SIZE 		= 7000
-exports.TXN_ID_BATCH_SIZE 			= 2000
+exports.TXN_VECTOR_BATCH_SIZE 		= 4000
+exports.TXN_ID_BATCH_SIZE 			= 900
 exports.MIN_SEQUENCE_SIZE 			= 2
 exports.MAX_SEQUENCE_SIZE 			= 8
 exports.NUM_RECOMMENDATIONS 		= 10
 exports.TRAINING_SET_SIZE 			= 0.8
 exports.VALIDATION_SET_SIZE 		= 1 - exports.TRAINING_SET_SIZE
-exports.MAX_TIME_DISTANCE 			= 900
+//exports.MAX_TIME_DISTANCE 			= 900
 
-
+exports.MIN_SEQUENCE_FREQUENCY 		= 8
+exports.NUM_CENTROIDS				= 50
 
 
 

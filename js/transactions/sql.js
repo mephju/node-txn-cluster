@@ -52,6 +52,13 @@ exports.getTxnIdsStmt = function() {
 }
 
 exports.getAllTxnIds = function(limit) {
-	var stmt = 'SELECT txn_id FROM txns LIMIT ' + limit
+	var stmt = 'SELECT txn_id FROM txns ORDER BY txn_id LIMIT ' + limit
 	return stmt
 }
+
+exports.createViewTxnItemGroups = 
+	'CREATE TABLE IF NOT EXISTS	txn_item_groups AS ' +
+	'SELECT 		txn_id, group_concat(item_id) as item_ids ' +
+	'FROM 			txn_items ' +
+	'GROUP BY 		txn_id ' +
+	'ORDER BY  		rowid' 

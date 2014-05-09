@@ -26,7 +26,7 @@ var getLastFmItemId 		= null;
 exports.init = function(db, callback) {
 	async.series([
 		function(next) {
-			db.run('DROP TABLE last_fm_items', next)
+			db.run('DROP TABLE IF EXISTS last_fm_items', next)
 		},
 		function(next) {
 			db.run(createLastFmItemTable, next)

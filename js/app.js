@@ -43,13 +43,13 @@ var start = function() {
 	var startTime = new Date().getTime()
 
 	async.series([
-		function(next) {
-			importApp.makeImport(next)
-		},
-		function(next) {
-			console.log('build txns')
-			txnApp.buildTxns(next)
-		}, 
+		// function(next) {
+		// 	importApp.makeImport(next)
+		// },
+		// function(next) {
+		// 	console.log('build txns')
+		// 	txnApp.buildTxns(next)
+		// }, 
 		function(next) {
 			console.log('find and build subsequences')
 			sequenceApp.findSequences(next)
@@ -69,6 +69,9 @@ var start = function() {
 	})
 
 }
+
+
+
 
 
 	initApp()

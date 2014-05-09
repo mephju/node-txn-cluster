@@ -27,7 +27,7 @@ var start = function(callback) {
 			sequenceDb.getFreqSeqs(next)
 		},
 		function(freqSeqs, next) {
-			console.log('initCentroids')
+			console.log('initCentroids with freqSeqs' , freqSeqs.length)
 			kmeans.initCentroids(freqSeqs)
 			console.log('cluster')
 			cluster(next)
@@ -72,7 +72,7 @@ var assignTxnsToCentroids = function(txnIds, centroidColl, callback) {
 		function(err) {
 			callback(err, centroidColl)
 		}
-	)
+	);
 }
 
 
@@ -107,3 +107,16 @@ var cluster = function(callback) {
 	], 
 	callback)
 }
+
+
+var file 	= process.argv[1]
+var method 	= process.argv[2]
+// was this file was started from the command line?
+// if so, call entry level method
+if(file === __filename) { 
+	if(method) {
+		exports[method]()
+	}
+}
+
+

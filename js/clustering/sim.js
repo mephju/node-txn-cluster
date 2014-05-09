@@ -1,11 +1,11 @@
 var help = require('./help')
 
 var calcSim = function(txn, frequentSeq) {
-		
-	var simLevenshtein 	= 1 - levenshtein(txn, frequentSeq)
-	var simSetSim 		= jaccard(txn, frequentSeq)
-
-	return (simLevenshtein * 2 + simSetSim) / 3
+	return (1 - levenshtein(txn, frequentSeq))
+	// var simLevenshtein 	= 1 - levenshtein(txn, frequentSeq)
+	// var simSetSim 		= jaccard(txn, frequentSeq)
+	// return (simLevenshtein * 2 + simSetSim) / 3
+    
 }
 
 exports.calcSim = calcSim

@@ -8,17 +8,25 @@ var txnVectorDb = require('./txn-vector-db')
 
 
 
+var clusterTxnLevenshtein2 = function(centroidColl, txns, txnIds) {
+	for(var i=0; i<txns.length; i++) {
+		
+		var txn 		= txns[i]
+		var txnId 		= txnIds[i]
+		var centroid 	= centroidColl.findBestMatch(txn)		
+
+		centroid.txnIds.push(txnId)
+		console.log('clustered ', txnId)
+	}
+	console.log('clusterTxnLevenshtein, finished one batch')
+}
+
 var clusterTxnLevenshtein = function(centroidColl, txnId, callback) {
 	async.waterfall([
 		function(next) {
 			txnDb.getTxn(txnId, next)
 		},
 		function(txn, next) {
-
-			var bestMatch = { 
-				centroidId: 0, 
-				sim: 100000000 
-			}
 
 			var centroid = centroidColl.findBestMatch(txn)
 			centroid.txnIds.push(txnId)
@@ -29,6 +37,6 @@ var clusterTxnLevenshtein = function(centroidColl, txnId, callback) {
 	], callback)
 }
 
-
+exports.clusterTxnLevenshtein2 = clusterTxnLevenshtein2
 exports.clusterTxnLevenshtein = clusterTxnLevenshtein
 

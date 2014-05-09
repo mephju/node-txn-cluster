@@ -42,10 +42,7 @@ exports.store = function(txnSeqStore, dataset, callback) {
 			db.run('BEGIN TRANSACTION', next)
 		},
 		function(next) {
-			var counts 	= new seqCount.SeqCounter().count(txnSeqStore)
-			next(null, counts)
-		},
-		function(seqCounts, next) {
+			var seqCounts = new seqCount.SeqCounter().count(txnSeqStore)
 			storeCounts(seqCounts, next)
 		},
 		function(next) {
@@ -77,7 +74,9 @@ var storeCounts = function(seqCounts, callback) {
 			async.eachSeries(
 				sequences,
 				function(sequence, next) {
-					insertStmt.run( sequence, next)		
+					var numComponents = seqCounts[sequence].components
+					//console.log(numComponents)
+					insertStmt.run( sequence, numComponents, next)		
 				},
 				next
 			);
@@ -87,13 +86,16 @@ var storeCounts = function(seqCounts, callback) {
 			async.eachSeries(
 				sequences,
 				function(sequence, next) {
-					var count = seqCounts[sequence]
+					var count = seqCounts[sequence].count
 					updateStmt.run(count, sequence, next)
 				},
 				next
 			);
 		}
-	], callback)
+	], function(err) {
+		console.log('inserted counts of batch', err)
+		callback(err)
+	})
 }
 
 
@@ -105,7 +107,7 @@ var createFrequentSequences = function(callback) {
 			db.run('DROP TABLE IF EXISTS frequent_sequences', next)
 		},
 		function(next) {
-			db.run('CREATE TABLE IF NOT EXISTS frequent_sequences(sequence)', next)
+			db.run('CREATE TABLE IF NOT EXISTS frequent_sequences(sequence TEXT)', next)
 		},
 		function(next) {
 			getFreqSeqsUnfiltered(next)
@@ -179,6 +181,7 @@ var getFrequentHelp = function(stmt, callback) {
 	db.all(
 		stmt,
 		function(err, rows) {
+			console.log('getFrequentHelp.rows', rows.length, err)
 			rows = rows || []
 			var freqSeqs = rows.map(function(row) {
 				return row.sequence.split(',').map(function(numstring) {

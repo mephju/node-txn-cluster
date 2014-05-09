@@ -24,6 +24,12 @@ exports.buildTxnsForSet = function(set, next) {
 		},
 		function(next) {
 			txnDb.db.run(sql.createIndexStmt(set.dbTable), next)
+		},
+		function(next) {
+			txnDb.db.run('DROP TABLE IF EXISTS txn_item_groups', next)
+		},
+		function(next) {
+			txnDb.db.run(sql.createViewTxnItemGroups, next)
 		}
 	], 
 	function(err) {

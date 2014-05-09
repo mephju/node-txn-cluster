@@ -6,6 +6,7 @@ var CentroidCollection 		= kmCentroidCollection.CentroidCollection
 var kmTxn 		= require('./kmeans-txn')
 var async 		= require('async')
 var txnVectorDb = require('./txn-vector-db')
+var txnApp		= require('../transactions/app')
 var centroidsOld = null
 
 //
@@ -39,10 +40,13 @@ var cluster = function(txnIds, callback) {
 
 	console.log('kmeans.cluster', txnIds.length, centroidsNew.centroids.length)
 
-	async.eachSeries(
+
+	txnApp.getTxnBatches(
 		txnIds,
-		function(txnId, next) {
-			kmTxn.clusterTxnLevenshtein(centroidsNew, txnId, next)
+		function onBatch(txnIds, txns, next) {
+			console.log('cluster onbatch', txnIds.length)
+			kmTxn.clusterTxnLevenshtein2(centroidsNew, txns, txnIds)
+			next(null)
 		},
 		function(err) {
 			if(err) {
@@ -58,6 +62,9 @@ var cluster = function(txnIds, callback) {
 		}
 	);
 }
+
+
+
 
 
 var repeatCluster = function(txnIds, centroids, callback) {

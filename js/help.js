@@ -1,4 +1,4 @@
-var config = require('../config')
+var config = require('./config')
 
 
 var arrayEqual = function(arr1, arr2) {
@@ -26,17 +26,19 @@ var cmp = function(a,b) {
 
 
 // Split txnIds into batches of txnIds to make batch processing on them
-var toBatches = function(array) {
+var toBatches = function(array, maxSize) {
+
+   var maxBatchSize = maxSize || config.TXN_ID_BATCH_SIZE
 
    console.log('make to batches for %d', array.length)
 
    var batches = []
    var batch = []
    
-   array.forEach(function(elem, i, arr) { 
+   array.forEach(function(elem, i, arr) {
       batch.push(elem)
       
-      if(batch.length === config.TXN_ID_BATCH_SIZE || i === array.length-1) {
+      if(batch.length === maxBatchSize || i === array.length-1) {
          batches.push(batch)
          batch = []
       }

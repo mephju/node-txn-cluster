@@ -49,6 +49,16 @@ exports.findSequences = function(callback) {
 	], 
 	function(err) { 
 		console.log('sequences - finished with dataset', err)
-		callback(err)
+		if(callback) { callback(err) }
 	})
+}
+
+
+
+var file 	= process.argv[1]
+var method 	= process.argv[2]
+if(file === __filename) {
+	if(method) {
+		exports[method]()
+	}
 }

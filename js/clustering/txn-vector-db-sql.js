@@ -18,9 +18,10 @@ exports.table = {
 			return "SELECT txn_id, vector FROM txn_vector where vector!='[]'"
 		},
 		getTxnIds: function() {
-			return "SELECT txn_id FROM txn_vector where vector!='[]'"
+			return "SELECT txn_id FROM txn_vector where vector!='[]' ORDER BY txn_id"
+			//return "SELECT txn_id FROM txn_vector"
 		},
-		getNonVectorIds: "SELECT txn_id FROM txn_vector where vector='[]'",
+		getNonVectorIds: "SELECT txn_id FROM txn_vector where vector='[]' ORDER BY txn_id",
 		getTxnVector: function() {
 			return "SELECT vector FROM txn_vector where txn_id=$1"
 		},

@@ -32,7 +32,9 @@ var buildVectors = function(callback) {
 				next
 			);
 		}
-	], callback)
+	], function(err) {
+		if(callback) { callback(err) }
+	})
 }
 
 
@@ -110,6 +112,17 @@ var filterToLength = function(txn, seqs, n) {
 exports.buildVectors = buildVectors
 exports.buildVectorBatch = buildVectorBatch
 exports.filterToLength = filterToLength
+
+
+
+var file 	= process.argv[1]
+var method 	= process.argv[2]
+if(file === __filename || file + '.js' === __filename) {
+	if(method) {
+		console.log('starting explicit method from cmd line')
+		exports[method]()
+	}
+}
 
 
 
