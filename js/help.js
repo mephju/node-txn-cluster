@@ -86,6 +86,24 @@ var unionNum = function(array1, array2, intersectNum) {
       intersectNum;
 }
 
+
+var maxIdx = function(numArray) {
+   
+   var max = numArray[0]
+   var idx = 0
+   
+   for (var i=0, len=numArray.length; i<len; i++) {
+      if(numArray[i] > max) {
+         max = numArray[i]
+         idx = i
+      }
+   }
+   return idx
+}
+
+
+
+exports.maxIdx             = maxIdx
 exports.unionNum           = unionNum
 exports.arrayEqual         = arrayEqual
 exports.numCmp             = cmp

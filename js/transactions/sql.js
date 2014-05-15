@@ -56,7 +56,7 @@ exports.getAllTxnIds = function(limit) {
 	return stmt
 }
 
-exports.createViewTxnItemGroups = 
+exports.createTableTxnItemGroups = 
 	'CREATE TABLE IF NOT EXISTS	txn_item_groups AS ' +
 	'SELECT 		txn_id, group_concat(item_id) as item_ids ' +
 	'FROM 			txn_items ' +

@@ -5,17 +5,13 @@ var txnApp		= require('../transactions/app')
 var clusterDb	= require('../clustering/cluster-db')
 var help 		= require('../help')
 
-var centroidCollection = require('../clustering/kmeans-centroid-collection')
-var CentroidCollection = centroidCollection.CentroidCollection
 
 
-var buildTransMatrix = function(callback) {
+
+var buildTransMatrix = function(clusters, callback) {
 	async.waterfall([
 		function(next) {
-			centroidCollection.buildFromDb(next)
-		},
-		function(centroidColl, next) {
-			findProbsForBatches(centroidColl, next)
+			findProbsForBatches(clusters, next)
 		},
 		function(transMatrix, next) {
 			db.insertTransMatrix(transMatrix, next)
@@ -42,16 +38,13 @@ var initTransMatrix = function(size) {
 
 
 
-var findProbsForBatches = function(centroidColl, callback) {
-	var transMatrix = initTransMatrix(centroidColl.centroids.length)
+var findProbsForBatches = function(clusters, callback) {
+	var transMatrix = initTransMatrix(clusters.clusters.length)
 	
 	txnApp.getTxnBatches(
 		function onBatch(txnIdBatch, txnBatch, next) {
 			console.log('onBatch', txnBatch.length)
-			findProbsPerBatch(
-				transMatrix, 
-				centroidColl, 
-				txnBatch)
+			findProbsPerBatch(transMatrix, clusters, txnBatch)
 			next(null)
 		},
 		function(err) {
@@ -61,10 +54,10 @@ var findProbsForBatches = function(centroidColl, callback) {
 }
 
 
-var findProbsPerBatch = function(transMatrix, centroidColl, txnBatch) {
+var findProbsPerBatch = function(transMatrix, clusters, txnBatch) {
 	console.log('findProbsPerBatch')
 	txnBatch.forEach(function(txn) {
-		findProbsForTxn(transMatrix, centroidColl, txn)
+		findProbsForTxn(transMatrix, clusters, txn)
 	})
 	
 }

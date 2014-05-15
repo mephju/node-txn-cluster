@@ -34,8 +34,8 @@ var start = function() {
 	var config 			= require('./config')
 	console.log(config)
 	var txnApp 			= require('./transactions/app')
-	var sequenceApp		= require('./sequences/app')
-	var clusterApp		= require('./clustering/app')
+	
+	var clusterApp		= require('./clustering2')
 	var importApp		= require('./import/app')
 	var transitionApp	= require('./transitions/app')
 
@@ -43,21 +43,16 @@ var start = function() {
 	var startTime = new Date().getTime()
 
 	async.series([
-		// function(next) {
-		// 	importApp.makeImport(next)
-		// },
-		// function(next) {
-		// 	console.log('build txns')
-		// 	txnApp.buildTxns(next)
-		// }, 
 		function(next) {
-			console.log('find and build subsequences')
-			sequenceApp.findSequences(next)
+			importApp.makeImport(next)
 		},
 		function(next) {
-			console.log('start cluserting')
+			console.log('build txns')
+			txnApp.buildTxns(next)
+		}, 
+		function(next) {
 			clusterApp.start(next)
-		},
+		}
 		function(next) {
 			transitionApp.buildTransMatrix(next)
 		}

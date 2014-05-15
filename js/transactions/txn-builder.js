@@ -29,7 +29,7 @@ exports.buildTxnsForSet = function(set, next) {
 			txnDb.db.run('DROP TABLE IF EXISTS txn_item_groups', next)
 		},
 		function(next) {
-			txnDb.db.run(sql.createViewTxnItemGroups, next)
+			txnDb.db.run(sql.createTableTxnItemGroups, next)
 		}
 	], 
 	function(err) {
@@ -81,13 +81,6 @@ var findFeedbackGroups = function(feedbackRows, dataset) {
 			group = []
 			feedbackGroups.push(group)
 		}
-
-		// console.log(
-		// 	'timestamp %d, lastItemTimestamp %d, result %d      maxTimeDelta %d',
-		// 	timestamp,
-		// 	lastItemTimestamp,
-		// 	timestamp - lastItemTimestamp,
-		// 	dataset.timeDistance)
 		
 		group.push(row)
 	}

@@ -218,6 +218,25 @@ var getTxnIdsHelper = function(sql, callback) {
 }
 
 
+var getAllTxns = function(done) {
+	async.waterfall([
+		function(next) {
+			db.all('SELECT DISTINCT txn_id, item_ids FROM txn_item_groups', next)
+		},  
+		function(rows, next) {
+			var txnIds = []
+			
+			rows.forEach(function(row, i) {
+				rows[i]['item_ids'] = row['item_ids']
+				.split(',')
+				.map(function(itemIdString) {	
+					return parseInt(itemIdString)
+				})
+			})
+			done(null, rows)
+		}
+	], done)
+}
 
 
 var getManyTxns = function(txnIds, callback) {
@@ -233,7 +252,7 @@ var getManyTxns = function(txnIds, callback) {
 		} else {
 			console.log('got txns', rows.length)
 			callback(null, rows.map(function(row) {
-				return row['item_ids'].split(/,/).map(function(itemIdString) {
+				return row['item_ids'].split(',').map(function(itemIdString) {
 					return parseInt(itemIdString)
 				})
 			}))
@@ -242,7 +261,9 @@ var getManyTxns = function(txnIds, callback) {
 	})
 }
 
+
 exports.getManyTxns = getManyTxns
+exports.getAllTxns = getAllTxns
 exports.getTxnIdsForValidation = getTxnIdsForValidation
 exports.getTxnIdsForTraining = getAllTxnIds
 exports.getAllTxnIds = getAllTxnIds
