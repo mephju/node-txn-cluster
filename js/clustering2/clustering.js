@@ -9,8 +9,8 @@ var cluster = function(txnRows, matrix, done) {
 	console.log('cluster')
 	var clusters = init(txnRows, matrix)
 	
-	clusterIterate(txnRows, clusters)
-	done(null, clusters)
+	clusterGroup = clusterIterate(txnRows, clusters)
+	done(null, clusterGroup)
 }
 
 
@@ -22,8 +22,10 @@ var clusterIterate = function(txnRows, clusters) {
 			clusters.assign(txnRow)
 		})
 		clusters.recomputeCentroids()
-		clusterIterate(txnRows, clusters)
-	} 		
+		return clusterIterate(txnRows, clusters)
+	} else {
+		return clusters
+	}	
 }
 
 
@@ -51,5 +53,5 @@ var init = function(txnRows, matrix) {
 
 
 
-exports.fromDb = fromDb
+//exports.fromDb = fromDb
 exports.cluster = cluster

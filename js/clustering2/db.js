@@ -106,4 +106,42 @@ var insClusterMembersEach = function(stmt, members, clusterId, done) {
 
 
 
+var insertSimMatrix = function(matrix, done) {
+	async.waterfall([
+		function(next) {
+			db.run('DROP TABLE IF EXISTS txn_sim_matrix', next)
+		},
+		function(next) {
+			db.run(
+				'CREATE TABLE txn_sim_matrix( \
+				txn_id INTEGER PRIMARY KEY, \
+				similarities TEXT)',
+				next
+			);
+		},
+		function(next) {
+			db.run('BEGIN TRANSACTION', next)
+		},
+		function(next) {
+			async.eachSeries(
+				matrix.txnRows,
+				function(txnRow, next) {
+					var txnId = txnRow['txn_id']
+					var simRow = matrix.getRowForTxnId(txnId)
+					db.run('INSERT INTO txn_sim_matrix VALUES($1, $2)', [txnId, simRow.toString()], next)
+				},
+				next
+			);
+		},
+		function(next) {
+			db.run('END TRANSACTION', next)
+		}
+	], done)
+}
+
+
+
+
+
+exports.insertSimMatrix = insertSimMatrix
 exports.insertClusters = insertClusters

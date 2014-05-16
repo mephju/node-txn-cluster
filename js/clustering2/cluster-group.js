@@ -22,7 +22,10 @@ ClusterGroup.prototype.assign = function(txnRow) {
 	return cluster
 }
 
-Cluster.prototype.findBestMatch = function(txnRow) {
+
+
+ClusterGroup.prototype.findBestMatch = function(txnRow) {
+
 	var bestMatch = {
 		sim: 0,
 		cluster:this.clusters[0]
@@ -30,15 +33,34 @@ Cluster.prototype.findBestMatch = function(txnRow) {
 
 	for (var i=0; i<this.clusters.length; i++) {
 		var c = this.clusters[i]
-		 else {
-			var sim = c.sim(txnRow)
-			if(sim > bestMatch.sim) {
-				bestMatch.sim = sim
-				bestMatch.cluster = c
-			}
-		}
+		
+		var sim = c.sim(txnRow)
+		if(sim > bestMatch.sim) {
+			bestMatch.sim = sim
+			bestMatch.cluster = c
+		}	
 	};
 	return bestMatch.cluster
+}
+
+ClusterGroup.prototype.findBestMatchSeq = function(txn) {
+	var bestMatch = {
+		sim: 0,
+		id:0,
+		cluster:this.clusters[0]
+	}
+
+	for (var i=0; i<this.clusters.length; i++) {
+		var c = this.clusters[i]
+		
+		var sim = c.simSeq(txn)
+		if(sim > bestMatch.sim) {
+			bestMatch.sim = sim
+			bestMatch.cluster = c
+			bestMatch.id = i
+		}	
+	};
+	return bestMatch.id
 }
 
 

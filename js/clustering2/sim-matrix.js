@@ -7,25 +7,26 @@ var sim				= require('./sim')
 
 
 
-var Matrix = function(rows) {
+var Matrix = function(txnRows) {
 	this.matrix = []
-	this.rows = rows
+	this.txnRows = txnRows
+	
 	this.txnIdStore = {}
 	this.buildMatrix()
 }
 
 Matrix.prototype.buildMatrix = function() {
-	var rows = this.rows
-	var len = rows.length
+	var txnRows = this.txnRows
+	var len = txnRows.length
 	
 	for(var i=0; i<len; i++) {
 		this.matrix[i] = []
-		this.txnIdStore[rows[i]['txn_id'].toString()] = i
+		this.txnIdStore[txnRows[i]['txn_id'].toString()] = i
 	}
 	
 	for(var i=0; i<len; i++) {
 		
-		console.log(rows[i]['txn_id'])
+		console.log(txnRows[i]['txn_id'])
 		for(var j=i; j<len; j++) {
 
 			var similarity = 0
@@ -33,18 +34,18 @@ Matrix.prototype.buildMatrix = function() {
 				similarity = 1
 			} else {
 				similarity = sim.calcSim(
-					rows[i]['item_ids'], 
-					rows[j]['item_ids']
+					txnRows[i]['item_ids'], 
+					txnRows[j]['item_ids']
 				);	
 			}
 
 			this.matrix[i][j] = {
 				sim: similarity,
-				txnId: rows[j]['txn_id']
+				txnId: txnRows[j]['txn_id']
 			}
 			this.matrix[j][i] = {
 				sim: similarity,
-				txnId: rows[i]['txn_id']
+				txnId: txnRows[i]['txn_id']
 			}
 		}
 	}
@@ -53,7 +54,7 @@ Matrix.prototype.buildMatrix = function() {
 }
 
 Matrix.prototype.getTxnRows = function() {
-	return this.rows
+	return this.txnRows
 }
 
 

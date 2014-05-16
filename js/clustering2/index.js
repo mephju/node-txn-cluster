@@ -4,12 +4,13 @@ var async			= require('async')
 var txnDb 			= require('../transactions/db')
 var simMatrix		= require('./sim-matrix')
 var clustering		= require('./clustering')
-var clusterDb		= require('./db')
+var db				= require('./db')
 
 
-var start = function(done) {
+var start = function(callback) {
 	var txnRows = null
 	var matrix = null
+	var clusterGroup = null
 
 	async.waterfall([
 		function(next) {
@@ -22,19 +23,18 @@ var start = function(done) {
 		},
 		function(matrixxx, next) {
 			matrix = matrixxx
+			db.insertSimMatrix(matrix, next)
+		},
+		function(next) {
 			clustering.cluster(txnRows, matrix, next)
 		},
 		function(clusters, next) {
-			// clusters.clusters.forEach(function(cluster) {
-			// 	console.log('cluster', cluster.centroidRow)
-			// 	console.log('members', cluster.members)
-			// 	console.log('####################')
-			// })
-			clusterDb.insertClusters(clusters, next)
+			clusterGroup = clusters
+			db.insertClusters(clusters, next)
 		}
 	], function(err) {
-		console.log('finished clustering', err)
-		if(done) { done(err) }
+		console.log('finished clustering', err, clusterGroup)
+		if(callback) { callback(err, clusterGroup) }
 	})
 }
 	

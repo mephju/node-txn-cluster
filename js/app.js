@@ -35,7 +35,7 @@ var start = function() {
 	console.log(config)
 	var txnApp 			= require('./transactions/app')
 	
-	var clusterApp		= require('./clustering2')
+	var clusterApp		= require('./clustering2/index')
 	var importApp		= require('./import/app')
 	var transitionApp	= require('./transitions/app')
 
@@ -51,10 +51,9 @@ var start = function() {
 			txnApp.buildTxns(next)
 		}, 
 		function(next) {
-			clusterApp.start(next)
-		}
-		function(next) {
-			transitionApp.buildTransMatrix(next)
+			clusterApp.start(function(err, clusterGroup) {
+				transitionApp.buildTransMatrix(clusterGroup, next)	
+			});
 		}
 	], 
 	function(err, results){

@@ -1,4 +1,5 @@
 var help = require('../help')
+var sim = require('./sim')
 
 var Cluster = function(simMatrix, centroidRow) {
 	this.simMatrix 		= simMatrix
@@ -25,6 +26,10 @@ Cluster.prototype.sim = function(txnRow) {
 		txnRow['txn_id'], 
 		this.centroidRow['txn_id']
 	);
+}
+
+Cluster.prototype.simSeq = function(txn) {
+	return sim.calcSim(this.centroidRow['item_ids'], txn)
 }
 
 
