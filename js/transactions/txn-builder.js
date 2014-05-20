@@ -4,26 +4,26 @@ var db 		= txnDb.db
 var util 	= require('util')
 var async 	= require('async')
 var sql 	= require('./sql')
+var dataset		= require('../dataset-defs').dataset()
 
 
 
 
 
-
-exports.buildTxnsForSet = function(set, next) {
+exports.buildTxnsForSet = function(next) {
 	async.waterfall([
 		function(next) {
-			txnDb.prepareDb(set, next)
+			txnDb.prepareDb(next)
 		},
 		function(next) {
 			console.log('prepared')
-			txnDb.getUserIds(set, next)
+			txnDb.getUserIds(next)
 		}, 
 		function(userIds, next) {
-			buildTxns(userIds, set, next)
+			buildTxns(userIds, next)
 		},
 		function(next) {
-			txnDb.db.run(sql.createIndexStmt(set.dbTable), next)
+			txnDb.db.run(sql.createIndexStmt(), next)
 		},
 		function(next) {
 			txnDb.db.run('DROP TABLE IF EXISTS txn_item_groups', next)
@@ -41,28 +41,54 @@ exports.buildTxnsForSet = function(set, next) {
 
 
 
-var buildTxns = function(userIds, dataset, callback) {
+var buildTxns = function(userIds, callback) {
 
+	var feedbackGroups = []
 	async.eachSeries(
 		userIds,
 		function(userId, next) {
-
-			txnDb.getUserFeedback(userId, dataset, function(e, feedbackRows) {
-				var feedbackGroups = findFeedbackGroups(feedbackRows, dataset)
-				txnDb.insertTxns(dataset.dbTable, feedbackGroups, next)
-			})
+			findUserTxns(userId, feedbackGroups, next)
 		},
 		function(err) {
-			callback(err)
+			if(feedbackGroups.length > 0) {
+				txnDb.insertTxns(feedbackGroups, callback)
+			} else {
+				callback(err)
+			}
 		}
 	);
 }
 
 
 
+var findUserTxns = function(userId, feedbackGroups, done) {
+	
+	async.waterfall([
+		function(next) {
+			txnDb.getUserFeedback(userId, next)
+		},
+		function(feedbackRows, next) {
+			
+			var output = findFeedbackGroups(feedbackRows)	
+
+			feedbackGroups.push.apply(feedbackGroups, output)
+			if(feedbackGroups.length > 1000) {
+				txnDb.insertTxns(feedbackGroups, function(err) {
+					feedbackGroups = []
+					next(err)
+				})
+			} else {
+				next(null)	
+			}
+		}
+	], done)
+}
 
 
-var findFeedbackGroups = function(feedbackRows, dataset) {
+
+
+
+var findFeedbackGroups = function(feedbackRows) {
 	
 	var lastItemTimestamp = 0
 	var feedbackGroups = []
@@ -85,7 +111,7 @@ var findFeedbackGroups = function(feedbackRows, dataset) {
 		group.push(row)
 	}
 
-	console.log('txnBuilder.findFeedbackGroups result' + feedbackGroups.length)
+	console.log('txnBuilder.findFeedbackGroups result', feedbackGroups.length)
 
 	return feedbackGroups
 }

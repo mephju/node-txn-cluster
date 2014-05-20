@@ -1,5 +1,5 @@
 var async 		= require('async')
-var reader 		= require('./feedback-import')
+var reader 		= require('./feedback-import2')
 var db 			= require('./db')
 var datasetDefs	= require('../dataset-defs')
 
@@ -16,7 +16,7 @@ var makeImport = function(callback) {
 			console.log('importSets')
 			var dataset = datasetDefs.dataset()
 			console.log('going to import ' + dataset.datasetPath)
-			reader.import(dataset, next)
+			reader.import(next)
 		}
 	], callback);
 

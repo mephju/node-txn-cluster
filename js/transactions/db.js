@@ -6,11 +6,11 @@ var sql 		= require('./sql')
 var async 		= require('async')
 var rootDb		= require('../db')
 var config		= require('../config')
+var help 		= require('../help')
 
 
 
-
-exports.prepareDb = function(dataset, callback) {
+exports.prepareDb = function(callback) {
 
 	console.log('preparing txn tables for ' + dataset.dbTable)
 
@@ -34,7 +34,7 @@ exports.prepareDb = function(dataset, callback) {
 
 
 
-exports.getUserFeedback = function(id, dataset, callback) {
+exports.getUserFeedback = function(id, callback) {
 	console.log('txnBuilder.getUserFeedback for ' + id)
 	
 	var rows = []
@@ -50,22 +50,24 @@ exports.getUserFeedback = function(id, dataset, callback) {
 }
 
 
+var insertTxnStmt = db.prepare(sql.insertTxnStmt())
+var insertTxnItemStmt = db.prepare(sql.insertTxnItemStmt())
 
-
-exports.insertTxns = function(table, feedbackGroups, callback) {
+exports.insertTxns = function(feedbackGroups, callback) {
 	
 	function insertIntoTxns(groups, callback) {
 
-		var insertStmt = db.prepare(sql.insertTxnStmt())
+		
 		async.eachSeries(
 			groups,
 			function(group, next) {
 			
 				var userId = group[0]['user_id']
 
-				insertStmt.run(userId, function(e) {
+				insertTxnStmt.run(userId, function(e) {
 					e && console.log(e)
 					var txnId = this.lastID
+					console.log('txnBuilder.insertIntoTxnItems %d, %d', txnId, group.length)
 					insertIntoTxnItems(txnId, group, next)
 				})
 			},
@@ -76,14 +78,11 @@ exports.insertTxns = function(table, feedbackGroups, callback) {
 	}
 
 
-	function insertIntoTxnItems(txnId, group, callback) {
-
-		console.log('txnBuilder.insertIntoTxnItems %d, %d', txnId, group.length)
-		var insertStmt = db.prepare(sql.insertTxnItemStmt())
+	function insertIntoTxnItems(txnId, group, callback) {		
 		async.eachSeries(
 			group,
 			function(feedbackRow, next) {
-				insertStmt.run([txnId, feedbackRow['item_id']], next)
+				insertTxnItemStmt.run([txnId, feedbackRow['item_id']], next)
 			}, 
 			function(err) {
 				callback(err)
@@ -114,7 +113,7 @@ exports.insertTxns = function(table, feedbackGroups, callback) {
 
 
 
-exports.getUserIds = function(set, callback) {
+exports.getUserIds = function(callback) {
 
 	var result;
 	async.waterfall([
@@ -218,20 +217,37 @@ var getTxnIdsHelper = function(sql, callback) {
 }
 
 
-var getAllTxns = function(done) {
+
+// 
+// Returns all txnRows for either training set or validation set
+// 
+var getAllTxns = function(done, validation) {
+
 	async.waterfall([
 		function(next) {
-			db.all('SELECT DISTINCT txn_id, item_ids FROM txn_item_groups', next)
-		},  
-		function(rows, next) {
-			var txnIds = []
+			rootDb.getTableSize('txns', next)
+		},
+		function(tableSize, next) {
+			var trainingSize = Math.floor(tableSize * config.TRAINING_SET_SIZE)
+			console.log('TRAINING SET SIZE', config.TRAINING_SET_SIZE, trainingSize)
 			
+			if(validation) {
+				db.all(
+					'SELECT DISTINCT txn_id, item_ids FROM txn_item_groups LIMIT 999999999 OFFSET ' + trainingSize, 
+					next
+				);
+			} 
+			else {
+				db.all(
+					'SELECT DISTINCT txn_id, item_ids FROM txn_item_groups LIMIT ' + trainingSize, 
+					next
+				);
+			}
+				
+		},  
+		function(rows, next) {			
 			rows.forEach(function(row, i) {
-				rows[i]['item_ids'] = row['item_ids']
-				.split(',')
-				.map(function(itemIdString) {	
-					return parseInt(itemIdString)
-				})
+				row['item_ids'] = help.textToNumArray(row['item_ids'])
 			})
 			done(null, rows)
 		}

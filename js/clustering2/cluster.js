@@ -4,15 +4,15 @@ var sim = require('./sim')
 var Cluster = function(simMatrix, centroidRow) {
 	this.simMatrix 		= simMatrix
 	this.centroidRow 	= centroidRow
-	this.members 		= [centroidRow]
+	this.members 		= []
 	this.getSimilaritySums = getSimilaritySums
 }
 
 Cluster.prototype.clear = function() {
-	this.members.forEach(function(e, i, a) { 
-		a.pop() 
-	})
-	this.members = [this.centroidRow]
+	var len = this.members.length
+	for(var i=0; i<len; i++) {
+		this.members.pop()
+	}
 }
 
  

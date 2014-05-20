@@ -4,7 +4,7 @@ exports.TXN_ID_BATCH_SIZE 			= 900
 exports.MIN_SEQUENCE_SIZE 			= 2
 exports.MAX_SEQUENCE_SIZE 			= 8
 exports.NUM_RECOMMENDATIONS 		= 10
-exports.TRAINING_SET_SIZE 			= 1
+exports.TRAINING_SET_SIZE 			= 0.8
 exports.VALIDATION_SET_SIZE 		= 1 - exports.TRAINING_SET_SIZE
 //exports.MAX_TIME_DISTANCE 			= 900
 

@@ -1,55 +1,29 @@
 
 var async 		= require('async')
-var dataset 	= require('../dataset-defs').dataset()
-var db			= require('./db')
-var txnApp		= require('../transactions/app')
-var clusterDb	= require('../clustering/cluster-db')
 var transDb		= require('../transitions/db')
-var kmCentroidColl 	= require('../clustering/kmeans-centroid-collection')
+var clustering	= require('../clustering2/clustering')
 
 
-var isInitialized = false
+var isInitialized 	= false
 var centroidColl 	= null
 var transMatrix 	= null
 var transTotals 	= null
-var clusterItems 	= []
 
 
 
 
 
-var loadClusterItems = function(centroidColl, callback) {
-	console.log('loadClusterItems ', centroidColl.centroids.length)
-	async.eachSeries(
-		centroidColl.centroids,
-		function(centroid, next) {
-			db.getItemsForCluster(centroid.id, function(err, items) {
-				clusterItems[centroid.id] = items
-				next(err)
-			}) 
-		},
-		function(err) {
-			//console.log('loadedClusteritems', clusterItems)
-			callback(err, clusterItems)
-		}
-	);
-}
 
-var initIfNeeded = function(callback) {
+
+var init = function(callback) {
+	console.log('init recommender')
 	async.waterfall([
 		function(next) {
-			db.buildClusterItemsView(next)
+			clustering.buildClustersFromDb(next)
 		},
-		function(next) {
-			kmCentroidColl.buildFromDb(next)	
-		},
-		function(centroidCollection, next) {
-			centroidColl = centroidCollection
-			loadClusterItems(centroidColl, next)
-		},
-		function(clusterItems, next) {
-			console.log('loadedClusteritems', clusterItems.length)
-			//console.log('loadedClusteritems', clusterItems)
+		function(clusters, next) {
+			console.log('loadedClusteritems', clusters.clusters.length)
+			centroidColl = clusters
 			transDb.getTransMatrix(next)
 		},
 		function(transitionMatrix, next) {
@@ -63,7 +37,10 @@ var initIfNeeded = function(callback) {
 			isInitialized = true
 			callback(null)
 		}
-	], callback)
+	], function(err) {
+		if(err) { console.log('error', err) } 
+		callback(err)
+	})
 }
 
 
@@ -79,46 +56,24 @@ var getNumRecomms = function(numItems, transRow, rowSum) {
 }
 
 
-var recommend = function(session, numItems, callback) {
-	async.waterfall([
-		function(next) {
-			if(!isInitialized) { 
-				initIfNeeded(next) 
-			}
-			else { 
-				next(null) 
-			}
-		},
-		function(next) {
-			var centroid 	= centroidColl.findBestMatch(session)
-			var transRow 	= transMatrix[centroid.id]
-			var rowSum 		= transTotals[centroid.id]
-
-			var numRecomms 	= getNumRecomms(numItems, transRow, rowSum)
-			var recomms 	= getRecommendations(numRecomms, next)
-			next(null, recomms)
-		},
-		function(recomItemIds, next) {
-			callback(null, recomItemIds)
-		}
-	], 
-	function(err) {
-		console.log('finished recommending', err || '')
-		if(callback) { callback(err) }
-	})
+var recommend = function(session, numItems) {
+	var centroidId 	= centroidColl.findBestMatchSeq(session)
+	var transRow 	= transMatrix[centroidId]
+	var rowSum 		= transTotals[centroidId]
+	var numRecomms 	= getNumRecomms(numItems, transRow, rowSum)
+	return getRecommendations(numRecomms)
 }
 
 
 
-var getRecommendations = function(numRecomms) {
+var getRecommendations = function(numRecomms, cluster) {
 	var recomms = []
 	numRecomms.forEach(function(num, i) {
 		recomms.push.apply(
 			recomms, 
-			getRandomItems(num, clusterItems[i])
+			getRandomItems(num, centroidColl.clusters[i].members)
 		);
 	})
-	//console.log('recomms', recomms)
 	return recomms
 }
 
@@ -127,17 +82,17 @@ var getRecommendations = function(numRecomms) {
 
 var getRandomItems = function(n, array) {
 	
-	var max 	= array.length
 	var items 	= []
 
 	for(var i=0; i<n; i++) {
-		var index = Math.floor(Math.random() * max)
-		items.push(array[index])
+		var index = Math.floor(Math.random() * array.length)
+		var clusteredItem = array[index]
+		var array2 = clusteredItem['item_ids']
+		index = Math.floor(Math.random() * array2.length)
+		items.push(array2[index])
 	}
 	return items
 }
 
+exports.init = init
 exports.recommend = recommend
-
-
-//recommend([1,2], 15)

@@ -53,25 +53,6 @@ var createViewClusterItems = function() {
 
 
 
-var buildClusterItemsView = function(callback) {
-	async.waterfall([
-		function(next) {
-			db.run('DROP TABLE IF EXISTS cluster_items', next)
-		},
-		function(next) {
-			db.run(
-				createViewClusterItems(),
-				next
-			);
-		},
-		function() {
-			callback(null)
-		}
-	], callback)
-}
-
-
-
 //get random amount of items from a certain cluster
 var buildRecomSql = function(itemsPerCluster) {
 	var stmts = itemsPerCluster.map(function(num, id) {
@@ -120,6 +101,6 @@ var getItemsForCluster = function(clusterId, callback) {
 	], callback)	
 }
 
-exports.buildClusterItemsView = buildClusterItemsView
+
 exports.getRecommendations = getRecommendations
 exports.getItemsForCluster = getItemsForCluster

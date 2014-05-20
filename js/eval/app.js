@@ -1,14 +1,13 @@
-var sqlite3		= require('sqlite3').verbose()
-var dataset		= require('../dataset-defs').dataset()
-var db 			= exports.db = new sqlite3.Database(dataset.db())
+
 var async		= require('async')
 var txnDb		= require('../transactions/db')
 var recommender = require('../recommend/app')
 var baseline 	= require('./most-popular')
 var config		= require('../config')
 var measure 	= require('./measure')
-var txnApp		= require('../transactions/app')
 var help 		= require('../help')
+
+
 
 var allHits = [0, 0]
 
@@ -22,33 +21,22 @@ var txnCount = 0
 var N = 5
 
 
-
-
-
-
-
-
-
 var start = function(callback) {
 	async.waterfall([
 		function(next) {
 			baseline.init(next)
 		},
 		function(next) {
-			baselineItems = baseline.getPopularItemsForN(N)
-			txnDb.getTxnIdsForValidation(next)
-		},
-		function(txnIds, next) {
-			txnApp.getTxnBatches(
-				txnIds,
-				function(txnIds, txns, done) {
-					evalOnTxns(txnIds, txns, done)
-				},
-				next 
-			);
+			recommender.init(next)
 		},
 		function(next) {
+			baselineItems = baseline.getPopularItemsForN(N)
+			txnDb.getAllTxns(next, true)
+		},
+		function(txnRows, next) {
+			evaluate(txnRows, next)
 			console.log('###########################################')
+			console.log('compared %d txns from validation set', txnCount)
 			
 			precB = precisionSumBaseline / txnCount
 			precR = precisionSumRecommender / txnCount
@@ -66,116 +54,66 @@ var start = function(callback) {
 }
 
 
-var evalOnTxns = function(txnIds, txns, callback) {
-	async.eachSeries(
-		txns,
-		function(txn, next) {
-
-			var shortenedTxns = txn.length > 20 
-			? help.toBatches(txn, 20) 
-			: [txn]
-
-			async.eachSeries(
-				shortenedTxns,
-				compare,
-				next
-			);
-		}, 
-		callback
-	);
-}
-
-
-
-
-var compare = function(txn, callback) {
-		
-	console.log('compare txn with length', txn.length)
-
-
-
-	var len = txn.length
-	var i = 1;
-	var txnPrecision = {
-		recommender:[],
-		baseline:[]
-	}
-
-	async.whilst(
-	    function () { 
-	    	var result = i < len-N
-	    	if(result && i === 1) {
-	    		txnCount++
-	    	}
-	    	return result; 
-	    },
-	    function (next) {
-    		splitTxn(txn, i, function(err, precRecom, precPopular) {
-    			txnPrecision.recommender.push(precRecom)
-    			txnPrecision.baseline.push(precPopular)
-    			next(err)
-    		})	
-	    	i++
-	    },
-        function(err) {
-        	var r = txnPrecision.recommender
-        	var b = txnPrecision.baseline
-        	if(r.length > 0) {
-	        	precisionSumRecommender += r.reduce(function(left, right) {
-	        		return left+right
-	        	}) / r.length
-	        	precisionSumBaseline += b.reduce(function(left, right) {
-	        		return left+right
-	        	}) / b.length
-
-	        	console.log('hits R vs B --- %d vs. %d', allHits[0], allHits[1])
-			}
-
-        	callback(err)
-        }
-	);
-}
-
-
-var splitTxn = function(txn, i, callback) {
-	
-	var sessionBegin 	= txn.slice(0, i)
-	var sessionEnd 		= txn.slice(i, i+N)
-
-    getResults(sessionBegin, sessionEnd, callback)
-}
-
-
-var getResults = function(sessionBegin, sessionEnd, callback) {
-	
-	async.waterfall([
-		function(next) {
-			recommender.recommend(sessionBegin, sessionEnd.length, next)		
-		},
-		function(recommendedItems, next) {
-
-			var hits = measure.getHitsVs(
-				sessionEnd, 
-				recommendedItems, 
-				baselineItems
-			);
-
-			allHits[0] += hits.hitsR // hits by recommender
-			allHits[1] += hits.hitsB // hits by baseline
-
-			var precRecom 	= hits.hitsR / sessionEnd.length
-			var precPopular = hits.hitsB / sessionEnd.length
-
-			callback(null, precRecom, precPopular)
+var evaluate = function(txnRows) {
+	txnRows.forEach(function(txnRow) {
+		if(evalOneTxn(txnRow['item_ids'])) {
+			txnCount++
 		}
-	], callback)
+	})
+	console.log('txnCount', txnCount)
+	console.log('txnCount txnRows', txnRows.length)
 }
 
 
 
+
+var evalOneTxn = function(txn) {
+	if(txn.length > N) {
+		console.log('compare txn with length', txn.length)
+		var runs = 0
+
+		var hitsTxn = {
+			recommender:0,
+			baseline:0
+		}
+		for(var i=1, len=txn.length-N; i<len; i++) {
+			var hits = evaluateSession(txn, i)	
+			hitsTxn.recommender 	+= hits.hitsR
+			hitsTxn.baseline 		+= hits.hitsB
+			runs++
+		}
+		
+	    precisionSumRecommender 	+= hitsTxn.recommender / runs
+	    precisionSumBaseline 		+= hitsTxn.baseline / runs
+
+	    console.log('hits R vs B --- %d vs. %d', allHits[0], allHits[1])
+	    return true
+	}
+	console.log('no eval, txn too short')
+	return false	
+}
+
+
+var evaluateSession = function(txn, i) {
+	
+	var sessionBegin = txn.slice(0, i)
+	var sessionEnd 	 = txn.slice(i, i+N)
+
+	var recommendedItems = recommender.recommend(sessionBegin, N)		
+	console.log('recommended input:output', recommendedItems)
+	var hits = measure.getHitsVs(
+		sessionEnd, 
+		recommendedItems, 
+		baselineItems
+	);
+
+	allHits[0] += hits.hitsR // hits by recommender
+	allHits[1] += hits.hitsB // hits by baseline
+
+	return hits
+}
 
 
 
 exports.start = start
-
-start();
+start()

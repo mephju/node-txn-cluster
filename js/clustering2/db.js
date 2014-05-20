@@ -3,7 +3,7 @@ var sqlite3		= require('sqlite3').verbose()
 var config		= require('../config')
 var dataset 	= require('../dataset-defs').dataset()
 var db 			= new sqlite3.Database(dataset.db())
-
+var help		= require('../help')
 
 
 
@@ -106,42 +106,37 @@ var insClusterMembersEach = function(stmt, members, clusterId, done) {
 
 
 
-var insertSimMatrix = function(matrix, done) {
+var getCentroidRows = function(done) {
+	console.log('getCentroidRows')
 	async.waterfall([
 		function(next) {
-			db.run('DROP TABLE IF EXISTS txn_sim_matrix', next)
+			db.all('SELECT centroid_txn_id as txn_id, centroid_item_ids as item_ids FROM clusters ORDER BY cluster_id', next)		
 		},
+		function(rows, next) {
+			rows.forEach(function(row) {
+				row['item_ids'] = help.textToNumArray(row['item_ids']) 
+			})
+			done(null, rows)
+		}
+	], done)	
+}
+
+
+var getClusterMembers = function(clusterId, done) {
+	console.log('getClusterMembers')
+	async.waterfall([
 		function(next) {
-			db.run(
-				'CREATE TABLE txn_sim_matrix( \
-				txn_id INTEGER PRIMARY KEY, \
-				similarities TEXT)',
-				next
-			);
+			db.all('SELECT txn_id, item_ids FROM cluster_members WHERE cluster_id=$1', clusterId, next)
 		},
-		function(next) {
-			db.run('BEGIN TRANSACTION', next)
-		},
-		function(next) {
-			async.eachSeries(
-				matrix.txnRows,
-				function(txnRow, next) {
-					var txnId = txnRow['txn_id']
-					var simRow = matrix.getRowForTxnId(txnId)
-					db.run('INSERT INTO txn_sim_matrix VALUES($1, $2)', [txnId, simRow.toString()], next)
-				},
-				next
-			);
-		},
-		function(next) {
-			db.run('END TRANSACTION', next)
+		function(rows, next) {
+			rows.forEach(function(row) {
+				row['item_ids'] = help.textToNumArray(row['item_ids']) 
+			})
+			done(null, rows)	
 		}
 	], done)
 }
 
-
-
-
-
-exports.insertSimMatrix = insertSimMatrix
-exports.insertClusters = insertClusters
+exports.getClusterMembers	= getClusterMembers
+exports.getCentroidRows 	= getCentroidRows
+exports.insertClusters 		= insertClusters

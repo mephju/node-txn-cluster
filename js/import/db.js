@@ -71,7 +71,7 @@ var insertItem = function(record, callback) {
 
 
 
-var insertItems = function(table, records, callback) {
+var insertItems = function(records, callback) {
 
 	async.eachSeries(
 		records,
@@ -89,8 +89,9 @@ var insertItems = function(table, records, callback) {
 
 
 
-exports.insert = function(table, records, callback) {
+exports.insert = function(records, callback) {
 	
+	var table = dataset.dbTable
 	console.log('insert')
 	
 
@@ -100,7 +101,7 @@ exports.insert = function(table, records, callback) {
 		},
 		function(next) {
 			if(table.indexOf('last_fm') === -1) {
-				insertItems(table, records.slice(0), next)
+				insertItems(records, next)
 			} 
 			else {
 				insertLastFm(records, next)

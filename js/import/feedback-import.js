@@ -1,10 +1,11 @@
 var fs 			= require('fs')
-var readline 	= require('readline');
-var Stream 		= require('stream')
 var db			= require('./db')
+var async		= require('async')
+
+var dataset 	= require('../dataset-defs').dataset()
 
 
-exports.import = function(dataset, callback) {
+exports.import = function(callback) {
 
 	var buffer = ''
 	var lineCount = 0
@@ -12,7 +13,7 @@ exports.import = function(dataset, callback) {
 
 
 
-	var onLinesAvailable = function(lines, onLinesFinished) {
+	var onLinesAvailable = function(lines, done) {
 
 		lineCount += lines.length
 
@@ -20,23 +21,23 @@ exports.import = function(dataset, callback) {
 			return line.split(dataset.separator)
 		})
 
-		db.insert(dataset.dbTable, records, function() {
+		async.waterfall([
+			function(next) {
+				db.insert(dataset.dbTable, records,  next)				
+			},
+			function(next) {
 			
-			readable.resume()
-			
-			if(lastLines) {	
-				lines = lastLines
-				lastLines = null
-				onLinesAvailable(lines, function() {
-					console.log('LINE COUNT ' + dataset.datasetPath + ' ' + lineCount)
-					callback()
-				})
+				if(lastLines) {	
+					lines = lastLines
+					lastLines = null
+					onLinesAvailable(lines, function() {
+						console.log('LINE COUNT ' + dataset.datasetPath + ' ' + lineCount)
+						callback()
+					})
+				}
+				next(null)	
 			}
-
-			if(onLinesFinished) {
-				onLinesFinished()
-			}	
-		})
+		], done)
 	}
 
 
@@ -46,15 +47,26 @@ exports.import = function(dataset, callback) {
 	
 	readable.setEncoding('utf8')
 	readable.on('data', function(chunk) {
+		
 		readable.pause()
-		//console.log('data')
-	  buffer += chunk
 
-	  if(buffer.indexOf('\n') !== -1) {
-		var lines = buffer.split('\n')	
-		buffer = lines.pop()
-		onLinesAvailable(lines)
-	  }
+		async.waterfall([
+			function(next) {
+				
+				buffer += chunk
+
+				if(buffer.indexOf('\n') !== -1) {
+					var lines = buffer.split('\n')	
+					buffer = lines.pop()
+					onLinesAvailable(lines, next)
+				} else {
+					next(null)
+				}
+			},
+			function(next) {
+				readable.resume()
+			}
+		])
 	})
 
 	

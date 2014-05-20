@@ -2,6 +2,8 @@ var config 		= require('../config')
 var async 		= require('async')
 var Cluster 	= require('./cluster').Cluster
 var ClusterGroup = require('./cluster-group').ClusterGroup
+var db 			= require('./db')
+var simMatrix	= require('./sim-matrix')
 
 
 var cluster = function(txnRows, matrix, done) {
@@ -53,5 +55,45 @@ var init = function(txnRows, matrix) {
 
 
 
+var buildClustersFromDb = function(done) {
+	console.log('buildClustersFromDb')
+
+	var matrix = null
+	var clusters = null
+
+	async.waterfall([
+		function(next) {
+			simMatrix.buildMatrixFromDb(next) 
+		},
+		function(matrixxx, next) {
+			matrix = matrixxx
+			db.getCentroidRows(next) 
+		},
+		function(centroidRows, next) {
+			
+			var clusters = centroidRows.map(function(centroidRow) {
+				return new Cluster(matrix, centroidRow)
+			})
+
+			function each(clusters, i) {
+			
+				if(i<clusters.length) {
+					db.getClusterMembers(i, function(err, members) {
+						if(err) { return done(err) }
+						clusters[i].members = members
+						each(clusters, ++i)
+					})
+				} else {
+					clusters = new ClusterGroup(clusters)	
+					done(null, clusters)	
+				}
+			}
+			each(clusters, 0)
+		}
+	], done) 
+}
+
+
 //exports.fromDb = fromDb
 exports.cluster = cluster
+exports.buildClustersFromDb = buildClustersFromDb

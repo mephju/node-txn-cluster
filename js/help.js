@@ -1,6 +1,14 @@
 var config = require('./config')
 
 
+
+
+var textToNumArray = function(text) {
+   return text.split(',').map(function(textNum) {
+      return parseInt(textNum)
+   })
+}
+
 var arrayEqual = function(arr1, arr2) {
 	
 	var len = arr1.length
@@ -102,7 +110,15 @@ var maxIdx = function(numArray) {
 }
 
 
+var avgFromArray = function(array) {
+   return array.reduce(function(left, right) {
+      return left+right
+    }) / array.length
+}
 
+
+exports.avgFromArray       = avgFromArray
+exports.textToNumArray     = textToNumArray
 exports.maxIdx             = maxIdx
 exports.unionNum           = unionNum
 exports.arrayEqual         = arrayEqual

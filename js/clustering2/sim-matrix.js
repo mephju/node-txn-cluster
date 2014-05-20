@@ -2,17 +2,34 @@ var datasetDefs 	= require('../dataset-defs')
 var dataset 		= datasetDefs.dataset()
 var async			= require('async')
 var txnApp			= require('../transactions/app')
+var simMatrixDb 	= require('./sim-matrix-db')
 
 var sim				= require('./sim')
 
 
 
-var Matrix = function(txnRows) {
+//Matrix(txnRows)
+//Matrix(txnRws, matrixSimRows)
+var Matrix = function(txnRows, matrixSimRows) {
 	this.matrix = []
 	this.txnRows = txnRows
-	
+
 	this.txnIdStore = {}
-	this.buildMatrix()
+	if(matrixSimRows) {
+		this.rebuildMatrix(matrixSimRows)
+	} else {
+		this.buildMatrix()	
+	}
+}
+
+Matrix.prototype.rebuildMatrix = function(matrixSimRows) {
+	var len = matrixSimRows.length
+	for (var i = 0; i < len; i++) {
+
+		this.matrix[i] = matrixSimRows[i].similarities.split(',').map(function(textNum) {
+			return parseInt(textNum)
+		})	
+	}
 }
 
 Matrix.prototype.buildMatrix = function() {
@@ -39,14 +56,8 @@ Matrix.prototype.buildMatrix = function() {
 				);	
 			}
 
-			this.matrix[i][j] = {
-				sim: similarity,
-				txnId: txnRows[j]['txn_id']
-			}
-			this.matrix[j][i] = {
-				sim: similarity,
-				txnId: txnRows[i]['txn_id']
-			}
+			this.matrix[i][j] = similarity
+			this.matrix[j][i] = similarity
 		}
 	}
 	//console.log(JSON.stringify(matrix))
@@ -70,7 +81,7 @@ Matrix.prototype.getRowForTxnId = function(txnId) {
 Matrix.prototype.getSim = function(txnIdA, txnIdB) {
 	var indexA = this.txnIdStore[txnIdA.toString()]
 	var indexB = this.txnIdStore[txnIdB.toString()]
-	return this.matrix[indexA][indexB].sim
+	return this.matrix[indexA][indexB]
 }
 
 
@@ -78,11 +89,23 @@ Matrix.prototype.getSim = function(txnIdA, txnIdB) {
 
 
 
-var buildMatrixFromTxns = function(txnRows, done) {
+var buildMatrixFromTxns = function(txnRows) {
+	console.log('buildMatrix', 'have %d txns', txnRows.length)
+	var matrix = new Matrix(txnRows)
+	return matrix
+}
+
+
+
+
+var buildMatrixFromDb = function(done) {
+	console.log('buildMatrixFromDb')
 	async.waterfall([
 		function(next) {
-			console.log('buildMatrix', 'have %d txns', txnRows.length)
-			var matrix = new Matrix(txnRows)
+			simMatrixDb.getSimMatrix(next)
+		},
+		function(txnRows, matrixSimRows) {
+			var matrix = new Matrix(txnRows, matrixSimRows)
 			done(null, matrix)
 		}
 	], done)
@@ -94,8 +117,7 @@ var buildMatrixFromTxns = function(txnRows, done) {
 
 
 
-
-
+exports.buildMatrixFromDb = buildMatrixFromDb
 exports.buildMatrixFromTxns = buildMatrixFromTxns
 
 

@@ -14,11 +14,7 @@ var ClusterGroup = function(clusterArray) {
 //}
 ClusterGroup.prototype.assign = function(txnRow) {
 	var cluster = this.findBestMatch(txnRow)	
-	
-	if(cluster.centroidRow['txn_id'] !== txnRow['txn_id']) {
-		//txnRow is not the centroid, so we assign it to the cluster
-		cluster.addMember(txnRow)	
-	}
+	cluster.addMember(txnRow)	
 	return cluster
 }
 

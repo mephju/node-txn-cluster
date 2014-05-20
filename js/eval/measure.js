@@ -40,8 +40,8 @@ var getHitsVs = function(sessionEnd, recommendations, baselineItems) {
 	}
 }
 
-exports.getHitsVs = getHitsVs
-exports.getHits = getHits
-exports.precision = prec
+exports.getHitsVs 	= getHitsVs
+exports.getHits 	= getHits
+exports.precision 	= prec
 
 
