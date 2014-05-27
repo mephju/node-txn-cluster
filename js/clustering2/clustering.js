@@ -3,13 +3,13 @@ var async 		= require('async')
 var Cluster 	= require('./cluster').Cluster
 var ClusterGroup = require('./cluster-group').ClusterGroup
 var db 			= require('./db')
-var simMatrix	= require('./sim-matrix')
 
 
-var cluster = function(txnRows, matrix, done) {
+
+var cluster = function(txnRows, done) {
 
 	console.log('cluster')
-	var clusters = init(txnRows, matrix)
+	var clusters = init(txnRows)
 	console.log('cluster2', clusters)
 	clusterGroup = clusterIterate(txnRows, clusters)
 	console.log('cluster3')
@@ -33,14 +33,13 @@ var clusterIterate = function(txnRows, clusters) {
 
 
 
-var init = function(txnRows, matrix) {
+var init = function(txnRows) {
 	console.log('clustering.init')
 	var K = Math.max(
 		config.NUM_CENTROIDS, 
 		4
 	);
-	var max 	= txnRows.length - 1
-
+	var max 			= txnRows.length - 1
 	var centroids 		= []
 	var clusters	 	= []
 
@@ -53,7 +52,7 @@ var init = function(txnRows, matrix) {
 		
 		if(centroids.indexOf(centroid) === -1) {
 			centroids.push(centroid)
-			clusters.push(new Cluster(matrix, centroid))
+			clusters.push(new Cluster(centroid))
 		}
 	}
 
@@ -66,26 +65,23 @@ var init = function(txnRows, matrix) {
 var buildClustersFromDb = function(done) {
 	console.log('buildClustersFromDb')
 
-	var matrix = null
+
 	var clusters = null
 
 	async.waterfall([
+
 		function(next) {
-			simMatrix.buildMatrixFromDb(next) 
-		},
-		function(matrixxx, next) {
-			matrix = matrixxx
 			db.getCentroidRows(next) 
 		},
 		function(centroidRows, next) {
 			
 			var clusters = centroidRows.map(function(centroidRow) {
-				return new Cluster(matrix, centroidRow)
+				return new Cluster(centroidRow)
 			})
 
 			function each(clusters, i) {
 			
-				if(i<clusters.length) {
+				if(i < clusters.length) {
 					db.getClusterMembers(i, function(err, members) {
 						if(err) { return done(err) }
 						clusters[i].members = members

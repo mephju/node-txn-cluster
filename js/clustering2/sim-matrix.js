@@ -17,6 +17,7 @@ var Matrix = function(txnRows, matrixSimRows) {
 	this.txnRows = txnRows
 	this.txnIdStore = {}
 
+	this.buildIdStore()
 
 	if(matrixSimRows) {
 		this.rebuildMatrix(matrixSimRows)
@@ -24,6 +25,14 @@ var Matrix = function(txnRows, matrixSimRows) {
 		this.buildMatrix()	
 	}
 }
+
+Matrix.prototype.buildIdStore = function() {
+	var len = this.txnRows.length
+	for(var i=0; i<len; i++) {
+		this.txnIdStore[this.txnRows[i]['txn_id']] = i
+	}
+}
+
 
 Matrix.prototype.rebuildMatrix = function(matrixSimRows) {
 	var len = matrixSimRows.length
@@ -35,21 +44,18 @@ Matrix.prototype.rebuildMatrix = function(matrixSimRows) {
 	}
 }
 
+
 Matrix.prototype.buildMatrix = function() {
 	var txnRows = this.txnRows
 	var len = txnRows.length
 	
 	for(var i=0; i<len; i++) {
-		this.matrix[i] = []
-		this.txnIdStore[txnRows[i]['txn_id']] = i
-	}
-	
-	for(var i=0; i<len; i++) {
 		
 		console.log(txnRows[i]['txn_id'])
+		this.matrix[i] = []
+		
 
 		for(var j=i+1; j<len; j++) {
-
 			
 			if(i !== j) {
 				this.matrix[i][j] = sim.calcSim(

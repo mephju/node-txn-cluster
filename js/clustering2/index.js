@@ -5,7 +5,7 @@ var txnDb 			= require('../transactions/db')
 var simMatrix		= require('./sim-matrix')
 var clustering		= require('./clustering')
 var db				= require('./db')
-var simMatrixDb		= require('./sim-matrix-db')
+
 
 
 var start = function(callback) {
@@ -20,11 +20,13 @@ var start = function(callback) {
 		function(rows, next) {
 			console.log('clustering %d txns', rows.length)
 			txnRows = rows
-			matrix 	= simMatrix.buildMatrixFromTxns(txnRows)	
-			simMatrixDb.insertSimMatrix(matrix, next)
+			//matrix 	= simMatrix.buildMatrixFromTxns(txnRows)	
+			//simMatrixDb.insertSimMatrix(matrix, next)
+			matrix = []
+			next(null)
 		},
 		function(next) {
-			clustering.cluster(txnRows, matrix, next)
+			clustering.cluster(txnRows, next)
 		},
 		function(clusters, next) {
 			clusterGroup = clusters

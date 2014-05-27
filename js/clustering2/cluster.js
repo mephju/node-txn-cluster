@@ -1,8 +1,7 @@
 var help = require('../help')
 var sim = require('./sim')
 
-var Cluster = function(simMatrix, centroidRow) {
-	this.simMatrix 		= simMatrix
+var Cluster = function(centroidRow) {
 	this.centroidRow 	= centroidRow
 	this.members 		= []
 	this.getSimilaritySums = getSimilaritySums
@@ -19,12 +18,13 @@ Cluster.prototype.addMember = function(txnRow) {
 }
 
 Cluster.prototype.sim = function(txnRow) {
-	return this
-	.simMatrix
-	.getSim(
-		txnRow['txn_id'], 
-		this.centroidRow['txn_id']
-	);
+	return this.simSeq(txnRow['item_ids'])
+	// return this
+	// .simMatrix
+	// .getSim(
+	// 	txnRow['txn_id'], 
+	// 	this.centroidRow['txn_id']
+	// );
 }
 
 Cluster.prototype.simSeq = function(txn) {
@@ -58,9 +58,9 @@ var getSimilaritySums = function() {
 		for (var j=0; j<len; j++) {
 			if(j != i) {
 				var memberB = members[j]
-				similarity += this.simMatrix.getSim(
-					memberA['txn_id'], 
-					memberB['txn_id']
+				similarity += sim.calcSim(
+					memberA['item_ids'], 
+					memberB['item_ids']
 				);	
 			}
 		}
