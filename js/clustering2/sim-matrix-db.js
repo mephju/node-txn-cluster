@@ -41,13 +41,17 @@ var insertSimMatrix = function(matrix, done) {
 }
 
 
-var getSimMatrix = function(done) {
+var getSimMatrix = function(done, testTxnRows) {
 	var txnRows = null
 	var matrixSimRows = null
 
 	async.waterfall([
 		function(next) {
-			txnDb.getAllTxns(next)
+			if(testTxnRows) {
+				txnRows = testTxnRows
+				return next(null, txnRows)
+			} 
+			txnDb.getAllTxns(next)	
 		},
 		function(rows, next) {
 			txnRows = rows

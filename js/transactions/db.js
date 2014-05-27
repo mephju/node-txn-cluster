@@ -10,11 +10,19 @@ var help 		= require('../help')
 
 
 
+
+
 exports.prepareDb = function(callback) {
 
 	console.log('preparing txn tables for ' + dataset.dbTable)
 
 	async.waterfall([
+		function(next) {
+			db.run('DROP TABLE IF EXISTS txns', next) 
+		},
+		function(next) {
+			db.run('DROP TABLE IF EXISTS txn_items', next)
+		},
 		function(next) {
 			db.run(sql.createTxnsStmt(), next)
 		},
@@ -22,11 +30,12 @@ exports.prepareDb = function(callback) {
 			db.run(sql.createTxnItemsStmt(), next)		
 		},
 		function(next) {
-			db.run('DELETE FROM txns', next) 
+			insertTxnStmt = db.prepare(sql.insertTxnStmt(), next)
 		},
 		function(next) {
-			db.run('DELETE FROM txn_items', next)
+			insertTxnItemStmt = db.prepare(sql.insertTxnItemStmt(), next)
 		}
+		
 	], callback)
 
 }
@@ -35,24 +44,17 @@ exports.prepareDb = function(callback) {
 
 
 exports.getUserFeedback = function(id, callback) {
-	console.log('txnBuilder.getUserFeedback for ' + id)
-	
-	var rows = []
-	db.each(
+	db.all(
 		'SELECT * FROM feedback WHERE user_id=? ORDER BY timestamp ASC', 
 		[id], 
-		function(e, row) { rows.push(row) },
-		function(e, numRows) {
-			console.log('txnBuilder.getUserFeedback for ' + id + ' found rows ' + rows.length)
-			callback(e, rows)
-		}
-	)
+		callback
+	);
 }
 
 
-var insertTxnStmt = db.prepare(sql.insertTxnStmt())
-var insertTxnItemStmt = db.prepare(sql.insertTxnItemStmt())
 
+
+var inscount = 1
 exports.insertTxns = function(feedbackGroups, callback) {
 	
 	function insertIntoTxns(groups, callback) {
@@ -67,13 +69,11 @@ exports.insertTxns = function(feedbackGroups, callback) {
 				insertTxnStmt.run(userId, function(e) {
 					e && console.log(e)
 					var txnId = this.lastID
-					console.log('txnBuilder.insertIntoTxnItems %d, %d', txnId, group.length)
+					console.log('txnBuilder.insertIntoTxnItems %d, %d, count %d', txnId, group.length, inscount++)
 					insertIntoTxnItems(txnId, group, next)
 				})
 			},
-			function(err) {
-				callback(err)
-			}
+			callback
 		);
 	}
 
@@ -84,9 +84,7 @@ exports.insertTxns = function(feedbackGroups, callback) {
 			function(feedbackRow, next) {
 				insertTxnItemStmt.run([txnId, feedbackRow['item_id']], next)
 			}, 
-			function(err) {
-				callback(err)
-			}
+			callback
 		);
 	}
 
@@ -107,8 +105,6 @@ exports.insertTxns = function(feedbackGroups, callback) {
 		console.log('txnBuilder.insertTxns', 'done', feedbackGroups.length)
 		callback(err)
 	})
-	
-	
 }
 
 

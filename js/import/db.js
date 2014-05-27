@@ -32,11 +32,11 @@ var prepare = exports.prepare = function(callback) {
 			}
 		},
 		function(next) {
-			console.log('createFeedbackStmt')
+			console.log('createFeedbackStmt1')
 			db.run(sql.createFeedbackStmt(), next)
-			
 		},
 		function(next) {
+			console.log('createFeedbackStmt2')
 			insertFeedbackStmt = db.prepare('INSERT INTO feedback VALUES(?, ?, ?)', next)
 		},
 		function(next) {
@@ -49,7 +49,7 @@ var prepare = exports.prepare = function(callback) {
 	function(err) {
 		
 		if(err) {
-			err.where = '/db.js'
+			err.where = '/import/db.js'
 		} else {
 			console.log('prepared')
 		}

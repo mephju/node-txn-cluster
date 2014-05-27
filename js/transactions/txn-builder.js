@@ -4,6 +4,8 @@ var db 		= txnDb.db
 var util 	= require('util')
 var async 	= require('async')
 var sql 	= require('./sql')
+
+var help		= require('../help')
 var dataset		= require('../dataset-defs').dataset()
 
 
@@ -47,6 +49,7 @@ var buildTxns = function(userIds, callback) {
 	async.eachSeries(
 		userIds,
 		function(userId, next) {
+			console.log('find feedback for user', userId)
 			findUserTxns(userId, feedbackGroups, next)
 		},
 		function(err) {
@@ -61,7 +64,7 @@ var buildTxns = function(userIds, callback) {
 
 
 
-var findUserTxns = function(userId, feedbackGroups, done) {
+var findUserTxns = function(userId, txns, done) {
 	
 	async.waterfall([
 		function(next) {
@@ -69,12 +72,13 @@ var findUserTxns = function(userId, feedbackGroups, done) {
 		},
 		function(feedbackRows, next) {
 			
-			var output = findFeedbackGroups(feedbackRows)	
+			var userTxns = findTxnsInFeedback(feedbackRows)	
 
-			feedbackGroups.push.apply(feedbackGroups, output)
-			if(feedbackGroups.length > 1000) {
-				txnDb.insertTxns(feedbackGroups, function(err) {
-					feedbackGroups = []
+			txns.push.apply(txns, userTxns)
+			if(txns.length > 1000) {
+				console.log('insert txns START', txns.length)
+				txnDb.insertTxns(txns, function(err) {
+					help.clearArray(txns)
 					next(err)
 				})
 			} else {
@@ -87,8 +91,7 @@ var findUserTxns = function(userId, feedbackGroups, done) {
 
 
 
-
-var findFeedbackGroups = function(feedbackRows) {
+var findTxnsInFeedback = function(feedbackRows) {
 	
 	var lastItemTimestamp = 0
 	var feedbackGroups = []
@@ -111,7 +114,7 @@ var findFeedbackGroups = function(feedbackRows) {
 		group.push(row)
 	}
 
-	console.log('txnBuilder.findFeedbackGroups result', feedbackGroups.length)
+	console.log('txnBuilder.findTxnsInFeedback result', feedbackGroups.length)
 
 	return feedbackGroups
 }

@@ -9,10 +9,7 @@ var Cluster = function(simMatrix, centroidRow) {
 }
 
 Cluster.prototype.clear = function() {
-	var len = this.members.length
-	for(var i=0; i<len; i++) {
-		this.members.pop()
-	}
+	help.clearArray(this.members)
 }
 
  
@@ -22,7 +19,9 @@ Cluster.prototype.addMember = function(txnRow) {
 }
 
 Cluster.prototype.sim = function(txnRow) {
-	return this.simMatrix.getSim(
+	return this
+	.simMatrix
+	.getSim(
 		txnRow['txn_id'], 
 		this.centroidRow['txn_id']
 	);

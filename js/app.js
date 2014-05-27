@@ -6,7 +6,6 @@
 
 var datasetDefs 	= require('./dataset-defs')
 var dataset 		= datasetDefs.dataset()
-
 var fs 				= require('fs')
 var async			= require('async')
 
@@ -20,11 +19,8 @@ var initApp = function() {
 		function(datasetSize, next) {
 			console.log('datasetSize', datasetSize)
 			require('./config').init(datasetSize)
-			next()
-		},
-		function() {
 			start()
-		}
+		},
 	])
 }
 	
@@ -34,7 +30,6 @@ var start = function() {
 	var config 			= require('./config')
 	console.log(config)
 	var txnApp 			= require('./transactions/app')
-	
 	var clusterApp		= require('./clustering2/index')
 	var importApp		= require('./import/app')
 	var transitionApp	= require('./transitions/app')
@@ -43,13 +38,13 @@ var start = function() {
 	var startTime = new Date().getTime()
 
 	async.series([
-		function(next) {
-			importApp.makeImport(next)
-		},
-		function(next) {
-			console.log('build txns')
-			txnApp.buildTxns(next)
-		}, 
+		// function(next) {
+		// 	importApp.makeImport(next)
+		// },
+		// function(next) {
+		// 	console.log('build txns')
+		// 	txnApp.buildTxns(next)
+		// }, 
 		function(next) {
 			clusterApp.start(function(err, clusterGroup) {
 				transitionApp.buildTransMatrix(clusterGroup, next)	

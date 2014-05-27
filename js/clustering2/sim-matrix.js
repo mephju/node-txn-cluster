@@ -7,14 +7,17 @@ var simMatrixDb 	= require('./sim-matrix-db')
 var sim				= require('./sim')
 
 
-
-//Matrix(txnRows)
-//Matrix(txnRws, matrixSimRows)
+//Build similarity matrix by building it from the txns
+//Matrix(txnRows) 
+//
+//Build matrix from the db matrix rows
+//Matrix(txnRws, matrixSimRows) 
 var Matrix = function(txnRows, matrixSimRows) {
 	this.matrix = []
 	this.txnRows = txnRows
-
 	this.txnIdStore = {}
+
+
 	if(matrixSimRows) {
 		this.rebuildMatrix(matrixSimRows)
 	} else {
@@ -27,7 +30,7 @@ Matrix.prototype.rebuildMatrix = function(matrixSimRows) {
 	for (var i = 0; i < len; i++) {
 
 		this.matrix[i] = matrixSimRows[i].similarities.split(',').map(function(textNum) {
-			return parseInt(textNum)
+			return parseFloat(textNum)
 		})	
 	}
 }
@@ -38,26 +41,25 @@ Matrix.prototype.buildMatrix = function() {
 	
 	for(var i=0; i<len; i++) {
 		this.matrix[i] = []
-		this.txnIdStore[txnRows[i]['txn_id'].toString()] = i
+		this.txnIdStore[txnRows[i]['txn_id']] = i
 	}
 	
 	for(var i=0; i<len; i++) {
 		
 		console.log(txnRows[i]['txn_id'])
-		for(var j=i; j<len; j++) {
 
-			var similarity = 0
-			if(i === j) {
-				similarity = 1
-			} else {
-				similarity = sim.calcSim(
+		for(var j=i+1; j<len; j++) {
+
+			
+			if(i !== j) {
+				this.matrix[i][j] = sim.calcSim(
 					txnRows[i]['item_ids'], 
 					txnRows[j]['item_ids']
 				);	
 			}
 
-			this.matrix[i][j] = similarity
-			this.matrix[j][i] = similarity
+			// this.matrix[i][j] = similarity
+			//this.matrix[j][i] = similarity
 		}
 	}
 	//console.log(JSON.stringify(matrix))
@@ -73,14 +75,25 @@ Matrix.prototype.getTxnRows = function() {
 // Returns the matching row of similarities for a given txn id.
 // 
 Matrix.prototype.getRowForTxnId = function(txnId) {
-	var index = this.txnIdStore[txnId.toString()]
+	var index = this.txnIdStore[txnId]
 	var row = this.matrix[index]
 	return row
 }
 
 Matrix.prototype.getSim = function(txnIdA, txnIdB) {
-	var indexA = this.txnIdStore[txnIdA.toString()]
-	var indexB = this.txnIdStore[txnIdB.toString()]
+	var indexA = this.txnIdStore[txnIdA]
+	var indexB = this.txnIdStore[txnIdB]
+	// console.log('getsim', txnIdA, txnIdB)
+	// console.log('getsim', indexA, indexB)
+	// console.log('getsim', this.matrix[indexA])
+	// console.log('getsim', this.matrix[indexB])
+
+	if(indexA === indexB) {
+		return 1
+	} 
+	else if(indexA > indexB) {
+		return this.matrix[indexB][indexA]
+	}
 	return this.matrix[indexA][indexB]
 }
 
@@ -116,7 +129,7 @@ var buildMatrixFromDb = function(done) {
 
 
 
-
+exports.Matrix = Matrix
 exports.buildMatrixFromDb = buildMatrixFromDb
 exports.buildMatrixFromTxns = buildMatrixFromTxns
 

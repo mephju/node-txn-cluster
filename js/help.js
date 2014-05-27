@@ -3,6 +3,14 @@ var config = require('./config')
 
 
 
+
+var clearArray = function(arr) {
+   var len = arr.length
+   for(var i=0; i<len; i++) {
+      arr.pop()
+   }
+}
+
 var textToNumArray = function(text) {
    return text.split(',').map(function(textNum) {
       return parseInt(textNum)
@@ -117,6 +125,7 @@ var avgFromArray = function(array) {
 }
 
 
+exports.clearArray         = clearArray
 exports.avgFromArray       = avgFromArray
 exports.textToNumArray     = textToNumArray
 exports.maxIdx             = maxIdx

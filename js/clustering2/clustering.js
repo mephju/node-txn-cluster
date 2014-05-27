@@ -10,8 +10,9 @@ var cluster = function(txnRows, matrix, done) {
 
 	console.log('cluster')
 	var clusters = init(txnRows, matrix)
-	
+	console.log('cluster2', clusters)
 	clusterGroup = clusterIterate(txnRows, clusters)
+	console.log('cluster3')
 	done(null, clusterGroup)
 }
 
@@ -33,13 +34,20 @@ var clusterIterate = function(txnRows, clusters) {
 
 
 var init = function(txnRows, matrix) {
-	var K 		= config.NUM_CENTROIDS
+	console.log('clustering.init')
+	var K = Math.max(
+		config.NUM_CENTROIDS, 
+		4
+	);
 	var max 	= txnRows.length - 1
 
 	var centroids 		= []
 	var clusters	 	= []
 
 	while(centroids.length < K) {
+		console.log('rand K', K)
+
+
 		var randomIdx = Math.floor(Math.random() * max)
 		var centroid = txnRows[randomIdx]
 		

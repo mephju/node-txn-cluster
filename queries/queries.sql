@@ -1,3 +1,14 @@
+
+SELECT 		count(*), * FROM txns, txn_items 
+WHERE 		txn_items.txn_id=txns.txn_id
+GROUP BY 	user_id;
+
+SELECT count(*), * 
+FROM txns
+GROUP BY user_id;
+
+
+
 CREATE VIEW IF NOT EXISTS cluster_items AS 
 	SELECT 			cluster_id, item_id, count
 	FROM 			cluster 
