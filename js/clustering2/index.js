@@ -8,7 +8,7 @@ var db				= require('./db')
 
 
 
-var start = function(callback) {
+var start = function(done) {
 	var txnRows = null
 	var matrix = null
 	var clusterGroup = null
@@ -33,8 +33,8 @@ var start = function(callback) {
 			db.insertClusters(clusters, next)
 		}
 	], function(err) {
-		
-		if(callback) { callback(err, clusterGroup) }
+		//console.log(err, 'clusterApp.start', clusterGroup)
+		done(err, clusterGroup)
 	})
 }
 	

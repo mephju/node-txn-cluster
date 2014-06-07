@@ -31,6 +31,12 @@ var arrayEqual = function(arr1, arr2) {
 	return true
 }
 
+var arraySum = function(array) {
+   return array.reduce(function(l, r) {
+      return r+l
+   })
+}
+
 var cmp = function(a,b) { 
 	return a<b ? -1 : a>b ? 1 : 0 
 }
@@ -103,6 +109,26 @@ var unionNum = function(array1, array2, intersectNum) {
 }
 
 
+var nMaxIndices = function(numArray, n) {
+   var max = []
+   var indices = []
+   
+   for(var m=0; m<n; m++) {
+      max[m] = 0
+      indices[m] = 0
+   }
+
+   for(var m=0; m<n; m++) {
+      for (var i=0, len=numArray.length; i<len; i++) {
+         if(numArray[i] > max[m] && indices.indexOf(i) === -1) {
+            max[m] = numArray[i]
+            indices[m] = i
+         }
+      }  
+   }
+   return indices
+}
+
 var maxIdx = function(numArray) {
    
    var max = numArray[0]
@@ -125,12 +151,14 @@ var avgFromArray = function(array) {
 }
 
 
+exports.nMaxIndices        = nMaxIndices
 exports.clearArray         = clearArray
 exports.avgFromArray       = avgFromArray
 exports.textToNumArray     = textToNumArray
 exports.maxIdx             = maxIdx
 exports.unionNum           = unionNum
 exports.arrayEqual         = arrayEqual
+exports.arraySum           = arraySum
 exports.numCmp             = cmp
 exports.intersect          = intersect
 exports.toBatches          = toBatches

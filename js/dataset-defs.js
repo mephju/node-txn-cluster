@@ -37,7 +37,7 @@ function Movielens(datasetPath, dbTable) {
 	this.dbTable = dbTable
 	this.datasetPath = datasetPath
 	this.separator = '::'
-	this.timeDistance = 900 //10 mins
+	this.timeDistance = 300 // 5 mins
 }
 
 function LastFm(datasetPath, dbTable) {
@@ -66,11 +66,13 @@ TestDataset.prototype.constructor 	= TestDataset
 
 exports.dataset = function() {
 	//return new LastFm('/home/mephju/stuff/datasets/lastfm-dataset-1K/feedback_small.tsv', 	'last_fm_small')
-	//return new LastFm('/home/mephju/stuff/datasets/lastfm-dataset-1K/feedback.tsv', 		'last_fm')
+	return new LastFm('/home/mephju/stuff/datasets/lastfm-dataset-1K/feedback.tsv', 		'last_fm')
+	
+	//return new Movielens('/home/mephju/stuff/datasets/movielens/ml-1m/ml-1m/ratings.dat', 	'movielens_1m')
 	//return new Movielens('/home/mephju/stuff/datasets/movielens/ratings-custom-large.dat',	'movielens_custom_large')
 	//return new Movielens('/home/mephju/stuff/datasets/movielens/ratings-custom.dat', 		'movielens_custom')
 	//return new Movielens('/home/mephju/stuff/datasets/movielens/ratings-small.dat', 		'movielens_small')
 	//return new Movielens('/home/mephju/stuff/datasets/movielens/ml-10M100K/ratings.dat', 	'movielens_10m')
-	return new Movielens('/home/mephju/stuff/datasets/movielens/ml-1m/ml-1m/ratings.dat', 	'movielens_1m')
+	
 	//return new TestDataset('/home/mephju/stuff/datasets/movielens/ml-1m/ml-1m/ratings.dat', 	'test_dataset')
 }

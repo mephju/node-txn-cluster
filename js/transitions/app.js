@@ -17,6 +17,9 @@ var buildTransMatrix = function(clusters, callback) {
 		function(txnRows, next) {
 			var transMatrix = findTransitions(clusters, txnRows, next)
 			db.insertTransMatrix(transMatrix, next)
+		},
+		function(next) {
+			db.removeNoTransClusters(next)
 		}
 	], function(err) {
 		console.log('finished building transition matrix', err || '')
@@ -53,19 +56,14 @@ var findProbsForTxn = function(transMatrix, clusters, txnRow) {
 	var txn = txnRow['item_ids']
 	console.log('findProbsForTxn', txn.length)
 	var previousCentroidId = clusters.findBestMatchSeq(txn.slice(0,1))
-
-	var txns = txn.length > 20 
-		? help.toBatches(txn, 20) 
-		: [txn]
-
-	txns.forEach(function(tx) {
-		for(var len=2; len<tx.length; len++) {
-			var session = tx.slice(0, len)
-			var matchedCentroidId = clusters.findBestMatchSeq(session)
-			transMatrix[previousCentroidId][matchedCentroidId]++
-			previousCentroidId = matchedCentroidId
-		}
-	})		
+	
+	for(var len=2; len<txn.length; len++) {
+		var session = txn.slice(0, len)
+		var matchedCentroidId = clusters.findBestMatchSeq(session)
+		transMatrix[previousCentroidId][matchedCentroidId]++
+		previousCentroidId = matchedCentroidId
+	}
+		
 }
 
 exports.initTransMatrix = initTransMatrix

@@ -1,6 +1,9 @@
 var config 		= require('../config')
 var async 		= require('async')
-var cluster 	= require('./cluster')
+var Cluster 	= require('./cluster').Cluster
+var db 			= require('./db')
+
+
 
 var ClusterGroup = function(clusterArray) {
 	this.clusters = clusterArray
@@ -21,22 +24,8 @@ ClusterGroup.prototype.assign = function(txnRow) {
 
 
 ClusterGroup.prototype.findBestMatch = function(txnRow) {
-
-	var bestMatch = {
-		sim: 0,
-		cluster:this.clusters[0]
-	}
-
-	for (var i=0; i<this.clusters.length; i++) {
-		var c = this.clusters[i]
-		
-		var sim = c.sim(txnRow)
-		if(sim > bestMatch.sim) {
-			bestMatch.sim = sim
-			bestMatch.cluster = c
-		}	
-	};
-	return bestMatch.cluster
+	var matchedClusterId = this.findBestMatchSeq(txnRow['item_ids'])
+	return this.clusters[matchedClusterId]
 }
 
 ClusterGroup.prototype.findBestMatchSeq = function(txn) {
@@ -46,7 +35,7 @@ ClusterGroup.prototype.findBestMatchSeq = function(txn) {
 		cluster:this.clusters[0]
 	}
 
-	for (var i=0; i<this.clusters.length; i++) {
+	for (var i=1; i<this.clusters.length; i++) {
 		var c = this.clusters[i]
 		
 		var sim = c.simSeq(txn)
@@ -67,6 +56,19 @@ ClusterGroup.prototype.clear = function() {
 	}) 
 }
 
+//
+//Only keep clusters that have members assigned to them.
+//
+ClusterGroup.prototype.cleanUp = function() {
+	var cleaned = []
+	this.clusters.forEach(function(cluster) {
+		if(cluster.members.length > 0) {
+			cleaned.push(cluster)
+		}
+	})
+	this.clusters = cleaned
+}
+
 
 ClusterGroup.prototype.recomputeCentroids = function() {
 	var isIterationNeeded = false
@@ -81,3 +83,42 @@ ClusterGroup.prototype.recomputeCentroids = function() {
 }
 
 exports.ClusterGroup = ClusterGroup
+
+
+var buildFromDb = function(done) {
+	console.log('buildClustersFromDb')
+
+	var clusters = null
+
+	async.waterfall([
+
+		function(next) {
+			db.getCentroidRows(next) 
+		},
+		function(centroidRows) {
+			
+			var clusters = centroidRows.map(function(centroidRow) {
+				return new Cluster(centroidRow)
+			})
+
+			function each(clusters, i) {
+			
+				if(i < clusters.length) {
+					db.getClusterMembers(i, function(err, members) {
+						if(err) { return done(err) }
+						clusters[i].members = members
+						each(clusters, ++i)
+					})
+				} else {
+
+					clusters = new ClusterGroup(clusters)	
+					//console.log('buildClustersFromDb', clusters)
+					done(null, clusters)	
+				}
+			}
+			each(clusters, 0)
+		}
+	], done) 
+}
+
+exports.buildFromDb = buildFromDb

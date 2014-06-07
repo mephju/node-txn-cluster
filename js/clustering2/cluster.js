@@ -36,10 +36,15 @@ Cluster.prototype.recomputeCentroid = function() {
 
 	console.log('recomputeCentroid', this.centroidRow['txn_id'], this.members.length)
 
+	if(this.members.length === 0) {
+		return false
+	}
+	
 	var similaritySums 	= this.getSimilaritySums()
 	var maxIdx	 		= help.maxIdx(similaritySums)
 	var nextCentroid 	= this.members[maxIdx]
 
+	console.log('recomputeCentroid maxidx', maxIdx, 'members.length', this.members.length)
 	var changed 		= nextCentroid['txn_id'] !== this.centroidRow['txn_id']
 	this.centroidRow 	= nextCentroid
 	return changed

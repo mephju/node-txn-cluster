@@ -2,7 +2,7 @@ var config 		= require('../config')
 var async 		= require('async')
 var Cluster 	= require('./cluster').Cluster
 var ClusterGroup = require('./cluster-group').ClusterGroup
-var db 			= require('./db')
+
 
 
 
@@ -27,6 +27,7 @@ var clusterIterate = function(txnRows, clusters) {
 		clusters.recomputeCentroids()
 		return clusterIterate(txnRows, clusters)
 	} else {
+		clusters.cleanUp()
 		return clusters
 	}	
 }
@@ -62,42 +63,9 @@ var init = function(txnRows) {
 
 
 
-var buildClustersFromDb = function(done) {
-	console.log('buildClustersFromDb')
 
-
-	var clusters = null
-
-	async.waterfall([
-
-		function(next) {
-			db.getCentroidRows(next) 
-		},
-		function(centroidRows, next) {
-			
-			var clusters = centroidRows.map(function(centroidRow) {
-				return new Cluster(centroidRow)
-			})
-
-			function each(clusters, i) {
-			
-				if(i < clusters.length) {
-					db.getClusterMembers(i, function(err, members) {
-						if(err) { return done(err) }
-						clusters[i].members = members
-						each(clusters, ++i)
-					})
-				} else {
-					clusters = new ClusterGroup(clusters)	
-					done(null, clusters)	
-				}
-			}
-			each(clusters, 0)
-		}
-	], done) 
-}
 
 
 //exports.fromDb = fromDb
 exports.cluster = cluster
-exports.buildClustersFromDb = buildClustersFromDb
+

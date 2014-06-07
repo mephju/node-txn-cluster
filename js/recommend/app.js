@@ -1,16 +1,15 @@
 
 var async 		= require('async')
 var transDb		= require('../transitions/db')
-var clustering	= require('../clustering2/clustering')
-
+var clusterGroupModule	= require('../clustering2/cluster-group')
+var config		= require('../config')
+var help 		= require('../help')
 
 var isInitialized 	= false
 var centroidColl 	= null
 var transMatrix 	= null
 var transTotals 	= null
-
-
-
+var d 		= []
 
 
 
@@ -19,23 +18,53 @@ var init = function(callback) {
 	console.log('init recommender')
 	async.waterfall([
 		function(next) {
-			clustering.buildClustersFromDb(next)
+			clusterGroupModule.buildFromDb(next)
 		},
+
 		function(clusters, next) {
 			console.log('loadedClusteritems', clusters.clusters.length)
 			centroidColl = clusters
 			transDb.getTransMatrix(next)
 		},
 		function(transitionMatrix, next) {
+			
+
+
 			transMatrix = transitionMatrix
 			 
-			transTotals = transMatrix.map(function(row) {
-				return row.reduce(function(previous, current) {
+			transTotals = transMatrix.map(function(row, i) {
+				var rowSum = row.reduce(function(previous, current) {
 					return previous + current
 				})
+				if(rowSum === 0) {
+					console.log('row', i, 'is 0')
+				}
+				return rowSum
 			})
+
+			numRecomms = transMatrix.map(function(row, i) {
+				return row.map(function(val) {
+					return config.N * Math.round(val / transTotals[i])
+				})
+			})
+
+			sanitizeNumRecomms(numRecomms)	
+			console.log('sanitized', numRecomms.length)
+			if(!isValidMatrix(transMatrix)) {
+				console.log('error', 'transMatrix is invalid')
+				return next('transMatrix is invalid')
+			}
+			if(!isValidMatrix(numRecomms)) {
+				console.log('error', 'numRecomms is invalid')
+				return next('numRecomms is invalid')
+			}
+			if(numRecomms.length !== transMatrix.length) {
+				return next('numRecomms is weird error')
+			}
+			
 			isInitialized = true
-			callback(null)
+			next(null)
+			
 		}
 	], function(err) {
 		if(err) { console.log('error', err) } 
@@ -43,25 +72,59 @@ var init = function(callback) {
 	})
 }
 
-
-
-// 
-// Compute the number of recommendations each cluster should contribute to the list of
-// recommendations.
-// 
-var getNumRecomms = function(numItems, transRow, rowSum) {
-	return transRow.map(function(val) {
-		return numItems * Math.round(val/rowSum)
-	})
+var isValidMatrix = function(numRecomms) {
+	var len = numRecomms.length
+	for(var i=0; i<len; i++) {
+		for(var j=0; j<numRecomms.length; j++) {
+			var item = numRecomms[i][j]
+			if(item === null || isNaN(item)) {
+				console.log('numRecomms', i, j, item)
+				return false;
+			}
+		}
+	}
+	return true
 }
 
 
-var recommend = function(session, numItems) {
-	var centroidId 	= centroidColl.findBestMatchSeq(session)
-	var transRow 	= transMatrix[centroidId]
-	var rowSum 		= transTotals[centroidId]
-	var numRecomms 	= getNumRecomms(numItems, transRow, rowSum)
-	return getRecommendations(numRecomms)
+var sanitizeNumRecomms = function(numRecomms) {
+	var len = numRecomms.length
+	for(var i=0; i<len; i++) {
+		var row = numRecomms[i]
+		var rowSum = help.arraySum(row)
+
+		if(rowSum < 5) {
+			var maxIndices = help.nMaxIndices(transMatrix[i], config.N)
+			maxIndices.forEach(function(maxIndex, i) {
+				row[maxIndex] = 1
+			})
+			console.log('sanitized row', i, 'rowsum', help.arraySum(row))
+
+		}
+	}
+}
+
+
+var recommend = function(session) {
+	var centroidId 		= centroidColl.findBestMatchSeq(session)
+	var transRow 		= transMatrix[centroidId]
+	var rowSum 			= transTotals[centroidId]
+	//numbers of items that each cluster should contribute
+	var clusterNumRow 	= numRecomms[centroidId] 
+	
+	var recommendations = getRecommendations(clusterNumRow)
+
+	if(recommendations.length === 0) {
+		console.log('centroidId', centroidId)
+		//console.log('transrow', transRow)
+		console.log('rowSum', rowSum)
+		console.log('clusterNumRow', clusterNumRow)
+		console.log('members', centroidColl.clusters[centroidId].members)
+
+		throw 'recommender returned no items'
+	}
+
+	return recommendations
 }
 
 
@@ -69,10 +132,9 @@ var recommend = function(session, numItems) {
 var getRecommendations = function(numRecomms, cluster) {
 	var recomms = []
 	numRecomms.forEach(function(num, i) {
-		recomms.push.apply(
-			recomms, 
-			getRandomItems(num, centroidColl.clusters[i].members)
-		);
+		if(num > 0) {
+			recomms.push(getRandomItems(num, centroidColl.clusters[i].members))
+		}
 	})
 	return recomms
 }

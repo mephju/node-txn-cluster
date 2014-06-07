@@ -31,27 +31,46 @@ var start = function() {
 	console.log(config)
 	var txnApp 			= require('./transactions/app')
 	var clusterApp		= require('./clustering2/index')
+	var clusterGroupModule = require('./clustering2/cluster-group')
 	var importApp		= require('./import/app')
 	var transitionApp	= require('./transitions/app')
 
 
 	var startTime = new Date().getTime()
 
-	async.series([
-		// function(next) {
-		// 	importApp.makeImport(next)
-		// },
-		// function(next) {
-		// 	console.log('build txns')
-		// 	txnApp.buildTxns(next)
-		// }, 
+	async.waterfall([
 		function(next) {
-			clusterApp.start(function(err, clusterGroup) {
-				transitionApp.buildTransMatrix(clusterGroup, next)	
-			});
+			importApp.makeImport(next)
+		},
+		function(next) {
+			console.log('build txns')
+			txnApp.buildTxns(next)
+		}, 
+		function(next) {
+			clusterApp.start(next)
+		},
+		// function(next) {
+		
+		// 	next(null, '')
+		// },
+		function(clusterGroup, next) {
+			// read clusters from db again so we can remove 
+			// the previous step if we want to skip it
+			clusterGroup = null 
+			clusterGroupModule.buildFromDb(next)
+		},
+		function(clusterGroup, next) {
+			console.log('this is clusterGroup')
+			console.log(clusterGroup)
+			transitionApp.buildTransMatrix(clusterGroup, next)	
+		},
+		function(next) {
+			console.log('done building transition matrix')
+			next(null)
 		}
+
 	], 
-	function(err, results){
+	function(err){
 		err && console.log(err)
 		console.log('finished', datasetDefs.dataset())
 		console.log('time: ', (new Date().getTime() - startTime) / 1000)
