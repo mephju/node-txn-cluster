@@ -16,10 +16,12 @@ var buildTransMatrix = function(clusters, callback) {
 		},
 		function(txnRows, next) {
 			var transMatrix = findTransitions(clusters, txnRows, next)
-			db.insertTransMatrix(transMatrix, next)
+			db.removeNoTransClusters(transMatrix, next)
 		},
-		function(next) {
-			db.removeNoTransClusters(next)
+		function(transMatrix, next) {
+			//console.log(transMatrix)
+			db.insertTransMatrix(transMatrix, next)
+			
 		}
 	], function(err) {
 		console.log('finished building transition matrix', err || '')

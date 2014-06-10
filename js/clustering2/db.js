@@ -110,7 +110,7 @@ var getCentroidRows = function(done) {
 	console.log('getCentroidRows')
 	async.waterfall([
 		function(next) {
-			db.all('SELECT centroid_txn_id as txn_id, centroid_item_ids as item_ids FROM clusters ORDER BY cluster_id', next)		
+			db.all('SELECT cluster_id, centroid_txn_id as txn_id, centroid_item_ids as item_ids FROM clusters ORDER BY cluster_id', next)		
 		},
 		function(rows, next) {
 			rows.forEach(function(row) {
@@ -123,7 +123,7 @@ var getCentroidRows = function(done) {
 
 
 var getClusterMembers = function(clusterId, done) {
-	console.log('getClusterMembers')
+	console.log('getClusterMembers for', clusterId)
 	async.waterfall([
 		function(next) {
 			db.all('SELECT txn_id, item_ids FROM cluster_members WHERE cluster_id=$1', clusterId, next)

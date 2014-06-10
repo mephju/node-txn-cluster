@@ -9,7 +9,7 @@ var isInitialized 	= false
 var centroidColl 	= null
 var transMatrix 	= null
 var transTotals 	= null
-var d 		= []
+var numRecomms		= []
 
 
 
@@ -49,7 +49,9 @@ var init = function(callback) {
 			})
 
 			sanitizeNumRecomms(numRecomms)	
+
 			console.log('sanitized', numRecomms.length)
+			console.log(numRecomms)
 			if(!isValidMatrix(transMatrix)) {
 				console.log('error', 'transMatrix is invalid')
 				return next('transMatrix is invalid')
@@ -75,6 +77,7 @@ var init = function(callback) {
 var isValidMatrix = function(numRecomms) {
 	var len = numRecomms.length
 	for(var i=0; i<len; i++) {
+
 		for(var j=0; j<numRecomms.length; j++) {
 			var item = numRecomms[i][j]
 			if(item === null || isNaN(item)) {
@@ -111,6 +114,15 @@ var recommend = function(session) {
 	var rowSum 			= transTotals[centroidId]
 	//numbers of items that each cluster should contribute
 	var clusterNumRow 	= numRecomms[centroidId] 
+
+	if(typeof clusterNumRow === 'undefined') {
+		console.log('centroidId', centroidId)
+		//console.log('transrow', transRow)
+		console.log('rowSum', rowSum)
+		console.log('clusterNumRow', clusterNumRow)
+		console.log('members', centroidColl.clusters[centroidId].members.length)
+		throw 'clusterNumRow is undefined.'
+	}
 	
 	var recommendations = getRecommendations(clusterNumRow)
 
@@ -129,9 +141,9 @@ var recommend = function(session) {
 
 
 
-var getRecommendations = function(numRecomms, cluster) {
+var getRecommendations = function(clusterNumRow, cluster) {
 	var recomms = []
-	numRecomms.forEach(function(num, i) {
+	clusterNumRow.forEach(function(num, i) {
 		if(num > 0) {
 			recomms.push(getRandomItems(num, centroidColl.clusters[i].members))
 		}

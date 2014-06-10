@@ -39,50 +39,69 @@ var insertTransMatrix = function(transMatrix, callback) {
 	})
 }
 
-var removeNoTransClusters = function(done) {
-	console.log('remove no trans clusters')
-	async.waterfall([
-		function(next) {
-			db.all('SELECT rowid FROM transition WHERE row_sum=0', next)
-		},
-		function(rows, next) {
-			var centroidIds = rows.map(function(row) {
-				return row['rowid']
-			}).toString()
-
-			console.log('delete no trans clusters', centroidIds)
-			async.waterfall([
-				function(next) {
-					db.run(
-						'DELETE FROM transition WHERE row_sum=0',
-						next
-					);
-				},
-				function(next) {
-					db.run(
-						'DELETE FROM clusters WHERE cluster_id IN ($1)',
-						centroidIds,
-						next
-					);
-				},
-				function(next) {
-					db.run(
-						'DELETE FROM cluster_members WHERE cluster_id IN ($1)',
-						centroidIds,
-						next
-					);		
-				}
-			], next)	
+var pruneMatrix = function(transMatrix) {
+	console.log('pruneMatrix')
+	var pruned = []
+	for (var i=0; i < transMatrix.length; i++) {
+		var rowSum = transMatrix[i].reduce(function(l, r) {
+			return l+r
+		})	
+		if(rowSum === 0) {
+			pruned.push(i)
 		}
-	], done)
+	}
+
+	if(pruned.length > 0) {
+		pruned.reverse()
+		pruned.forEach(function(index) {
+			transMatrix.splice(index, 1)
+			pruneColumn(index, transMatrix)
+		})
+		pruned = pruned.concat(pruneMatrix(transMatrix))
+	}
+
+	return pruned;
+}
+
+var pruneColumn = function(index, transMatrix) {
+	for(var i=0; i<transMatrix.length; i++) {
+		transMatrix[i].splice(index, 1)
+	}
+}
 
 
+
+var removeNoTransClusters = function(transMatrix, done) {
+
+	console.log(transMatrix)
+
+	var centroidIds = pruneMatrix(transMatrix)
+	console.log('remove no trans clusters')
+
+	if(centroidIds.length === 0) { 
+		console.log('0 clusters to remove')
+		return done(null, [])
+	}
+
+	console.log('going to remove clusters', centroidIds)
+
+	async.eachSeries(
+		centroidIds,
+		function(id, next) {
+			db.run('DELETE FROM clusters WHERE cluster_id=$1', id)
+			db.run('DELETE FROM cluster_members WHERE cluster_id=$1', id, next)
+		},
+		function(err) {
+			done(err, transMatrix)
+		}
+	);
+	
 }
 
 var getTransMatrix = function(callback) {
 	async.waterfall([
 		function(next) {
-			db.all('SELECT matrix_row FROM transition', next)
+			db.all('SELECT matrix_row FROM transition ORDER BY cluster_id', next)
 		},
 		function(rows, next) {
 			console.log('getTransMatrix', rows.length)

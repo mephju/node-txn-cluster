@@ -14,7 +14,7 @@ var calcSim = function(seq1, seq2) {
 	var similarity;
 
 	if(seq1.length > config.EASY_SEQUENCE_SIZE && seq2.length > config.EASY_SEQUENCE_SIZE) {
-		console.log('slow op ahead')
+		//console.log('slow op ahead')
 		var key1 = seq1.toString()
 		var key2 = seq2.toString()
 
@@ -22,12 +22,12 @@ var calcSim = function(seq1, seq2) {
 		var substore2 = simStore[key2]
 		
 		if(typeof(substore1) === 'undefined') {
-			console.log('create store1')
+			//console.log('create substore1')
 			substore1 = {}
 			simStore[key1] = substore1
 		}
 		if(typeof(substore2) === 'undefined') {
-			console.log('create store2')
+			//console.log('create substore2')
 			substore2 = {}
 			simStore[key2] = substore2
 		}
@@ -35,7 +35,7 @@ var calcSim = function(seq1, seq2) {
 		similarity = substore1[key2]
 		
 		if(typeof(similarity) === 'undefined') {
-			console.log('calculate similarity')
+			//console.log('calculate similarity')
 			similarity = sim.calc(seq1, seq2)
 			substore1[key2] = similarity
 			substore2[key1] = similarity

@@ -100,23 +100,22 @@ var buildFromDb = function(done) {
 			var clusters = centroidRows.map(function(centroidRow) {
 				return new Cluster(centroidRow)
 			})
-
-			function each(clusters, i) {
 			
-				if(i < clusters.length) {
-					db.getClusterMembers(i, function(err, members) {
-						if(err) { return done(err) }
-						clusters[i].members = members
-						each(clusters, ++i)
-					})
-				} else {
-
-					clusters = new ClusterGroup(clusters)	
-					//console.log('buildClustersFromDb', clusters)
-					done(null, clusters)	
+			async.eachSeries(
+				clusters,
+				function(cluster, next) {
+					var clusterId = cluster.centroidRow['cluster_id']
+					db.getClusterMembers(clusterId, function(err, members) {
+						cluster.members = members
+						next(err, null)
+					})	
+				},
+				function(err) {
+					clusters = new ClusterGroup(clusters)		
+					done(err, clusters)	
 				}
-			}
-			each(clusters, 0)
+			);
+		
 		}
 	], done) 
 }

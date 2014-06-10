@@ -1,3 +1,22 @@
+select cluster_id, count(cluster_id) from clusters
+natural join cluster_members
+group by cluster_id;
+
+
+
+
+DELETE FROM clusters 
+WHERE 		cluster_id IN(
+			SELECT 	cmid 
+			as 		cluster_id 
+			FROM(
+					SELECT distinct  	cm.cluster_id as cmid, t.cluster_id as tid
+					from 				clusters as cm  
+					LEFT OUTER JOIN 	transition as t 
+					ON 					cm.cluster_id=t.cluster_id
+					WHERE 				tid is null
+			)
+);
 
 SELECT 		count(*), * FROM txns, txn_items 
 WHERE 		txn_items.txn_id=txns.txn_id
