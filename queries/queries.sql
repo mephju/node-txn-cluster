@@ -1,3 +1,73 @@
+select 	*
+from 	cluster_members as cm, 
+		txn_items as ti
+where 	cm.txn_id=ti.txn_id
+and 	cm.cluster_id=0
+
+
+
+
+select distinct
+			ic.item_id, ic.count
+from 		cluster_members as cm, 
+			txn_items as ti, 
+			item_counts as ic
+where 		cm.txn_id=ti.txn_id
+and 		ti.item_id=ic.item_id
+and 		cm.cluster_id=1
+order by 	ic.count desc
+
+
+select * 
+from item_counts
+where item_id 
+in (
+	select item_ids 
+	from cluster_members
+	where rowid=1
+)
+
+
+
+select 	item_id, count(item_id) as count 
+from 	txn_items 
+where 	item_id 
+in (
+		select 	item_id 
+		from 	cluster_members 
+		where 	cluster_id=0
+)
+group by item_id 
+order by count DESC;
+
+
+
+-- 1
+create table 	item_counts 
+as 	select 		item_id, count(item_id) as count 
+	from 		txn_items 
+	group by 	item_id 
+	order by 	count DESC;
+
+-- 2
+create index 	item_counts_index
+on 				item_counts(item_id ASC);
+
+
+
+
+select distinct item_id, count
+from 			cluster_members as cm, item_counts as ic
+where 			cluster_id=0
+and 			cm.item_id = ic.item_id
+order by 		count DESC;
+
+
+
+
+
+
+
 select cluster_id, count(cluster_id) from clusters
 natural join cluster_members
 group by cluster_id;

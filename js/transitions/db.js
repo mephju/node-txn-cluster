@@ -20,6 +20,7 @@ var insertTransMatrix = function(transMatrix, callback) {
 		function(next) {
 
 			transMatrix.forEach(function(matrixRow, i) {
+				console.log('insertTransMatrix', i)
 				db.run(
 					'INSERT INTO transition(cluster_id, matrix_row, row_sum) VALUES(?, ?, ?)', 
 					[i, JSON.stringify(matrixRow), help.arraySum(matrixRow)]
@@ -80,7 +81,7 @@ var removeNoTransClusters = function(transMatrix, done) {
 
 	if(centroidIds.length === 0) { 
 		console.log('0 clusters to remove')
-		return done(null, [])
+		return done(null, transMatrix)
 	}
 
 	console.log('going to remove clusters', centroidIds)
@@ -99,6 +100,7 @@ var removeNoTransClusters = function(transMatrix, done) {
 }
 
 var getTransMatrix = function(callback) {
+	console.log('getTransMatrix')
 	async.waterfall([
 		function(next) {
 			db.all('SELECT matrix_row FROM transition ORDER BY cluster_id', next)

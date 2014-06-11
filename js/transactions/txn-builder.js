@@ -32,6 +32,17 @@ exports.buildTxnsForSet = function(next) {
 		},
 		function(next) {
 			txnDb.db.run(sql.createTableTxnItemGroups, next)
+		},
+		function(next) {
+			txnDb.db.run(
+				'create table 	item_counts 			\
+				as 	select 		item_id, 				\
+								count(item_id) as count \
+					from 		txn_items 				\
+					group by 	item_id 				\
+					order by 	count DESC;',
+				next
+			);
 		}
 	], 
 	function(err) {

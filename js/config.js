@@ -12,7 +12,7 @@ exports.MIN_SEQUENCE_FREQUENCY 		= 8
 exports.NUM_CENTROIDS				= 4
 
 //easy sequence size refers to sequences with sizes that are easy/fast to compare to other sequences
-exports.EASY_SEQUENCE_SIZE = 200 
+exports.EASY_SEQUENCE_SIZE = 275 
 //number of recommendations which are requested
 exports.N = 5
 

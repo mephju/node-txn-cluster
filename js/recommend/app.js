@@ -4,6 +4,8 @@ var transDb		= require('../transitions/db')
 var clusterGroupModule	= require('../clustering2/cluster-group')
 var config		= require('../config')
 var help 		= require('../help')
+var validate    = require('./validate')
+var itemChoice 	= require('./item-choice')
 
 var isInitialized 	= false
 var centroidColl 	= null
@@ -27,19 +29,10 @@ var init = function(callback) {
 			transDb.getTransMatrix(next)
 		},
 		function(transitionMatrix, next) {
-			
-
-
 			transMatrix = transitionMatrix
 			 
 			transTotals = transMatrix.map(function(row, i) {
-				var rowSum = row.reduce(function(previous, current) {
-					return previous + current
-				})
-				if(rowSum === 0) {
-					console.log('row', i, 'is 0')
-				}
-				return rowSum
+				return help.arraySum(row)
 			})
 
 			numRecomms = transMatrix.map(function(row, i) {
@@ -48,25 +41,18 @@ var init = function(callback) {
 				})
 			})
 
-			sanitizeNumRecomms(numRecomms)	
-
-			console.log('sanitized', numRecomms.length)
-			console.log(numRecomms)
-			if(!isValidMatrix(transMatrix)) {
-				console.log('error', 'transMatrix is invalid')
-				return next('transMatrix is invalid')
-			}
-			if(!isValidMatrix(numRecomms)) {
-				console.log('error', 'numRecomms is invalid')
-				return next('numRecomms is invalid')
-			}
-			if(numRecomms.length !== transMatrix.length) {
-				return next('numRecomms is weird error')
-			}
+			validate.sanitizeMatrix(numRecomms)	
+			
+			if(!validate.isValid(transMatrix, numRecomms)) {
+				return next('matrix is invalid')
+			}	
 			
 			isInitialized = true
 			next(null)
 			
+		},
+		function(next) {
+			itemChoice.init(next)
 		}
 	], function(err) {
 		if(err) { console.log('error', err) } 
@@ -74,38 +60,7 @@ var init = function(callback) {
 	})
 }
 
-var isValidMatrix = function(numRecomms) {
-	var len = numRecomms.length
-	for(var i=0; i<len; i++) {
 
-		for(var j=0; j<numRecomms.length; j++) {
-			var item = numRecomms[i][j]
-			if(item === null || isNaN(item)) {
-				console.log('numRecomms', i, j, item)
-				return false;
-			}
-		}
-	}
-	return true
-}
-
-
-var sanitizeNumRecomms = function(numRecomms) {
-	var len = numRecomms.length
-	for(var i=0; i<len; i++) {
-		var row = numRecomms[i]
-		var rowSum = help.arraySum(row)
-
-		if(rowSum < 5) {
-			var maxIndices = help.nMaxIndices(transMatrix[i], config.N)
-			maxIndices.forEach(function(maxIndex, i) {
-				row[maxIndex] = 1
-			})
-			console.log('sanitized row', i, 'rowsum', help.arraySum(row))
-
-		}
-	}
-}
 
 
 var recommend = function(session) {
@@ -116,27 +71,32 @@ var recommend = function(session) {
 	var clusterNumRow 	= numRecomms[centroidId] 
 
 	if(typeof clusterNumRow === 'undefined') {
-		console.log('centroidId', centroidId)
-		//console.log('transrow', transRow)
-		console.log('rowSum', rowSum)
-		console.log('clusterNumRow', clusterNumRow)
-		console.log('members', centroidColl.clusters[centroidId].members.length)
-		throw 'clusterNumRow is undefined.'
+		log(centroidId, 
+			rowSum, 
+			clusterNumRow, 
+			centroidColl.clusters[centroidId].members);	
 	}
 	
 	var recommendations = getRecommendations(clusterNumRow)
 
 	if(recommendations.length === 0) {
-		console.log('centroidId', centroidId)
-		//console.log('transrow', transRow)
-		console.log('rowSum', rowSum)
-		console.log('clusterNumRow', clusterNumRow)
-		console.log('members', centroidColl.clusters[centroidId].members)
-
-		throw 'recommender returned no items'
+		log(centroidId, 
+			rowSum, 
+			clusterNumRow, 
+			centroidColl.clusters[centroidId].members);	
 	}
 
 	return recommendations
+}
+
+var log = function(centroidId, rowSum, clusterNumRow, members) {
+	console.log('centroidId', centroidId)
+	//console.log('transrow', transRow)
+	console.log('rowSum', rowSum)
+	console.log('clusterNumRow', clusterNumRow)
+	//console.log('members', centroidColl.clusters[centroidId].members)
+
+	throw 'recommender returned no items'
 }
 
 
@@ -145,7 +105,12 @@ var getRecommendations = function(clusterNumRow, cluster) {
 	var recomms = []
 	clusterNumRow.forEach(function(num, i) {
 		if(num > 0) {
-			recomms.push(getRandomItems(num, centroidColl.clusters[i].members))
+			//recomms.push(itemChoice.getRandomItems(num, centroidColl.clusters[i].members))
+			var cl =  centroidColl.clusters[i]
+			var centroidId = cl.centroidRow['cluster_id']
+			var items = itemChoice.getBestItems(centroidId)
+			//console.log(items)
+			recomms.push(items)
 		}
 	})
 	return recomms
@@ -153,20 +118,6 @@ var getRecommendations = function(clusterNumRow, cluster) {
 
 
 
-
-var getRandomItems = function(n, array) {
-	
-	var items 	= []
-
-	for(var i=0; i<n; i++) {
-		var index = Math.floor(Math.random() * array.length)
-		var clusteredItem = array[index]
-		var array2 = clusteredItem['item_ids']
-		index = Math.floor(Math.random() * array2.length)
-		items.push(array2[index])
-	}
-	return items
-}
 
 exports.init = init
 exports.recommend = recommend

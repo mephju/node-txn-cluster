@@ -1,7 +1,14 @@
 var config = require('./config')
 
 
-
+var arrayRandomItems = function(n, array) {
+   var items = []
+   for(var i=0; i<array.length; i++) {
+      var index = Math.floor(Math.random() * array.length)
+      items.push(array[index])
+   }
+   return items
+}
 
 
 var clearArray = function(arr) {
@@ -52,7 +59,7 @@ var toBatches = function(array, maxSize) {
 
    var maxBatchSize = maxSize || config.TXN_ID_BATCH_SIZE
 
-   console.log('make to batches for %d', array.length)
+   //console.log('make to batches for %d', array.length)
 
    var batches = []
    var batch = []
@@ -150,7 +157,7 @@ var avgFromArray = function(array) {
     }) / array.length
 }
 
-
+exports.arrayRandomItems   = arrayRandomItems
 exports.nMaxIndices        = nMaxIndices
 exports.clearArray         = clearArray
 exports.avgFromArray       = avgFromArray

@@ -5,7 +5,7 @@ var txnApp		= require('../transactions/app')
 var txnDb		= require('../transactions/db')
 var clusterDb	= require('../clustering/cluster-db')
 var help 		= require('../help')
-
+var config 		= require('../config')
 
 
 
@@ -33,7 +33,17 @@ var buildTransMatrix = function(clusters, callback) {
 var findTransitions = function(clusters, txnRows, done) {
 	var transMatrix = initTransMatrix(clusters.clusters.length)
 	txnRows.forEach(function(txnRow) {
-		findProbsForTxn(transMatrix, clusters, txnRow)
+		var txn = txnRow['item_ids']
+		
+		if(txn.length > 50) {
+			var txns = help.toBatches(txn, 50)
+			txns.forEach(function(txn) {
+				findProbsForTxn(transMatrix, clusters, txn)		
+			})
+		} else {
+			findProbsForTxn(transMatrix, clusters, txn)
+		}
+		
 	})
 	return transMatrix
 }
@@ -54,8 +64,7 @@ var initTransMatrix = function(size) {
 
 
 
-var findProbsForTxn = function(transMatrix, clusters, txnRow) {
-	var txn = txnRow['item_ids']
+var findProbsForTxn = function(transMatrix, clusters, txn) {
 	console.log('findProbsForTxn', txn.length)
 	var previousCentroidId = clusters.findBestMatchSeq(txn.slice(0,1))
 	
