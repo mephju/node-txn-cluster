@@ -34,21 +34,36 @@ var fetchMembers = function(clusterIds, done) {
 }
 
 
+
+var bestItemsOfCluster = 
+	'select 	*, 							\
+				count(ti.item_id) as count 	\
+	from 		cluster_members as cm, 		\
+				txn_items as ti 			\
+	where 		cm.txn_id=ti.txn_id 		\
+	and 		cm.cluster_id=$1 			\
+	group by 	cm.cluster_id, ti.item_id 	\
+	order by 	cluster_id ASC, count DESC  \
+	limit ' 	+ config.N
+
+var bestClusterItemsOverall = 
+	'select distinct 					\
+				ic.item_id, ic.count 	\
+	from 		cluster_members as cm, 	\
+				txn_items as ti,  		\
+				item_counts as ic 		\
+	where 		cm.txn_id=ti.txn_id 	\
+	and 		ti.item_id=ic.item_id 	\
+	and 		cm.cluster_id=$1 		\
+	order by 	ic.count desc 			\
+	limit ' 	+ config.N 			
+
+
 var fetchMembersById = function(clusterId, memberStore, done) {
 	console.log('fetchMembersById', clusterId)
 	async.waterfall([
-		function(next) {
-			var sql = 'select distinct				\
-							ic.item_id, ic.count 	\
-				from 		cluster_members as cm, 	\
-							txn_items as ti,  		\
-							item_counts as ic 		\
-				where 		cm.txn_id=ti.txn_id 	\
-				and 		ti.item_id=ic.item_id 	\
-				and 		cm.cluster_id=$1 		\
-				order by 	ic.count desc 			\
-				limit ' 	+ config.N 			
-			db.all(sql, clusterId, next)
+		function(next) {			
+			db.all(bestItemsOfCluster, clusterId, next)
 		},
 		function(members, next) {
 			members.forEach(function(member, i) {
@@ -94,8 +109,8 @@ var getRandomItems = function(n, array) {
 //then get all best 5 items of each cluster and save them.
 //so no db access is needed during evaluation.
 
-var getBestItems = function(clusterId) {
-	return memberStore[clusterId]
+var getBestItems = function(n, clusterId) {
+	return memberStore[clusterId].slice(0,n)
 }
 
 exports.init 			= init

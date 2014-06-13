@@ -1,4 +1,5 @@
 var help = require('../help')
+var config = require('../config')
 var isValid = function() {
 
 	for(var i=0; i<arguments.length; i++) {

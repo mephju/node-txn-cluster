@@ -108,9 +108,11 @@ var getRecommendations = function(clusterNumRow, cluster) {
 			//recomms.push(itemChoice.getRandomItems(num, centroidColl.clusters[i].members))
 			var cl =  centroidColl.clusters[i]
 			var centroidId = cl.centroidRow['cluster_id']
-			var items = itemChoice.getBestItems(centroidId)
-			//console.log(items)
-			recomms.push(items)
+			var items = itemChoice.getBestItems(num, centroidId)
+			
+			items.forEach(function(item) {
+				recomms.push(item)
+			})
 		}
 	})
 	return recomms

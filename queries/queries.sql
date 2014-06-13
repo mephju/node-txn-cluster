@@ -1,3 +1,14 @@
+select 		*, count(ti.item_id) as count
+from 		cluster_members as cm,
+			txn_items as ti
+where 		cm.txn_id=ti.txn_id
+group by 	cm.cluster_id, ti.item_id
+order by 	cluster_id, count
+
+
+
+
+
 select 	*
 from 	cluster_members as cm, 
 		txn_items as ti

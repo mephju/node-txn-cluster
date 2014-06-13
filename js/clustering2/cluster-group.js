@@ -32,11 +32,22 @@ ClusterGroup.prototype.findBestMatchSeq = function(txn) {
 	var bestMatch = {
 		sim: 0,
 		id:0,
-		cluster:this.clusters[0]
+		cluster:this.clusters[0],
+		lenDiff:999999,
+		lenDiffIndex:0
 	}
 
 	for (var i=1; i<this.clusters.length; i++) {
 		var c = this.clusters[i]
+
+		// var lenDiff = Math.abs(
+		// 	c.centroidRow['item_ids'].length - txn.length
+		// );
+		//
+		// if(lenDiff < bestMatch.lenDiff) {
+		// 	bestMatch.lenDiff = lenDiff
+		// 	bestMatch.lenDiffIndex = i
+		// }
 		
 		var sim = c.simSeq(txn)
 		if(sim > bestMatch.sim) {
@@ -45,8 +56,13 @@ ClusterGroup.prototype.findBestMatchSeq = function(txn) {
 			bestMatch.id = i
 		}	
 	};
+
+	// if(bestMatch.sim === 0) {
+	// 	return bestMatch.lenDiffIndex
+	// }
 	return bestMatch.id
 }
+
 
 
 
