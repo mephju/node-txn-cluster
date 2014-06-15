@@ -13,9 +13,9 @@ var getHitsVs = function(sessionEnd, recommendations, baselineItems) {
 		if(recommendations.indexOf(item) !== -1) {
 			hitsR++
 		}
-		if(baselineItems.indexOf(item) !== -1) {
-			hitsB++
-		}
+		// if(baselineItems.indexOf(item) !== -1) {
+		// 	hitsB++
+		// }
 	})
 	return {
 		hitsR: hitsR,

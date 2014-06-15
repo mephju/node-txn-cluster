@@ -64,7 +64,7 @@ var init = function(callback) {
 
 
 var recommend = function(session) {
-	var centroidId 		= centroidColl.findBestMatchSeq(session)
+	var centroidId 		= centroidColl.findBestMatchSeq(session, true)
 	var transRow 		= transMatrix[centroidId]
 	var rowSum 			= transTotals[centroidId]
 	//numbers of items that each cluster should contribute
@@ -73,8 +73,8 @@ var recommend = function(session) {
 	if(typeof clusterNumRow === 'undefined') {
 		log(centroidId, 
 			rowSum, 
-			clusterNumRow, 
-			centroidColl.clusters[centroidId].members);	
+			clusterNumRow)
+			//centroidColl.clusters[centroidId].members);	
 	}
 	
 	var recommendations = getRecommendations(clusterNumRow)
@@ -82,8 +82,8 @@ var recommend = function(session) {
 	if(recommendations.length === 0) {
 		log(centroidId, 
 			rowSum, 
-			clusterNumRow, 
-			centroidColl.clusters[centroidId].members);	
+			clusterNumRow)
+			//centroidColl.clusters[centroidId]);	
 	}
 
 	return recommendations

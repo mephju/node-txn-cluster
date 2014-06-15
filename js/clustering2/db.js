@@ -7,6 +7,33 @@ var help		= require('../help')
 
 
 
+
+var tableClusterItemCounts = function(done) {
+	console.log('create table cluster_item_counts')
+	var sql = 
+	'create table cluster_item_counts 					\
+	as 													\
+	select 			cluster_id, 						\
+					item_id, 							\
+					count(item_id) as count 			\
+	from 			txn_items as ti, 					\
+					(select 		cluster_id, 		\
+									txn_id 				\
+					from 			cluster_members		\
+					union 								\
+					select  		centroid_txn_id  	\
+					as 				txn_id, 			\
+									cluster_id 	 		\
+					from 			clusters) as uni 	\
+	where 			ti.txn_id=uni.txn_id 				\
+	group by 		cluster_id, item_id 				\
+	order by 		cluster_id, count desc' 			
+
+	db.run(sql, done)
+}
+
+
+
 var insertClusters = function(clusters, done) {
 	async.waterfall([
 		function(next) {
@@ -110,7 +137,10 @@ var getCentroidRows = function(done) {
 	console.log('getCentroidRows')
 	async.waterfall([
 		function(next) {
-			db.all('SELECT cluster_id, centroid_txn_id as txn_id, centroid_item_ids as item_ids FROM clusters ORDER BY cluster_id', next)		
+			db.all(
+				'SELECT cluster_id, centroid_txn_id as txn_id, centroid_item_ids as item_ids \
+				FROM clusters \
+				ORDER BY cluster_id', next)		
 		},
 		function(rows, next) {
 			rows.forEach(function(row) {
@@ -167,6 +197,8 @@ var getClusterMembers2 = function(clusterId, done) {
 	], done)
 }
 
+
+exports.tableClusterItemCounts = tableClusterItemCounts
 exports.getClusterMembers2 	= getClusterMembers2
 exports.getClusterMembers	= getClusterMembers
 exports.getCentroidRows 	= getCentroidRows

@@ -20,8 +20,6 @@ var start = function(done) {
 		function(rows, next) {
 			console.log('clustering %d txns', rows.length)
 			txnRows = rows
-			//matrix 	= simMatrix.buildMatrixFromTxns(txnRows)	
-			//simMatrixDb.insertSimMatrix(matrix, next)
 			matrix = []
 			next(null)
 		},
@@ -31,9 +29,11 @@ var start = function(done) {
 		function(clusters, next) {
 			clusterGroup = clusters
 			db.insertClusters(clusters, next)
+		},
+		function(next) {
+			db.tableClusterItemCounts(next)
 		}
 	], function(err) {
-		//console.log(err, 'clusterApp.start', clusterGroup)
 		done(err, clusterGroup)
 	})
 }

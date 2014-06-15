@@ -1,5 +1,6 @@
 var help = require('../help')
 var sim = require('./sim')
+var Simtrix = require('./simtrix').Simtrix
 
 var Cluster = function(centroidRow) {
 	this.centroidRow 	= centroidRow
@@ -40,7 +41,8 @@ Cluster.prototype.recomputeCentroid = function() {
 		return false
 	}
 	
-	var similaritySums 	= this.getSimilaritySums()
+	var simtrix 		= new Simtrix(this.members)
+	var similaritySums 	= this.getSimilaritySums(simtrix)
 	var maxIdx	 		= help.maxIdx(similaritySums)
 	var nextCentroid 	= this.members[maxIdx]
 
@@ -51,28 +53,13 @@ Cluster.prototype.recomputeCentroid = function() {
 }
 
 
-var getSimilaritySums = function() {
-	var similarities	= []
-	var len 			= this.members.length
-	var members 		= this.members
+var getSimilaritySums = function(simtrix) {
 
-	for (var i=0; i<len; i++) {
-		var similarity = 0
-		var memberA = members[i]
-		
-		for (var j=0; j<len; j++) {
-			if(j != i) {
-				var memberB = members[j]
-				similarity += sim.calcSim(
-					memberA['item_ids'], 
-					memberB['item_ids']
-				);	
-			}
-		}
-
-		similarities[i] = similarity
-	};
-	return similarities
+	return simtrix.matrix.map(function(row) {
+		return row.reduce(function(l, r) {
+			return l+r
+		})
+	})
 }
 
 exports.Cluster = Cluster

@@ -15,53 +15,61 @@ var ClusterGroup = function(clusterArray) {
 //	txn_id:"1232123",
 //	item_ids:[1,2,3]
 //}
-ClusterGroup.prototype.assign = function(txnRow) {
-	var cluster = this.findBestMatch(txnRow)	
-	cluster.addMember(txnRow)	
-	return cluster
-}
+// ClusterGroup.prototype.assign = function(clusterIdx, txnRow) {
+// 	this.clusters[clusterIdx].addMember(txnRow)	
+// 	return cluster
+// }
 
 
 
+/**
+ * Called during clustering to assign txns to clusters.
+ * @param  {[type]} txnRow [description]
+ * @return {[type]}        [description]
+ */
 ClusterGroup.prototype.findBestMatch = function(txnRow) {
-	var matchedClusterId = this.findBestMatchSeq(txnRow['item_ids'])
-	return this.clusters[matchedClusterId]
+	var matchIdx = this.findBestMatchSeq(txnRow['item_ids'])
+	var c = this.clusters[matchIdx]
+	return c
 }
 
-ClusterGroup.prototype.findBestMatchSeq = function(txn) {
+
+/**
+ * Called during construction of transition matrix.
+ * @param  {[type]} txn [description]
+ * @return {[type]}     [description]
+ */
+ClusterGroup.prototype.findBestMatchSeq = function(txn, save) {
+
+	save = save || false
+	
 	var bestMatch = {
 		sim: 0,
-		id:0,
-		cluster:this.clusters[0],
-		lenDiff:999999,
-		lenDiffIndex:0
+		id:-1,
+		idx:-1,
+		cluster:null
 	}
 
-	for (var i=1; i<this.clusters.length; i++) {
+	for (var i=0; i<this.clusters.length; i++) {
 		var c = this.clusters[i]
-
-		// var lenDiff = Math.abs(
-		// 	c.centroidRow['item_ids'].length - txn.length
-		// );
-		//
-		// if(lenDiff < bestMatch.lenDiff) {
-		// 	bestMatch.lenDiff = lenDiff
-		// 	bestMatch.lenDiffIndex = i
-		// }
 		
 		var sim = c.simSeq(txn)
 		if(sim > bestMatch.sim) {
-			bestMatch.sim = sim
-			bestMatch.cluster = c
-			bestMatch.id = i
+			bestMatch.sim 		= sim
+			bestMatch.cluster 	= c
+			bestMatch.id 		= c.centroidRow['txn_id']
+			bestMatch.idx 		= i
 		}	
 	};
 
-	// if(bestMatch.sim === 0) {
-	// 	return bestMatch.lenDiffIndex
-	// }
-	return bestMatch.id
+	if(bestMatch.idx === -1 && save) {
+		var max = this.clusters.length-1
+		return Math.floor(Math.random() * max)
+	}
+	return bestMatch.idx
 }
+
+
 
 
 
@@ -78,7 +86,7 @@ ClusterGroup.prototype.clear = function() {
 ClusterGroup.prototype.cleanUp = function() {
 	var cleaned = []
 	this.clusters.forEach(function(cluster) {
-		if(cluster.members.length > 0) {
+		if(cluster.members.length > 4) {
 			cleaned.push(cluster)
 		}
 	})
@@ -98,7 +106,7 @@ ClusterGroup.prototype.recomputeCentroids = function() {
 	return isIterationNeeded
 }
 
-exports.ClusterGroup = ClusterGroup
+
 
 
 var buildFromDb = function(done) {
@@ -112,7 +120,7 @@ var buildFromDb = function(done) {
 			db.getCentroidRows(next) 
 		},
 		function(centroidRows) {
-			
+			console.log('buildClustersFromDb', centroidRows.length)			
 			var clusters = centroidRows.map(function(centroidRow) {
 				return new Cluster(centroidRow)
 			})
@@ -135,5 +143,5 @@ var buildFromDb = function(done) {
 		}
 	], done) 
 }
-
+exports.ClusterGroup = ClusterGroup
 exports.buildFromDb = buildFromDb

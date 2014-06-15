@@ -8,11 +8,11 @@ var ClusterGroup = require('./cluster-group').ClusterGroup
 
 var cluster = function(txnRows, done) {
 
-	console.log('cluster init')
+	console.log('cluster')
 	var clusters = init(txnRows)
-	console.log('cluster iterate start', clusters)
+	console.log('cluster2', clusters)
 	clusterGroup = clusterIterate(txnRows, clusters)
-	console.log('cluster done')
+	console.log('cluster3')
 	done(null, clusterGroup)
 }
 
@@ -21,15 +21,8 @@ var clusterIterate = function(txnRows, clusters) {
 	if(clusters.isIterationNeeded) {
 		clusters.clear()
 		console.log('clusterIterate ', txnRows.length)
-		
 		txnRows.forEach(function(txnRow) {
-			var matchedCluster = clusters.findBestMatch(txnRow)
-			
-			if(!matchedCluster) {
-				makeToCluster(txnRow, clusters)
-			} else {
-				matchedCluster.addMember(txnRow)
-			}
+			clusters.assign(txnRow)
 		})
 		clusters.recomputeCentroids()
 		return clusterIterate(txnRows, clusters)
@@ -40,29 +33,37 @@ var clusterIterate = function(txnRows, clusters) {
 }
 
 
-var makeToCluster = function(txnRow, clusters) {
-	console.log('new cluster for', txnRow['txn_id'], clusters.clusters.length)
-	var newCluster = new Cluster(txnRow)
-	clusters.clusters.push(newCluster)
-}
-
-
 
 /**
- * Choose initial centroid randomly
+ * Choose initial centroids randomly
  * @param  {[type]} txnRows [description]
  * @return {[type]}         [description]
  */
 var init = function(txnRows) {
 	console.log('clustering.init')
-	
+	var K = Math.max(
+		config.NUM_CENTROIDS, 
+		4
+	);
 	var max 			= txnRows.length - 1
+	var centroids 		= []
+	var clusters	 	= []
 
-	var randomIdx 		= Math.floor(Math.random() * max)
-	var centroid 		= txnRows[randomIdx]
-	var cluster 		= new Cluster(centroid)
-	
-	return new ClusterGroup([cluster])
+	while(centroids.length < K) {
+		console.log('rand K', K)
+
+
+		var randomIdx = Math.floor(Math.random() * max)
+		var centroid = txnRows[randomIdx]
+		
+		if(centroids.indexOf(centroid) === -1) {
+			centroids.push(centroid)
+			clusters.push(new Cluster(centroid))
+		}
+	}
+
+	var clusters = new ClusterGroup(clusters)
+	return clusters
 }
 
 

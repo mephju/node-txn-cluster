@@ -3,7 +3,6 @@ var dataset 	= require('../dataset-defs').dataset()
 var db			= require('./db')
 var txnApp		= require('../transactions/app')
 var txnDb		= require('../transactions/db')
-var clusterDb	= require('../clustering/cluster-db')
 var help 		= require('../help')
 var config 		= require('../config')
 
@@ -19,7 +18,6 @@ var buildTransMatrix = function(clusters, callback) {
 			db.removeNoTransClusters(transMatrix, next)
 		},
 		function(transMatrix, next) {
-			//console.log(transMatrix)
 			db.insertTransMatrix(transMatrix, next)
 			
 		}
@@ -63,15 +61,23 @@ var initTransMatrix = function(size) {
 
 
 
+const ALWAYS_RETURN_CLUSTER_IDX = true
 
 var findProbsForTxn = function(transMatrix, clusters, txn) {
 	console.log('findProbsForTxn', txn.length)
-	var previousCentroidId = clusters.findBestMatchSeq(txn.slice(0,1))
 	
-	for(var len=2; len<txn.length; len++) {
+	var previousCentroidId = -1
+	
+	for(var len=1; len<txn.length; len++) {
+		
 		var session = txn.slice(0, len)
 		var matchedCentroidId = clusters.findBestMatchSeq(session)
-		transMatrix[previousCentroidId][matchedCentroidId]++
+		
+		//if(len < 10) console.log('length', clusters.clusters.length, 'prev', previousCentroidId, 'match', matchedCentroidId,  session)
+		
+		if(!(previousCentroidId === -1 || matchedCentroidId === -1)) {
+			transMatrix[previousCentroidId][matchedCentroidId]++			
+		}
 		previousCentroidId = matchedCentroidId
 	}
 		

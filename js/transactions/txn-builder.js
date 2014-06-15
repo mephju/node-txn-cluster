@@ -34,6 +34,9 @@ exports.buildTxnsForSet = function(next) {
 			txnDb.db.run(sql.createTableTxnItemGroups, next)
 		},
 		function(next) {
+			txnDb.db.run('drop table if exists item_counts', next)
+		},
+		function(next) {
 			txnDb.db.run(
 				'create table 	item_counts 			\
 				as 	select 		item_id, 				\

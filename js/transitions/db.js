@@ -20,7 +20,7 @@ var insertTransMatrix = function(transMatrix, callback) {
 		function(next) {
 
 			transMatrix.forEach(function(matrixRow, i) {
-				console.log('insertTransMatrix', i)
+				//console.log('insertTransMatrix', i)
 				db.run(
 					'INSERT INTO transition(cluster_id, matrix_row, row_sum) VALUES(?, ?, ?)', 
 					[i, JSON.stringify(matrixRow), help.arraySum(matrixRow)]
@@ -74,7 +74,7 @@ var pruneColumn = function(index, transMatrix) {
 
 var removeNoTransClusters = function(transMatrix, done) {
 
-	console.log(transMatrix)
+	//console.log(transMatrix)
 
 	var centroidIds = pruneMatrix(transMatrix)
 	console.log('remove no trans clusters')

@@ -1,3 +1,56 @@
+-- delete those clusters that have less than 4 txns assigned to them
+delete from 	clusters 
+where 			cluster_id
+in 		 		(select 	cluster_id
+				from 		(select 	*, count(txn_id) as count 
+							from 		cluster_members 
+							group by 	cluster_id)
+				where 		count<4)
+
+
+
+
+create table 	cluster_item_counts
+as
+select 			cluster_id, 
+				item_id, 
+				count(item_id) as count
+from 			txn_items as ti,
+				(select 		cluster_id, txn_id 					
+				from 			cluster_members				
+				union 										
+				select  		centroid_txn_id as txn_id,
+								cluster_id 	
+				from 			clusters) as uni 		
+where 			ti.txn_id=uni.txn_id
+group by 		cluster_id, item_id
+order by 		cluster_id, count desc
+
+
+
+
+
+select 			cluster_id, 
+				item_id, 
+				count(item_id) as count
+from 			txn_items as ti,
+				(select 		cluster_id, txn_id 					
+				from 			cluster_members				
+				where 			cluster_id=1				
+				union 										
+				select  		centroid_txn_id as txn_id,
+								cluster_id 	
+				from 			clusters 					
+				where 			cluster_id=1) as uni 		
+where 			ti.txn_id=uni.txn_id
+group by 		item_id
+order by 		count desc
+
+
+
+
+
+
 select 		*, count(ti.item_id) as count
 from 		cluster_members as cm,
 			txn_items as ti

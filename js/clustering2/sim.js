@@ -2,7 +2,10 @@ var help = require('../help')
 var simStore = require('./sim-store')
 
 var calc = function(txn, frequentSeq) {
-	return (1 - levenshtein(txn, frequentSeq))
+    return jaccard(txn, frequentSeq)
+    //console.log(sim)
+    //return sim
+	//return (1 - levenshtein(txn, frequentSeq))
 	// var simLevenshtein 	= 1 - levenshtein(txn, frequentSeq)
 	// var simSetSim 		= jaccard(txn, frequentSeq)
 	// return (simLevenshtein * 2 + simSetSim) / 3 
