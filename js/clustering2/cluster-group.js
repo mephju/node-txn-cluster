@@ -29,6 +29,7 @@ var ClusterGroup = function(clusterArray) {
  */
 ClusterGroup.prototype.findBestMatch = function(txnRow) {
 	var matchIdx = this.findBestMatchSeq(txnRow['item_ids'])
+	//console.log('findBestMatch', matchIdx)
 	var c = this.clusters[matchIdx]
 	return c
 }
@@ -39,34 +40,35 @@ ClusterGroup.prototype.findBestMatch = function(txnRow) {
  * @param  {[type]} txn [description]
  * @return {[type]}     [description]
  */
-ClusterGroup.prototype.findBestMatchSeq = function(txn, save) {
+ClusterGroup.prototype.findBestMatchSeq = function(txn) {
 
-	save = save || false
-	
 	var bestMatch = {
-		sim: 0,
-		id:-1,
-		idx:-1,
-		cluster:null
+		normed: {
+			distance: 1
+		}			
 	}
 
 	for (var i=0; i<this.clusters.length; i++) {
 		var c = this.clusters[i]
 		
-		var sim = c.simSeq(txn)
-		if(sim > bestMatch.sim) {
-			bestMatch.sim 		= sim
-			bestMatch.cluster 	= c
-			bestMatch.id 		= c.centroidRow['txn_id']
-			bestMatch.idx 		= i
+		var distance 	= c.distance(txn)		
+
+		if(distance < bestMatch.normed.distance) {
+			bestMatch.normed.distance	= distance
+			bestMatch.normed.cluster 	= c
+			bestMatch.normed.id 		= c.centroidRow['txn_id']
+			bestMatch.normed.idx 		= i
+			continue;
 		}	
 	};
 
-	if(bestMatch.idx === -1 && save) {
-		var max = this.clusters.length-1
+	if(bestMatch.normed.distance === 1) {
+		var max = this.clusters.length
 		return Math.floor(Math.random() * max)
 	}
-	return bestMatch.idx
+
+
+	return bestMatch.normed.idx
 }
 
 

@@ -44,7 +44,7 @@ from 			txn_items as ti,
 				where 			cluster_id=1) as uni 		
 where 			ti.txn_id=uni.txn_id
 group by 		item_id
-order by 		count desc
+order by 		cluster_id, count desc
 
 
 

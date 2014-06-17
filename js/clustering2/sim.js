@@ -2,7 +2,7 @@ var help = require('../help')
 var simStore = require('./sim-store')
 
 var calc = function(txn, frequentSeq) {
-    return jaccard(txn, frequentSeq)
+    return 1 - jaccard(txn, frequentSeq)
     //console.log(sim)
     //return sim
 	//return (1 - levenshtein(txn, frequentSeq))
@@ -12,7 +12,7 @@ var calc = function(txn, frequentSeq) {
 }
 
 exports.calcSim = simStore.calcSim
-exports.calc = calc 
+
 
 
 
@@ -121,3 +121,7 @@ var levenshtein = function(s1, s2) {
 
 // 	return Math.sqrt(centroidLen) * Math.sqrt(vectorLen)
 // }
+
+
+exports.levenshteinDistance = levenshteinDistance
+exports.calc = levenshtein

@@ -29,9 +29,8 @@ var init = exports.init = function(datasetSize) {
 			8
 		)
 	); 
-	exports.NUM_CENTROIDS			 	= Math.max(2, parseInt(Math.ceil(datasetSize / 2000), 10))
-	
-	exports.DATASET_SIZE 				= datasetSize
+	exports.NUM_CENTROIDS = Math.max(2, parseInt(Math.ceil(datasetSize / 2000), 10))
+	exports.DATASET_SIZE = datasetSize
 	
 	console.log(exports)
 }

@@ -151,6 +151,20 @@ var maxIdx = function(numArray) {
 }
 
 
+var minIdx = function(numArray) {
+   var min = numArray[0]
+   var idx = 0
+   
+   for (var i=0, len=numArray.length; i<len; i++) {
+      if(numArray[i] < min) {
+         min = numArray[i]
+         idx = i
+      }
+   }
+   return idx  
+}
+
+
 var avgFromArray = function(array) {
    return array.reduce(function(left, right) {
       return left+right
@@ -163,6 +177,7 @@ exports.clearArray         = clearArray
 exports.avgFromArray       = avgFromArray
 exports.textToNumArray     = textToNumArray
 exports.maxIdx             = maxIdx
+exports.minIdx             = minIdx
 exports.unionNum           = unionNum
 exports.arrayEqual         = arrayEqual
 exports.arraySum           = arraySum

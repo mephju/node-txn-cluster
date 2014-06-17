@@ -10,7 +10,7 @@ var cluster = function(txnRows, done) {
 
 	console.log('cluster')
 	var clusters = init(txnRows)
-	console.log('cluster2', clusters)
+	console.log('cluster2')
 	clusterGroup = clusterIterate(txnRows, clusters)
 	console.log('cluster3')
 	done(null, clusterGroup)
@@ -21,8 +21,11 @@ var clusterIterate = function(txnRows, clusters) {
 	if(clusters.isIterationNeeded) {
 		clusters.clear()
 		console.log('clusterIterate ', txnRows.length)
-		txnRows.forEach(function(txnRow) {
-			clusters.assign(txnRow)
+		txnRows.forEach(function(txnRow, i) {
+			process.stdout.write(i + ' ')
+			var c = clusters.findBestMatch(txnRow)
+			c.addMember(txnRow)
+
 		})
 		clusters.recomputeCentroids()
 		return clusterIterate(txnRows, clusters)
@@ -40,19 +43,20 @@ var clusterIterate = function(txnRows, clusters) {
  * @return {[type]}         [description]
  */
 var init = function(txnRows) {
-	console.log('clustering.init')
+	
 	var K = Math.max(
 		config.NUM_CENTROIDS, 
 		4
 	);
+
+	console.log('clustering.init centroids', K)
+
 	var max 			= txnRows.length - 1
 	var centroids 		= []
 	var clusters	 	= []
 
 	while(centroids.length < K) {
-		console.log('rand K', K)
-
-
+		process.stdout.write(K + '. ')
 		var randomIdx = Math.floor(Math.random() * max)
 		var centroid = txnRows[randomIdx]
 		

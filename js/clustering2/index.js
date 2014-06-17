@@ -3,7 +3,7 @@ var dataset 		= datasetDefs.dataset()
 var async			= require('async')
 var txnDb 			= require('../transactions/db')
 var simMatrix		= require('./sim-matrix')
-var clustering		= require('./clustering')
+var clustering		= require('./clustering-old')
 var db				= require('./db')
 
 

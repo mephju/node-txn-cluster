@@ -9,27 +9,39 @@ var help		= require('../help')
 
 
 var tableClusterItemCounts = function(done) {
+	
 	console.log('create table cluster_item_counts')
-	var sql = 
-	'create table cluster_item_counts 					\
-	as 													\
-	select 			cluster_id, 						\
-					item_id, 							\
-					count(item_id) as count 			\
-	from 			txn_items as ti, 					\
-					(select 		cluster_id, 		\
-									txn_id 				\
-					from 			cluster_members		\
-					union 								\
-					select  		centroid_txn_id  	\
-					as 				txn_id, 			\
-									cluster_id 	 		\
-					from 			clusters) as uni 	\
-	where 			ti.txn_id=uni.txn_id 				\
-	group by 		cluster_id, item_id 				\
-	order by 		cluster_id, count desc' 			
+	
+	async.waterfall([
+		function(next) {
+			db.run('drop table if exists cluster_item_counts', next)		
+		},
+		function(next) {
+			var sql = 
+				'create table cluster_item_counts 					\
+				as 													\
+				select 			cluster_id, 						\
+								item_id, 							\
+								count(item_id) as count 			\
+				from 			txn_items as ti, 					\
+								(select 		cluster_id, 		\
+												txn_id 				\
+								from 			cluster_members		\
+								union 								\
+								select  		centroid_txn_id  	\
+								as 				txn_id, 			\
+												cluster_id 	 		\
+								from 			clusters) as uni 	\
+				where 			ti.txn_id=uni.txn_id 				\
+				group by 		cluster_id, item_id 				\
+				order by 		cluster_id, count desc' 			
 
-	db.run(sql, done)
+			db.run(sql, done)
+		}
+	])
+	
+	
+		
 }
 
 
