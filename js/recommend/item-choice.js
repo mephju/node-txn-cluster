@@ -63,13 +63,14 @@ var bestClusterItemsOverall =
 
 var sql = 	'select * from cluster_item_counts \
 			where cluster_id=$1 \
+			order by count DESC \
 			limit ' + config.N
 
 var fetchMembersById = function(clusterId, memberStore, done) {
 	console.log('fetchMembersById', clusterId)
 	async.waterfall([
 		function(next) {			
-			db.all(bestItemsOfCluster, clusterId, next)
+			db.all(sql, clusterId, next)
 		},
 		function(members, next) {
 			members.forEach(function(member, i) {

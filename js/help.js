@@ -83,6 +83,42 @@ var toBatches = function(array, maxSize) {
 
 
 
+var intersectNum = function(array1, array2) {
+   var result = 0;
+   
+   var a = array1.slice(0).sort(cmp);
+   var b = array2.slice(0).sort(cmp);
+   
+   var aLast = a.length - 1;
+   var bLast = b.length - 1;
+   
+   while (aLast >= 0 && bLast >= 0) {
+      if (a[aLast] > b[bLast] ) {
+         //a.pop();
+         aLast--;
+      } else if (a[aLast] < b[bLast] ){
+         //b.pop();
+         bLast--;
+      } else /* they're equal */ {
+         result++;
+         //b.pop();
+         aLast--;
+         bLast--;
+      }
+   }
+   return result;
+}
+
+
+
+// var a = [1,2,3,4,5,11]
+// var b = [1,2,10,11,12]
+
+// console.log('intersect', intersectNum(a, b))
+
+
+
+
 var intersect = function(array1, array2) {
    var result = [];
    
@@ -183,4 +219,5 @@ exports.arrayEqual         = arrayEqual
 exports.arraySum           = arraySum
 exports.numCmp             = cmp
 exports.intersect          = intersect
+exports.intersectNum       = intersectNum
 exports.toBatches          = toBatches

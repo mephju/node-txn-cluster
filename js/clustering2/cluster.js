@@ -7,9 +7,9 @@ var Cluster = function(centroidRow) {
 	this.members 		= []
 }
 
-Cluster.prototype.clear = function() {
-	help.clearArray(this.members)
-}
+// Cluster.prototype.clear = function() {
+// 	help.clearArray(this.members)
+// }
 
  
 
@@ -47,14 +47,14 @@ Cluster.prototype.recomputeCentroid = function() {
 		return false
 	}
 	
-	var similaritySums = null
-	if(this.members.length > 2000) {
-		similaritySums 	= getSimSumsSlow(this.members)	
-	} 
-	else {
-		var simtrix 	= new Simtrix(this.members)
-		similaritySums 	= getSimSums(simtrix)	
-	}
+	var similaritySums = getSimSumsSlow(this.members)	
+	// if(this.members.length > 3000) {
+	// 	similaritySums 	= getSimSumsSlow(this.members)	
+	// } 
+	// else {
+	// 	var simtrix 	= new Simtrix(this.members)
+	// 	similaritySums 	= getSimSums(simtrix)	
+	// }
 	
 	var maxIdx	 		= help.minIdx(similaritySums)
 	var nextCentroid 	= this.members[maxIdx]

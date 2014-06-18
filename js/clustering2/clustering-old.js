@@ -22,7 +22,7 @@ var clusterIterate = function(txnRows, clusters) {
 		clusters.clear()
 		console.log('clusterIterate ', txnRows.length)
 		txnRows.forEach(function(txnRow, i) {
-			process.stdout.write(i + ' ')
+			//process.stdout.write(i + ' ')
 			var c = clusters.findBestMatch(txnRow)
 			c.addMember(txnRow)
 
@@ -54,9 +54,9 @@ var init = function(txnRows) {
 	var max 			= txnRows.length - 1
 	var centroids 		= []
 	var clusters	 	= []
-
+	process.stdout.write('' + K)
 	while(centroids.length < K) {
-		process.stdout.write(K + '. ')
+		process.stdout.write('.')
 		var randomIdx = Math.floor(Math.random() * max)
 		var centroid = txnRows[randomIdx]
 		

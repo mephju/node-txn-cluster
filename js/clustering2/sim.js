@@ -2,7 +2,10 @@ var help = require('../help')
 var simStore = require('./sim-store')
 
 var calc = function(txn, frequentSeq) {
-    return 1 - jaccard(txn, frequentSeq)
+    return levenshtein(txn, frequentSeq)
+    
+    //return 1 - jaccard(txn, frequentSeq)
+    
     //console.log(sim)
     //return sim
 	//return (1 - levenshtein(txn, frequentSeq))
@@ -12,6 +15,7 @@ var calc = function(txn, frequentSeq) {
 }
 
 exports.calcSim = simStore.calcSim
+exports.calcSim = calc
 
 
 
@@ -21,7 +25,7 @@ exports.calcSim = simStore.calcSim
 
 
 var jaccard = function(array1, array2) {
-   var intersectNum = help.intersect(array1, array2).length
+   var intersectNum = help.intersectNum(array1, array2)
    if(intersectNum == 0) return 0
    return intersectNum/help.unionNum(array1, array2, intersectNum)
 }
