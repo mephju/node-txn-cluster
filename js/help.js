@@ -152,23 +152,38 @@ var unionNum = function(array1, array2, intersectNum) {
 }
 
 
+
+/**
+ * Returns a list of indices of highest values sorted descending 
+ * by the value each index is associated with.
+ * @param  {[type]} numArray [description]
+ * @param  {[type]} n        [description]
+ * @return {[type]}          [description]
+ */
 var nMaxIndices = function(numArray, n) {
-   var max = []
+   var max     = []
    var indices = []
-   
-   for(var m=0; m<n; m++) {
-      max[m] = 0
-      indices[m] = 0
-   }
 
    for(var m=0; m<n; m++) {
-      for (var i=0, len=numArray.length; i<len; i++) {
-         if(numArray[i] > max[m] && indices.indexOf(i) === -1) {
-            max[m] = numArray[i]
-            indices[m] = i
+      
+      var candidate = {
+         val: -1,
+         idx: -1
+      }
+
+      numArray.forEach(function(val, i) {
+         if(val > candidate.val && indices.indexOf(i) === -1) {
+            candidate.val = val
+            candidate.idx = i      
          }
-      }  
+      })
+
+      if(candidate.idx !== -1) {
+         max.push(candidate.val)
+         indices.push(candidate.idx)   
+      }
    }
+
    return indices
 }
 
@@ -177,7 +192,7 @@ var maxIdx = function(numArray) {
    var max = numArray[0]
    var idx = 0
    
-   for (var i=0, len=numArray.length; i<len; i++) {
+   for (var i=1, len=numArray.length; i<len; i++) {
       if(numArray[i] > max) {
          max = numArray[i]
          idx = i

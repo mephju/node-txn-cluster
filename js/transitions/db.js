@@ -7,37 +7,7 @@ var help 		= require('../help')
 
 var insertTransMatrix = function(transMatrix, callback) {
 	console.log('insertTransMatrix', transMatrix.length)
-	async.series([
-		function(next) {
-			db.run('DROP TABLE IF EXISTS transition;', next)
-		},
-		function(next) {
-			db.run('CREATE TABLE IF NOT EXISTS transition(cluster_id INTEGER, matrix_row TEXT, row_sum INTEGER);', next)
-		},
-		function(next) {
-			db.run('BEGIN TRANSACTION;', next)
-		},
-		function(next) {
-
-			transMatrix.forEach(function(matrixRow, i) {
-				//console.log('insertTransMatrix', i)
-				db.run(
-					'INSERT INTO transition(cluster_id, matrix_row, row_sum) VALUES(?, ?, ?)', 
-					[i, JSON.stringify(matrixRow), help.arraySum(matrixRow)]
-				);
-				
-			})
-			next(null)
-		},
-		function(next) {
-			db.run('END TRANSACTION;', next)
-		},
-	], function(err) {
-		if(err) {
-			console.log('insertTransMatrix', 'error')
-		}
-		callback(err)
-	})
+	insertMatrix('transition', transMatrix, callback)
 }
 
 var pruneMatrix = function(transMatrix) {
@@ -116,6 +86,47 @@ var getTransMatrix = function(callback) {
 	], callback)
 }
 
+
+
+var insertMatrix = function(tableName, matrix, callback) {
+	console.log('insertMatrix', matrix.length)
+	async.series([
+		function(next) {
+			db.run('DROP TABLE IF EXISTS ' + tableName, next)
+		},
+		function(next) {
+			db.run('CREATE TABLE IF NOT EXISTS ' + tableName + '(cluster_id INTEGER, matrix_row TEXT, row_sum INTEGER);', next)
+		},
+		function(next) {
+			db.run('BEGIN TRANSACTION;', next)
+		},
+		function(next) {
+
+			matrix.forEach(function(matrixRow, i) {
+				//console.log('insertMatrix', i)
+				db.run(
+					'INSERT INTO ' + tableName + '(cluster_id, matrix_row, row_sum) VALUES(?, ?, ?)', 
+					[i, JSON.stringify(matrixRow), help.arraySum(matrixRow)]
+				);
+				
+			})
+			next(null)
+		},
+		function(next) {
+			db.run('END TRANSACTION;', next)
+		},
+	], function(err) {
+		if(err) {
+			console.log('insertMatrix', 'error')
+		}
+		callback(err)
+	})
+}
+
+
+
+
 exports.removeNoTransClusters = removeNoTransClusters
 exports.getTransMatrix = getTransMatrix
 exports.insertTransMatrix = insertTransMatrix
+exports.insertMatrix = insertMatrix

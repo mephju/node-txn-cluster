@@ -6,12 +6,16 @@ var config		= require('../config')
 var help 		= require('../help')
 var validate    = require('./validate')
 var itemChoice 	= require('./item-choice')
+var matrixTransform = require('./matrix-transform')
 
 var isInitialized 	= false
 var centroidColl 	= null
 var transMatrix 	= null
-var transTotals 	= null
+
 var numRecomms		= []
+
+
+
 
 
 
@@ -31,31 +35,23 @@ var init = function(callback) {
 		function(transitionMatrix, next) {
 			transMatrix = transitionMatrix
 			 
-			transTotals = transMatrix.map(function(row, i) {
-				return help.arraySum(row)
-			})
+		
+			numRecomms = matrixTransform.buildNumRecomms(transMatrix)
 
-			numRecomms = transMatrix.map(function(row, i) {
-				return row.map(function(val) {
-					return config.N * Math.round(val / transTotals[i])
-				})
-			})
-
-			validate.sanitizeMatrix(numRecomms)	
+			//validate.sanitizeMatrix(numRecomms)	
 			
 			if(!validate.isValid(transMatrix, numRecomms)) {
 				return next('matrix is invalid')
 			}	
 			
-			isInitialized = true
-			next(null)
-			
+			transDb.insertMatrix('num_recomms', numRecomms, next)
 		},
 		function(next) {
 			itemChoice.init(next)
 		}
 	], function(err) {
 		if(err) { console.log('error', err) } 
+		isInitialized = true
 		callback(err)
 	})
 }
@@ -66,13 +62,13 @@ var init = function(callback) {
 var recommend = function(session) {
 	var centroidId 		= centroidColl.findBestMatchSeq(session, true)
 	var transRow 		= transMatrix[centroidId]
-	var rowSum 			= transTotals[centroidId]
+	//var rowSum 			= transTotals[centroidId]
 	//numbers of items that each cluster should contribute
 	var clusterNumRow 	= numRecomms[centroidId] 
 
 	if(typeof clusterNumRow === 'undefined') {
 		log(centroidId, 
-			rowSum, 
+			"", 
 			clusterNumRow)
 			//centroidColl.clusters[centroidId].members);	
 	}
@@ -81,7 +77,7 @@ var recommend = function(session) {
 
 	if(recommendations.length === 0) {
 		log(centroidId, 
-			rowSum, 
+			"", 
 			clusterNumRow)
 			//centroidColl.clusters[centroidId]);	
 	}
