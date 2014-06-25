@@ -155,10 +155,9 @@ exports.getTxn = function(txnId, callback) {
 var getTxnIdsForValidation = function(callback) {
 	async.waterfall([
 		function(next) {
-			rootDb.getTableSize('txns', next)
+			rootDb.getTrainingSetSize(next)
 		},
-		function(size, next) {
-			var trainingSetSize = Math.floor(size*config.TRAINING_SET_SIZE)
+		function(trainingSetSize, next) {
 			getTxnIdsHelper(
 				'SELECT txn_id from txns LIMIT 999999999 OFFSET ' + trainingSetSize, 
 				callback
@@ -274,8 +273,34 @@ var getManyTxns = function(txnIds, callback) {
 }
 
 
+
+
+/**
+ * Clustered txns are those txns of the training set which could be assigned
+ * to a cluster. 
+ * @param  {Function} done [description]
+ * @return {[type]}        [description]
+ */
+var getClusteredTxns = function(done) {
+	var sql = 'select txn_id, item_ids from cluster_members'
+	async.waterfall([
+		function(next) {
+			db.all(sql, next)
+		},
+		function(rows, next) {
+			rows.forEach(function(row) {
+				row['item_ids'] = JSON.parse('[' + row['item_ids'] + ']')
+				//console.log(JSON.stringify(row))
+			})
+			done(null, rows)
+		}
+	], done)
+}
+
+
 exports.getManyTxns = getManyTxns
 exports.getAllTxns = getAllTxns
 exports.getTxnIdsForValidation = getTxnIdsForValidation
 exports.getTxnIdsForTraining = getAllTxnIds
 exports.getAllTxnIds = getAllTxnIds
+exports.getClusteredTxns = getClusteredTxns

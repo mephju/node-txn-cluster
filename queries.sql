@@ -1,3 +1,33 @@
+drop table if exists item_counts;
+create table item_counts 
+as
+select item_id, count(item_id) as count
+from txn_items 
+where txn_id 
+in
+(select txn_id 
+from txns 
+order by txn_id
+limit 48573)
+group by item_id
+order by count desc;
+
+-- retrieve most popular items of the traning set
+-- 1. get txn_ids of training set
+-- 2. get item_ids of those txn_ids
+-- 3. group by item_id and count them
+select item_id, count(item_id) as count
+from txn_items 
+where txn_id 
+in
+(select txn_id 
+from txns 
+order by txn_id
+limit 21316)
+group by item_id
+order by count desc
+
+
 -- delete those clusters that have less than 4 txns assigned to them
 delete from 	clusters 
 where 			cluster_id
@@ -107,7 +137,7 @@ order by count DESC;
 
 
 -- 1
-create table 	item_counts 
+create table 	item_counts
 as 	select 		item_id, count(item_id) as count 
 	from 		txn_items 
 	group by 	item_id 

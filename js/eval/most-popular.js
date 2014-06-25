@@ -4,11 +4,13 @@ var db 			= exports.db = new sqlite3.Database(dataset.db())
 var async		= require('async')
 var txnDb		= require('../transactions/db')
 var util		= require('util')
+var config 		= require('../config')
 
 var popularItemMap = {}
 
 
 var buildItemMap = function(popularItems) {
+	console.log('buildItemMap')
 	var popularItemMap = {}
 	for(var i=1; i<=popularItems.length; i++) {
 		popularItemMap[i] = popularItems.slice(0, i)
@@ -27,27 +29,19 @@ var getPopularItemsForN = function(n) {
 // get most popular items from the training set
 //
 var getPopularItemsSql = function(n, trainingSize) {
-
-	return util.format(
-		'SELECT 	 item_id '+
-		'FROM('+
-		'SELECT 	count(*) AS	count, item_id ' +
-		'FROM 		txn_items ' +
-		'WHERE 		txn_id ' +
-		'IN(' +
-		'	SELECT 		txn_id ' +
-		'	FROM 		txns ' +
-		'	ORDER BY 	txn_id ' +
-		'	LIMIT 		%d ' +
-		')' +
-		'GROUP BY 	item_id ' + 
-		'ORDER BY 	count ' +
-		'DESC ' +
-		'LIMIT 		%d )',
-		trainingSize,
-		n
-
-	);
+	return 'select 	item_id, 	\
+				count(item_id) 	\
+				as count 		\
+	from 		txn_items 		\
+	where 		txn_id  		\
+	in 							\
+	(select 	txn_id 			\
+	from 		txns 			\
+	order by 	txn_id			\
+	limit ' + 	trainingSize +')\
+	group by 	item_id			\
+	order by 	count desc  	\
+	limit ' 	+ config.N
 }
 
 
@@ -64,10 +58,10 @@ var init = function(callback) {
 			db.all(sql, next)
 		},
 		function(rows, next) {
-
-			next(null, rows.map(function(row) {
-				return row['item_id']
-			}))
+			rows.forEach(function(row, i) {
+				rows[i] = row['item_id']
+			})
+			next(null, rows)
 		},
 		function(items) {
 			console.log(items.length)

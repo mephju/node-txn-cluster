@@ -17,10 +17,14 @@ var start = function(callback) {
 			baseline.init(next)
 		},
 		function(next) {
-			recommender.init(next)
+			baselineItems = baseline.getPopularItemsForN(config.N)
+			next(null)
 		},
 		function(next) {
-			baselineItems = baseline.getPopularItemsForN(config.N)
+			var fallbackItems = baselineItems
+			recommender.init(fallbackItems, next)
+		},
+		function(next) {
 			txnDb.getAllTxns(next, true)
 		},
 		function(txnRows, next) {

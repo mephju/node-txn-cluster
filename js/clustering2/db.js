@@ -182,36 +182,36 @@ var getClusterMembers = function(clusterId, done) {
 }
 
 
-var getClusterMembers2 = function(clusterId, done) {
-	console.log('getClusterMembers32 for', clusterId)
-	async.waterfall([
-		function(next) {
-			var sql = 
-				'select distinct					\
-							ic.item_id, ic.count 	\
-				from 		cluster_members as cm, 	\
-							txn_items as ti,  		\
-							item_counts as ic 		\
-				where 		cm.txn_id=ti.txn_id 	\
-				and 		ti.item_id=ic.item_id 	\
-				and 		cm.cluster_id=$1 		\
-				order by 	ic.count desc 			\
-				limit ' + config.N 			
+// var getClusterMembers2 = function(clusterId, done) {
+// 	console.log('getClusterMembers32 for', clusterId)
+// 	async.waterfall([
+// 		function(next) {
+// 			var sql = 
+// 				'select distinct					\
+// 							ic.item_id, ic.count 	\
+// 				from 		cluster_members as cm, 	\
+// 							txn_items as ti,  		\
+// 							item_counts as ic 		\
+// 				where 		cm.txn_id=ti.txn_id 	\
+// 				and 		ti.item_id=ic.item_id 	\
+// 				and 		cm.cluster_id=$1 		\
+// 				order by 	ic.count desc 			\
+// 				limit ' + config.N 			
 
-			db.all(sql, clusterId, next)
-		},
-		function(rows, next) {
-			rows.forEach(function(row) {
-				row = row['item_id']
-			})
-			done(null, rows)	
-		}
-	], done)
-}
+// 			db.all(sql, clusterId, next)
+// 		},
+// 		function(rows, next) {
+// 			rows.forEach(function(row) {
+// 				row = row['item_id']
+// 			})
+// 			done(null, rows)	
+// 		}
+// 	], done)
+// }
 
 
 exports.tableClusterItemCounts = tableClusterItemCounts
-exports.getClusterMembers2 	= getClusterMembers2
+//exports.getClusterMembers2 	= getClusterMembers2
 exports.getClusterMembers	= getClusterMembers
 exports.getCentroidRows 	= getCentroidRows
 exports.insertClusters 		= insertClusters

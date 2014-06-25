@@ -1,6 +1,19 @@
 var config = require('./config')
 
 
+var removeNulls = function(array) {
+   var i =0
+   while(i < array.length) {
+      if(array[i] === null || typeof array[i] === 'undefined') {
+         array.splice(i, 1)
+         console.log('remove at idx', i)
+      } else {
+         i++
+      }
+   }
+   return array;
+}
+
 var arrayRandomItems = function(n, array) {
    var items = []
    for(var i=0; i<array.length; i++) {
@@ -72,7 +85,7 @@ var toBatches = function(array, maxSize) {
          batch = []
       }
    })
-   console.log('created %d batches', batches.length)
+   //console.log('created %d batches', batches.length)
    return batches
 }
 
@@ -94,14 +107,11 @@ var intersectNum = function(array1, array2) {
    
    while (aLast >= 0 && bLast >= 0) {
       if (a[aLast] > b[bLast] ) {
-         //a.pop();
          aLast--;
       } else if (a[aLast] < b[bLast] ){
-         //b.pop();
          bLast--;
       } else /* they're equal */ {
          result++;
-         //b.pop();
          aLast--;
          bLast--;
       }
@@ -222,6 +232,7 @@ var avgFromArray = function(array) {
     }) / array.length
 }
 
+exports.removeNulls        = removeNulls
 exports.arrayRandomItems   = arrayRandomItems
 exports.nMaxIndices        = nMaxIndices
 exports.clearArray         = clearArray

@@ -2,7 +2,7 @@ var config 		= require('../config')
 var async 		= require('async')
 var Cluster 	= require('./cluster').Cluster
 var ClusterGroup = require('./cluster-group').ClusterGroup
-
+var help 		= require('../help')
 
 
 
@@ -21,13 +21,20 @@ var clusterIterate = function(txnRows, clusters) {
 	if(clusters.isIterationNeeded) {
 		clusters.clear()
 		console.log('clusterIterate ', txnRows.length)
+		
 		txnRows.forEach(function(txnRow, i) {
-			//process.stdout.write(i + ' ')
+
 			var c = clusters.findBestMatch(txnRow)
-			c.addMember(txnRow)
+			if(c) { 	
+				c.addMember(txnRow) 
+			} 
+			// else {		
+			// 	txnRows[i] = null
+			// }
 
 		})
 		clusters.recomputeCentroids()
+		help.removeNulls(txnRows)
 		return clusterIterate(txnRows, clusters)
 	} else {
 		clusters.cleanUp()

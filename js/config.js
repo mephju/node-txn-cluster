@@ -16,6 +16,7 @@ exports.EASY_SEQUENCE_SIZE = 275
 //number of recommendations which are requested
 exports.N = 5
 exports.MAX_CONTRIBUTION = 0.6
+exports.BASELINE_ON = true //false
 
 
 

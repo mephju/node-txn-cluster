@@ -27,7 +27,7 @@ var evaluate = function(txnRows, baselineItems) {
 
 var evalTxn = function(txn, baselineItems) {
 
-	console.log('compare txn with length', txn.length)
+	//console.log('compare txn with length', txn.length)
 
 	var hitsTxn = []
 

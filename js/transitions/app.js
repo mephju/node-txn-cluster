@@ -11,9 +11,10 @@ var config 		= require('../config')
 var buildTransMatrix = function(clusters, callback) {
 	async.waterfall([
 		function(next) {
-			txnDb.getAllTxns(next)
+			txnDb.getClusteredTxns(next)
 		},
 		function(txnRows, next) {
+			console.log('getClusteredTxns', txnRows.length, JSON.stringify(txnRows[0]))
 			var transMatrix = findTransitions(clusters, txnRows, next)
 			db.removeNoTransClusters(transMatrix, next)
 		},
@@ -30,8 +31,12 @@ var buildTransMatrix = function(clusters, callback) {
 
 var findTransitions = function(clusters, txnRows, done) {
 	var transMatrix = initTransMatrix(clusters.clusters.length)
+	console.log('findTransitions for txns', txnRows.length)
 	txnRows.forEach(function(txnRow) {
+
+		process.stdout.write('.')
 		var txn = txnRow['item_ids']
+
 		
 		if(txn.length > 50) {
 			var txns = help.toBatches(txn, 50)
@@ -64,7 +69,7 @@ var initTransMatrix = function(size) {
 const ALWAYS_RETURN_CLUSTER_IDX = true
 
 var findProbsForTxn = function(transMatrix, clusters, txn) {
-	console.log('findProbsForTxn', txn.length)
+	
 	
 	var previousCentroidId = -1
 	

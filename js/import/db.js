@@ -32,12 +32,15 @@ var prepare = exports.prepare = function(callback) {
 			}
 		},
 		function(next) {
+			db.run('drop table if exists feedback', next)
+		},
+		function(next) {
 			console.log('createFeedbackStmt1')
 			db.run(sql.createFeedbackStmt(), next)
 		},
 		function(next) {
 			console.log('createFeedbackStmt2')
-			insertFeedbackStmt = db.prepare('INSERT INTO feedback VALUES(?, ?, ?)', next)
+			insertFeedbackStmt = db.prepare('INSERT INTO feedback VALUES(?, ?, ?, ?)', next)
 		},
 		function(next) {
 			db.run('DELETE FROM feedback', next)
@@ -63,8 +66,12 @@ var prepare = exports.prepare = function(callback) {
 
 
 var insertItem = function(record, callback) {
-	insertFeedbackStmt.run(
-		[record[0], record[1], record[3]], //user, item, timestamp 
+	insertFeedbackStmt.run([
+		record[dataset.indices.userId], 
+		record[dataset.indices.itemId], 
+		record[dataset.indices.timestamp], 
+		record[dataset.indices.rating]
+	], //user, item, timestamp, rating
 		callback
 	);
 }
@@ -127,10 +134,10 @@ var insertLastFm = function(records, callback) {
 				},
 				function(itemId, next) {
 					var r = [ 
-						record[0], 
+						record[dataset.indices.userId], 
 						itemId, 
 						null, 
-						new Date(record[1]).getTime()/1000 
+						new Date(dataset.indices.timestamp).getTime()/1000 
 					]; 
 					//console.log('insertLastFmItem', r, record)
 					insertItem(r, next)

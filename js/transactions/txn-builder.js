@@ -1,5 +1,6 @@
 
 var txnDb 	= require('./db')
+var rootDb 	= require('../db')
 var db 		= txnDb.db
 var util 	= require('util')
 var async 	= require('async')
@@ -37,13 +38,23 @@ exports.buildTxnsForSet = function(next) {
 			txnDb.db.run('drop table if exists item_counts', next)
 		},
 		function(next) {
+			rootDb.getTrainingSetSize(next)
+		},
+		function(trainingSetSize, next) {
 			txnDb.db.run(
-				'create table 	item_counts 			\
-				as 	select 		item_id, 				\
-								count(item_id) as count \
-					from 		txn_items 				\
-					group by 	item_id 				\
-					order by 	count DESC;',
+				'create table 	item_counts		\
+				as select 		item_id,  		\
+								count(item_id) 	\
+								as count 		\
+				from 			txn_items 		\
+				where 			txn_id  		\
+				in 								\
+				(select 		txn_id  		\
+				from 			txns  			\
+				order by 		txn_id 			\
+				limit ' + trainingSetSize +') 	\
+				group by item_id 				\
+				order by count desc',
 				next
 			);
 		}

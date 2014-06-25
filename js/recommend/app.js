@@ -12,6 +12,8 @@ var isInitialized 	= false
 var centroidColl 	= null
 var transMatrix 	= null
 
+
+var fallbackItems 	= null
 var numRecomms		= []
 
 
@@ -20,8 +22,12 @@ var numRecomms		= []
 
 
 
-var init = function(callback) {
+
+var init = function(fallbackRecomms, callback) {
 	console.log('init recommender')
+
+	fallbackItems = fallbackRecomms
+
 	async.waterfall([
 		function(next) {
 			clusterGroupModule.buildFromDb(next)
@@ -61,6 +67,9 @@ var init = function(callback) {
 
 var recommend = function(session) {
 	var centroidId 		= centroidColl.findBestMatchSeq(session, true)
+	if(centroidId === -1) {
+		return fallbackItems
+	}
 	var transRow 		= transMatrix[centroidId]
 	//var rowSum 			= transTotals[centroidId]
 	//numbers of items that each cluster should contribute
@@ -111,6 +120,7 @@ var getRecommendations = function(clusterNumRow, cluster) {
 			})
 		}
 	})
+	//console.log('getRecommendations', recomms)
 	return recomms
 }
 
