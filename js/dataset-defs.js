@@ -44,7 +44,6 @@ function Movielens(datasetPath, dbTable) {
 		rating:2,
 		timestamp:3
 	}
-	
 }
 
 function LastFm(datasetPath, dbTable) {

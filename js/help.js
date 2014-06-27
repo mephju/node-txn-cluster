@@ -1,5 +1,5 @@
 var config = require('./config')
-
+var deepEqual = require('deep-equal')
 
 var removeNulls = function(array) {
    var i =0
@@ -232,6 +232,21 @@ var avgFromArray = function(array) {
     }) / array.length
 }
 
+
+var contains = function(host, guest) {
+
+   for(var i=0,len=host.length; i<len; i++) {
+      var item = host[i]
+      if(item[0] === guest[0] && item[1] === guest[1]) {
+         return true
+      }
+   }
+   return false
+}
+
+
+exports.contains           = contains
+exports.deepEqual          = require('deep-equal').deepEqual
 exports.removeNulls        = removeNulls
 exports.arrayRandomItems   = arrayRandomItems
 exports.nMaxIndices        = nMaxIndices

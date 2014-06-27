@@ -32,7 +32,19 @@ var start = function(done) {
 		},
 		function(next) {
 			db.tableClusterItemCounts(next)
+		},
+		function(next) {
+			db.tableTxnItemRatings(next)
+		},
+		function(next) {
+			db.tableClusterItemRatings(next)
+		},
+		function(next) {
+			db.tableItemClusterCounts(next)
 		}
+		// function(next) {
+		// 	db.tableClusterItemTfidf(next)
+		// }
 	], function(err) {
 		done(err, clusterGroup)
 	})

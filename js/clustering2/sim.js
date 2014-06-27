@@ -1,8 +1,7 @@
 var help = require('../help')
 var simStore = require('./sim-store')
 
-var calc = function(txn, frequentSeq) {
-    return levenshtein(txn, frequentSeq)
+
     
     //return 1 - jaccard(txn, frequentSeq)
     
@@ -12,14 +11,60 @@ var calc = function(txn, frequentSeq) {
 	// var simLevenshtein 	= 1 - levenshtein(txn, frequentSeq)
 	// var simSetSim 		= jaccard(txn, frequentSeq)
 	// return (simLevenshtein * 2 + simSetSim) / 3 
+
+
+//exports.calcSim = simStore.calcSim
+
+
+
+var jaccardBigramDist = function(array1, array2) {
+    return 1-jaccardBigram(array1, array2)
 }
 
-exports.calcSim = simStore.calcSim
-exports.calcSim = calc
+
+var jaccardBigram = function(array1, array2) {
 
 
+    var len1    = array1.length
+    var len2    = array2.length
+
+    if(Math.min(len1, len2) < 2) { return 0 }
+        
+    var len     = Math.max(len1, len2)
+
+    var array1Bigrams = []
+    var array2Bigrams = []
+
+    var candidate = new Array(2)
+
+    for(var i=1; i<len; i++) {
+        if(i < len1) {
+            candidate[0] = array1[i-1]
+            candidate[1] = array1[i]
+            if(!help.contains(array1Bigrams, candidate)) {
+                array1Bigrams.push(candidate.slice(0))    
+            }
+            
+        }
+        if(i < len2) {
+            candidate[0] = array2[i-1]
+            candidate[1] = array2[i]
+            if(!help.contains(array2Bigrams, candidate)) {
+                array2Bigrams.push(candidate.slice(0))    
+            }
+        }
+    }
 
 
+    var intersectNum = help.intersectNum(
+        array1Bigrams, 
+        array2Bigrams
+    );
+
+    return intersectNum/(array1Bigrams.length + array2Bigrams.length - intersectNum)
+
+
+}
 
 
 
@@ -126,6 +171,9 @@ var levenshtein = function(s1, s2) {
 // 	return Math.sqrt(centroidLen) * Math.sqrt(vectorLen)
 // }
 
-
+exports.calcSim = jaccardBigramDist
 exports.levenshteinDistance = levenshteinDistance
-exports.calc = levenshtein
+exports.calc = exports.calcSim
+exports.test = {
+    jaccardBigram: jaccardBigram
+}

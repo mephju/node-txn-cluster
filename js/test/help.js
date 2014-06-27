@@ -26,6 +26,12 @@ describe('help works - ', function() {
 			var num = help.intersectNum(set1, set2)
 			assert.equal(num, 2)
 		})
+		it('works for array of arrays', function() {
+			var set1 = [ [1,2], [3,4], [5,6], [2,3], [4,5]]
+			var set2 = [ [1,2], [2,2], [2,3], [4,5] ]
+			var num = help.intersectNum(set1, set2)
+			assert.equal(num, 3)
+		})
 	})
 
 
@@ -39,5 +45,13 @@ describe('help works - ', function() {
 			assert.deepEqual(array, [1,2,3,4])
 
 		})
+	})
+
+
+	it('contains finds array in list of arrays', function() {
+		assert(help.contains(
+			[[1,2], [1,3]], 
+			[1,3]
+		));
 	})
 })

@@ -1,16 +1,182 @@
+
+--  gcc -fPIC -shared extension-functions.c -o extension-functions.so -lm
+select load_extension('/home/mephju/maproject/daport/sqlite/extension-functions');
+drop table if exists cluster_item_tfidf;
+create table cluster_item_tfidf
+as 
+select 		cic.cluster_id,
+			cic.item_id,
+			cic.count 				as tf,
+			icc.count 				as df,
+			cc.N, 			
+			cic.count*log10(cc.N/icc.count)	as tfidf
+              
+from 		cluster_item_counts 	as cic,
+			item_cluster_counts 	as icc,
+			item_counts 			as ic,
+			(select 	count(*) 	as N 
+			from 		clusters)   as cc
+
+where 	cic.item_id=icc.item_id
+and 	icc.item_id=ic.item_id;
+
+
+
+
+
+-- how many clusters contain item_id
+create table 	item_cluster_counts
+as
+select   		item_id, 
+				count(cluster_id) as count
+
+from 			cluster_item_counts
+group by 		item_id
+order by 		item_id, cluster_id
+
+
+
+
+
+
+
+
+create table cluster_item_txn
+as select 	cic.item_id,
+			cic.count,
+			cic.cluster_id,
+			cm.txn_id
+			
+
+from 		cluster_item_counts as cic,
+			cluster_members as cm
+
+where 		cic.cluster_id=cm.cluster_id
+and 		cm.txn_id 
+in (
+
+select 		txn_id 
+from 		txn_items
+where 		item_id=cic.item_id
+);
+
+
+
+
+
+
+
+
+create table 	txn_item_ratings
+as
+select 			ti.txn_id, 
+				ti.item_id, 
+				f.rating
+from 			txn_items as ti, 
+				feedback as f, 
+				txns as t
+where 			ti.txn_id=t.txn_id
+and 			t.user_id=f.user_id
+and 			ti.item_id=f.item_id; 
+
+
+
+
+
+
+
+
+
+create table cluster_item_ratings
+as select 	cic.item_id,
+			cic.count,
+			cic.cluster_id,
+			cm.txn_id,
+			tir.rating
+
+from 		cluster_item_counts as cic,
+			cluster_members as cm,
+			txn_item_ratings as tir
+
+where 		cic.cluster_id=cm.cluster_id
+and 		tir.txn_id=cm.txn_id
+and         tir.item_id=cic.item_id
+
+
+
+
+
+
+
+
+
+
+select *,sum(count)
+from cluster_item_counts
+where cluster_id=0
+
+
+select 		cic.item_id,
+			cic.count,
+			cic.cluster_id,
+			cm.txn_id,
+			txns.user_id,
+			f.rating
+from 		cluster_item_counts as cic,
+			cluster_members as cm,
+			txn_items as ti
+where 		cic.cluster_id=0
+and 		cic.item_id=6
+and 		cic.cluster_id=cm.cluster_id
+and 		cic.txn_id=ti.txn_id
+and 		ti.item_id=cic_item_id
+
+
+
+
+-- get avg rating of item_id in a cluster
+select 		cic.item_id,
+			cic.count,
+			cic.cluster_id,
+			cm.txn_id,
+			txns.user_id,
+			f.rating
+
+from 		cluster_item_counts as cic,
+			cluster_members as cm,
+			txns,
+			feedback as f,
+			txn_items
+
+where 		cic.cluster_id=0
+and 		cic.cluster_id=cm.cluster_id
+and 		cm.txn_id=txns.txn_id
+and 		txn_items.txn_id=cm.txn_id
+and         txn_items.item_id=cic.item_id
+and 		txns.user_id=f.user_id
+and 		f.item_id=cic.item_id
+
+
+select 		txn_id
+from 		cluster_members
+where 		cluster_id=0
+and  		item_id=
+
+
+
 drop table if exists item_counts;
 create table item_counts 
 as
-select item_id, count(item_id) as count
-from txn_items 
-where txn_id 
+select 		item_id, count(item_id) as count
+from 		txn_items 
+where 		txn_id 
 in
-(select txn_id 
-from txns 
-order by txn_id
-limit 48573)
-group by item_id
-order by count desc;
+(select 	txn_id 
+from 		txns 
+order by 	txn_id
+limit 		48573)
+group by 	item_id
+order by 	count desc;
 
 -- retrieve most popular items of the traning set
 -- 1. get txn_ids of training set

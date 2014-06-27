@@ -61,10 +61,49 @@ var bestClusterItemsOverall =
 	order by 	ic.count desc 			\
 	limit ' 	+ config.N 			
 
-var sql = 	'select * from cluster_item_counts \
-			where cluster_id=$1 \
-			order by count DESC \
-			limit ' + config.N
+
+var sqlWithRatings = 
+	'select 	item_id, count, \
+				avg(rating) as avg 	\
+	from 		cluster_item_ratings 		\
+	where 		cluster_id=$1				\
+	group by 	item_id 				\
+	order by 	count desc, avg desc 	\
+	limit ' + config.N 
+
+var sqlWithoutRatings = 'select * \
+			from 		cluster_item_counts \
+			where 		cluster_id=$1 \
+			order by 	count DESC \
+			limit ' 	+ config.N
+
+
+var sqlWithTfTfidf = 
+	'select item_id,tfidf	\
+	from cluster_item_tfidf	\
+	where cluster_id=$1		\
+	order by tf desc, tfidf desc 	\
+	limit ' + config.N
+
+var sqlWithTfidf = 
+	'select item_id,tfidf	\
+	from cluster_item_tfidf	\
+	where cluster_id=$1		\
+	order by tfidf desc 	\
+	limit ' + config.N
+
+/*
+	If ratings have been imported, consider them in the item choice strategy
+ */
+var sql = typeof dataset.indices.rating !== 'undefined' ? 
+	sqlWithRatings : 
+	sqlWithoutRatings
+
+
+if(config.ITEM_CHOICE_STRATEGY.tfidf) {
+	sql = sqlWithTfidf
+}
+
 
 var fetchMembersById = function(clusterId, memberStore, done) {
 	console.log('fetchMembersById', clusterId)

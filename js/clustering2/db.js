@@ -39,10 +39,123 @@ var tableClusterItemCounts = function(done) {
 			db.run(sql, done)
 		}
 	])
-	
-	
-		
 }
+
+
+var tableTxnItemRatings = function(done) {
+	async.waterfall([
+		function(next) {
+			db.run('drop table if exists txn_item_ratings', next)		
+		},
+		function(next) {
+			var sql = 
+				'create table 	txn_item_ratings 		\
+				as 										\
+				select 			ti.txn_id, 				\
+								ti.item_id, 			\
+								f.rating 				\
+				from 			txn_items as ti, 		\
+								feedback as f, 			\
+								txns as t 				\
+				where 			ti.txn_id=t.txn_id 		\
+				and 			t.user_id=f.user_id 	\
+				and 			ti.item_id=f.item_id; '
+
+			db.run(sql, done)
+		}
+	])
+}
+
+var tableClusterItemRatings = function(done) {
+	async.waterfall([
+		function(next) {
+			db.run('drop table if exists cluster_item_ratings', next)		
+		},
+		function(next) {
+			var sql = 
+				'create table cluster_item_ratings 		\
+				as select 	cic.item_id, 				\
+							cic.count,					\
+							cic.cluster_id, 			\
+							cm.txn_id, 					\
+							tir.rating 					\
+														\
+				from 		cluster_item_counts as cic, \
+							cluster_members as cm, 		\
+							txn_item_ratings as tir 	\
+														\
+				where 		cic.cluster_id=cm.cluster_id\
+				and 		tir.txn_id=cm.txn_id 		\
+				and         tir.item_id=cic.item_id' 	
+
+			db.run(sql, done)
+		}
+	])
+}
+
+
+
+
+var tableItemClusterCounts = function(done) {
+	async.waterfall([
+		function(next) {
+			db.run('drop table if exists item_cluster_counts', next)		
+		},
+		function(next) {
+			var sql = 
+				'create table 	item_cluster_counts 	\
+				as 										\
+				select   		item_id, 				\
+								count(cluster_id) as count \
+				from 			cluster_item_counts 	\
+				group by 		item_id 				\
+				order by 		item_id, cluster_id' 	
+
+			db.run(sql, done)
+		}
+	])
+}
+
+
+
+var tableClusterItemTfidf = function(done) {
+	console.log('tableClusterItemTfidf')
+	async.waterfall([
+		function(next) {
+
+			db.run('drop table if exists cluster_item_tfidf', next)
+		},
+		function(next) {
+			db.loadExtension(
+				'/home/mephju/Dropbox/uni/seminarproject/project/daport/sqlite/extension-functions',
+				next
+			);
+			next(null)
+		},
+		function(next) {
+			var sql = 
+				'create table cluster_item_tfidf 	 		\
+				as 											\
+				select 		cic.cluster_id, 				\
+							cic.item_id, 					\
+							cic.count 				as tf,	\
+							icc.count 				as df,	\
+							cc.N, 							\
+							cic.count*log10(cc.N/icc.count)	as tfidf 	\
+				from 		cluster_item_counts 	as cic, \
+							item_cluster_counts 	as icc,	\
+							item_counts 			as ic,	\
+							(select 	count(*) 	as N 	\
+							from 		clusters)   as cc 	\
+				where 	cic.item_id=icc.item_id 			\
+				and 	icc.item_id=ic.item_id;' 	
+
+			db.run(sql, done)
+		}
+	])
+}
+
+
 
 
 
@@ -209,8 +322,11 @@ var getClusterMembers = function(clusterId, done) {
 // 	], done)
 // }
 
-
-exports.tableClusterItemCounts = tableClusterItemCounts
+exports.tableClusterItemTfidf 	= tableClusterItemTfidf
+exports.tableItemClusterCounts 	= tableItemClusterCounts
+exports.tableTxnItemRatings 	= tableTxnItemRatings
+exports.tableClusterItemRatings = tableClusterItemRatings 
+exports.tableClusterItemCounts 	= tableClusterItemCounts
 //exports.getClusterMembers2 	= getClusterMembers2
 exports.getClusterMembers	= getClusterMembers
 exports.getCentroidRows 	= getCentroidRows
