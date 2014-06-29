@@ -29,7 +29,7 @@ var jaccardBigram = function(array1, array2) {
     var len2    = array2.length
 
     if(Math.min(len1, len2) < 2) { return 0 }
-        
+
     var len     = Math.max(len1, len2)
 
     var array1Bigrams = []
@@ -56,7 +56,7 @@ var jaccardBigram = function(array1, array2) {
     }
 
 
-    var intersectNum = help.intersectNum(
+    var intersectNum = help.intersectNumDes(
         array1Bigrams, 
         array2Bigrams
     );

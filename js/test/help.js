@@ -34,6 +34,41 @@ describe('help works - ', function() {
 		})
 	})
 
+	describe('intersectNumDes(array1, array2)', function() {
+
+		it('produces set results', function() {
+			var set1 = [1,2,3,4,5]
+			var set2 = [1,2,2,2,2]
+			var num = help.intersectNumDes(set1, set2)
+			assert.equal(num, 2)
+		})
+		it('does not affect length of arrays', function() {
+			var set1 = [1,2,3,4,5]
+			var set2 = [1,10,11,4,5]
+			var len1 =  set1.length
+			var len2 = set2.length
+
+			var num = help.intersectNumDes(set1, set2)
+			assert.equal(len1, 5)
+			assert.equal(len2, 5)			
+		})
+		it('finds 3 intersecting items', function() {
+
+			var set1 = [1,2,3,4,5]
+			var set2 = [1,10,11,4,5]
+
+			var num = help.intersectNumDes(set1, set2)
+			assert.equal(num, 3)
+
+		})
+		it('works for array of arrays', function() {
+			var set1 = [ [1,2], [3,4], [5,6], [2,3], [4,5]]
+			var set2 = [ [1,2], [2,2], [2,3], [4,5] ]
+			var num = help.intersectNumDes(set1, set2)
+			assert.equal(num, 3)
+		})
+	})
+
 
 	describe('removeNulls(array)', function() {
 		it('removes nulls, undefined elements from array and shrinks it', function() {

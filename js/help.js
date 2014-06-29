@@ -93,14 +93,18 @@ var toBatches = function(array, maxSize) {
 
 
 
-
-
-
-var intersectNum = function(array1, array2) {
+/**
+ * [intersectNumDes calculates the intersection of a and b. 
+ * a and b are modified afterwards]
+ * @param  {[type]} a [description]
+ * @param  {[type]} b [description]
+ * @return {[type]}   [description]
+ */
+var intersectNumDes = function(a, b) {
    var result = 0;
    
-   var a = array1.slice(0).sort(cmp);
-   var b = array2.slice(0).sort(cmp);
+   a.sort(cmp);
+   b.sort(cmp);
    
    var aLast = a.length - 1;
    var bLast = b.length - 1;
@@ -117,6 +121,17 @@ var intersectNum = function(array1, array2) {
       }
    }
    return result;
+}
+
+
+
+
+var intersectNum = function(array1, array2) {
+   
+   var a = array1.slice(0)
+   var b = array2.slice(0)
+   
+   return intersectNumDes(a, b)
 }
 
 
@@ -261,4 +276,5 @@ exports.arraySum           = arraySum
 exports.numCmp             = cmp
 exports.intersect          = intersect
 exports.intersectNum       = intersectNum
+exports.intersectNumDes    = intersectNumDes
 exports.toBatches          = toBatches
