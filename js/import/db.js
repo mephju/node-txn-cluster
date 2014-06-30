@@ -25,7 +25,7 @@ var prepare = exports.prepare = function(callback) {
 			db.serialize(next)
 		},
 		function(next) {
-			if(dataset.dbTable.indexOf('last') != -1) {
+			if(dataset.dbTable.indexOf('last') !== -1) {
 				dbLastFm.init(db, next)	
 			} else {
 				next(null)
@@ -39,7 +39,6 @@ var prepare = exports.prepare = function(callback) {
 			db.run(sql.createFeedbackStmt(), next)
 		},
 		function(next) {
-			console.log('createFeedbackStmt2')
 			insertFeedbackStmt = db.prepare('INSERT INTO feedback VALUES(?, ?, ?, ?)', next)
 		},
 		function(next) {
@@ -125,6 +124,7 @@ exports.insert = function(records, callback) {
 
 
 var insertLastFm = function(records, callback) {
+
 	async.eachSeries(
 		records,
 		function(record, next) {
@@ -137,8 +137,9 @@ var insertLastFm = function(records, callback) {
 						record[dataset.indices.userId], 
 						itemId, 
 						null, 
-						new Date(dataset.indices.timestamp).getTime()/1000 
+						new Date(record[1]).getTime()/1000 
 					]; 
+					console.log(r)
 					//console.log('insertLastFmItem', r, record)
 					insertItem(r, next)
 				}

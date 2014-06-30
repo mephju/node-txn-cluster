@@ -39,16 +39,16 @@ var start = function() {
 	var startTime = new Date().getTime()
 
 	async.waterfall([
-		// function(next) {
-		// 	importApp.makeImport(next)
-		// },
+		function(next) {
+			importApp.makeImport(next)
+		},
 		// function() {
 		// 	console.log('done importing')
 		// },
-		// function(next) {
-		// 	console.log('build txns')
-		// 	txnApp.buildTxns(next)
-		// }, 
+		function(next) {
+			console.log('build txns')
+			txnApp.buildTxns(next)
+		}, 
 		function(next) {
 			clusterApp.start(next)
 		},

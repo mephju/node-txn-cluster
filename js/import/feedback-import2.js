@@ -69,7 +69,7 @@ var onLinesAvailable = function(lines, done) {
 	})
 
 	db.insert(records,  function(err) {
-		console.log('feedback imported', records.length)
+		console.log('feedback imported', records.length, err)
 		done(err)
 	})				
 }
