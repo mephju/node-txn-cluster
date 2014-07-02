@@ -42,9 +42,6 @@ var start = function() {
 		function(next) {
 			importApp.makeImport(next)
 		},
-		// function() {
-		// 	console.log('done importing')
-		// },
 		function(next) {
 			console.log('build txns')
 			txnApp.buildTxns(next)

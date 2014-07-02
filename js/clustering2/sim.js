@@ -16,6 +16,16 @@ var simStore = require('./sim-store')
 //exports.calcSim = simStore.calcSim
 
 
+/**
+ * Calculates distance of jaccard and levenshtein
+ * @param  {[type]} array1 [description]
+ * @param  {[type]} array2 [description]
+ * @return {[type]}        [description]
+ */
+var jaccLev = function(array1, array2) {
+    return 1/4 * (1-jaccard(array1, array2)) + 3/4 * levenshtein(array1, array2)
+}
+
 
 var jaccardBigramDist = function(array1, array2) {
     return 1-jaccardBigram(array1, array2)
@@ -171,9 +181,12 @@ var levenshtein = function(s1, s2) {
 // 	return Math.sqrt(centroidLen) * Math.sqrt(vectorLen)
 // }
 
-exports.calcSim = jaccardBigramDist
+exports.calcSim = jaccLev
 exports.levenshteinDistance = levenshteinDistance
 exports.calc = exports.calcSim
 exports.test = {
-    jaccardBigram: jaccardBigram
+    jaccardBigram: jaccardBigram,
+    levenshtein:levenshtein,
+    jaccard: jaccard,
+    jaccLev: jaccLev
 }
