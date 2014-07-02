@@ -12,6 +12,7 @@ var async			= require('async')
 
 
 var initApp = function() {
+	console.log('initApp')
 	async.waterfall([
 		function(next) {
 			dataset.getDatasetSize(next)
