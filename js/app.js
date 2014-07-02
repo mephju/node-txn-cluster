@@ -22,7 +22,11 @@ var initApp = function() {
 			require('./config').init(datasetSize)
 			start()
 		},
-	])
+	], function(err) {
+		if(err) {
+			console.log('initApp failed')
+		}
+	})
 }
 	
 
