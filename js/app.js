@@ -12,6 +12,7 @@ var async			= require('async')
 
 
 var initApp = function() {
+	console.log('initApp')
 	async.waterfall([
 		function(next) {
 			dataset.getDatasetSize(next)
@@ -42,9 +43,6 @@ var start = function() {
 		function(next) {
 			importApp.makeImport(next)
 		},
-		// function() {
-		// 	console.log('done importing')
-		// },
 		function(next) {
 			console.log('build txns')
 			txnApp.buildTxns(next)

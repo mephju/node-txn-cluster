@@ -7,7 +7,7 @@ var help 		= require('../help')
 
 var insertTransMatrix = function(transMatrix, callback) {
 	console.log('insertTransMatrix', transMatrix.length)
-	insertMatrix('transition', transMatrix, callback)
+	insertMatrix('trans_matrix', transMatrix, callback)
 }
 
 var pruneMatrix = function(transMatrix) {
@@ -73,7 +73,7 @@ var getTransMatrix = function(callback) {
 	console.log('getTransMatrix')
 	async.waterfall([
 		function(next) {
-			db.all('SELECT matrix_row FROM transition ORDER BY cluster_id', next)
+			db.all('SELECT matrix_row FROM trans_matrix ORDER BY cluster_id', next)
 		},
 		function(rows, next) {
 			console.log('getTransMatrix', rows.length)
@@ -103,7 +103,6 @@ var insertMatrix = function(tableName, matrix, callback) {
 		function(next) {
 
 			matrix.forEach(function(matrixRow, i) {
-				//console.log('insertMatrix', i)
 				db.run(
 					'INSERT INTO ' + tableName + '(cluster_id, matrix_row, row_sum) VALUES(?, ?, ?)', 
 					[i, JSON.stringify(matrixRow), help.arraySum(matrixRow)]
@@ -124,8 +123,45 @@ var insertMatrix = function(tableName, matrix, callback) {
 }
 
 
+var init = function(done) {
+	async.waterfall([
+		function(next) {
+			db.run('drop table if exists transitions', next)
+		},
+		function(next) {
+			db.run('create table transitions(transition text)', next)
+			
+		}
+	], done);
+}
+
+var insertTransitions = function(manyTransitions, done) {
+	console.log('insertTransitions', manyTransitions.length)
+	async.waterfall([
+		function(next) {
+			db.run('begin transaction', next)
+		},
+		function(next) {
+			async.eachSeries(
+				manyTransitions,
+				function(tsns, next) {
+					db.run('insert into transitions values($1)', tsns.toString(), next);
+				},
+				next
+			);
+		},
+		function(next) {
+			console.log('done')
+			db.run('end transaction', done)
+		}
+		
+	], done);
+}
 
 
+
+exports.init = init
+exports.insertTransitions = insertTransitions
 exports.removeNoTransClusters = removeNoTransClusters
 exports.getTransMatrix = getTransMatrix
 exports.insertTransMatrix = insertTransMatrix

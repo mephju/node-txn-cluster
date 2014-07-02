@@ -4,8 +4,10 @@
   "description": "",
   "main": "app.js",
   "dependencies": {
-    "async": "~0.2.10",
-    "sqlite3": "~2.2.0"
+    "async": "*",
+    "sqlite3": "*",
+    "deep-equal":"*",
+    "eachtick":"*"
   },
   "devDependencies": {},
   "scripts": {
