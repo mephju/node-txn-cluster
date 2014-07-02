@@ -24,7 +24,7 @@ var initApp = function() {
 		},
 	], function(err) {
 		if(err) {
-			console.log('initApp failed')
+			console.log('initApp failed', err)
 		}
 	})
 }
