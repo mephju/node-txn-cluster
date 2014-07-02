@@ -8,7 +8,7 @@ function Dataset() {
 }
 
 Dataset.prototype.db = function() {
-	return '/home/mephju/stuff/datasets/daport/v4/' + this.dbTable + '.sqlite'
+	return '~/thesis/results/daport/v4/' + this.dbTable + '.sqlite'
 	//return ':memory:'
 }
 
@@ -54,8 +54,7 @@ function LastFm(datasetPath, dbTable) {
 	this.timeDistance = 900 //15 mins
 	this.indices = {
 		userId:0,
-		itemId:1,
-		timestamp:3
+		timestamp:1
 	}
 }
 
@@ -76,11 +75,11 @@ TestDataset.prototype.constructor 	= TestDataset
 
 
 exports.dataset = function() {
-	return new LastFm('/home/mephju/stuff/datasets/lastfm-dataset-1K/feedback_small.tsv', 	'last_fm_small')
-	//return new LastFm('/home/mephju/stuff/datasets/lastfm-dataset-1K/feedback.tsv', 		'last_fm')
+	//return new LastFm('/home/mephju/stuff/datasets/lastfm-dataset-1K/feedback_small.tsv', 	'last_fm_small')
+	return new LastFm('~/thesis/datasets/lastfm-dataset-1K/feedback.tsv', 		'last_fm')
 	
 	
-	//return new Movielens('/home/mephju/stuff/datasets/movielens/ml-1m/ml-1m/ratings.dat', 	'movielens_1m')
+	//return new Movielens('~/datasets/movielens/ml-1m/ml-1m/ratings.dat', 	'movielens_1m')
 	//return new Movielens('/home/mephju/stuff/datasets/movielens/ratings-custom-large.dat',	'movielens_custom_large')
 	
 
