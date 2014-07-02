@@ -13,6 +13,7 @@ Dataset.prototype.db = function() {
 }
 
 Dataset.prototype.getDatasetSize = function(callback) {
+	console.log('getDatasetSize')
 	var num = 0
 	fs
 	.createReadStream(this.datasetPath)
