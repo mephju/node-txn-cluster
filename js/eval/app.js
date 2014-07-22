@@ -29,14 +29,16 @@ var start = function(callback) {
 		},
 		function(txnRows, next) {
 			
+
 			var validTxnRows = filterValidTxns(txnRows)
 
 			var precision = eval.evaluate(validTxnRows, baselineItems)			
 			
 			console.log('###########################################')
-			
+			console.log('number of clusters: ', recommender.clusters.clusters.length)
 			console.log('Recommender Precision', precision.precR)
 			console.log('Baseline Precision', precision.precB)
+
 		}
 	], 
 	function(err) {

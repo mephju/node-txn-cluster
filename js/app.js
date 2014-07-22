@@ -10,28 +10,7 @@ var fs 				= require('fs')
 var async			= require('async')
 
 
-
-var initApp = function() {
-	console.log('initApp')
-	async.waterfall([
-		function(next) {
-			dataset.getDatasetSize(next)
-		},
-		function(datasetSize, next) {
-			console.log('datasetSize', datasetSize)
-			require('./config').init(datasetSize)
-			start()
-		},
-	], function(err) {
-		if(err) {
-			console.log('initApp failed', err)
-		}
-	})
-}
-	
-
-
-var start = function() {
+var main = function() {
 	var config 			= require('./config')
 	console.log(config)
 	var txnApp 			= require('./transactions/app')
@@ -39,24 +18,24 @@ var start = function() {
 	var clusterGroupModule = require('./clustering2/cluster-group')
 	var importApp		= require('./import/app')
 	var transitionApp	= require('./transitions/app')
-
+	var clusters	 	= null
 
 	var startTime = new Date().getTime()
 
 	async.waterfall([
-		function(next) {
-			importApp.makeImport(next)
-		},
-		function(next) {
-			console.log('build txns')
-			txnApp.buildTxns(next)
-		}, 
-		function(next) {
-			clusterApp.start(next)
-		},
 		// function(next) {
-		// 	next(null, '')
+		// 	importApp.makeImport(next)
 		// },
+		// function(next) {
+		// 	console.log('build txns')
+		// 	txnApp.buildTxns(next)
+		// }, 
+		// function(next) {
+		// 	clusterApp.start(next)
+		// },
+		function(next) {
+			next(null, '')
+		},
 		function(clusterGroup, next) {
 			// read clusters from db again so we can remove 
 			// the previous step if we want to skip it
@@ -64,9 +43,13 @@ var start = function() {
 			clusterGroupModule.buildFromDb(next)
 		},
 		function(clusterGroup, next) {
+			clusters = clusterGroup
 			console.log('this is clusterGroup')
 			//console.log(clusterGroup)
-			transitionApp.buildTransMatrix(clusterGroup, next)	
+			transitionApp.buildTransitions(clusters, next)	
+		},
+		function(next) {
+			transitionApp.buildMarkovChain(next)
 		},
 		function(next) {
 			console.log('done building transition matrix')
@@ -83,10 +66,21 @@ var start = function() {
 }
 
 
+async.waterfall([
+	function(next) {
+		dataset.getDatasetSize(next)
+	},
+	function(datasetSize, next) {
+		console.log('datasetSize', datasetSize)
+		require('./config').init(datasetSize)
+		main()
+	},
+], function(err) {
+	if(err) {
+		console.log('initApp failed', err)
+	}
+})
 
-
-
-	initApp()
 
 
 
