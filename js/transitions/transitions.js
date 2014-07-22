@@ -38,7 +38,7 @@ var findTransitions = function(clusters, txnRows, done) {
 				})
 			}
 
-			if(manyTransitions.length > 100 || i == txnRows.length-1) {
+			if(manyTransitions.length > 1000 || i == txnRows.length-1) {
 				var data = manyTransitions
 				manyTransitions = []
 				db.insertTransitions(data, next)
