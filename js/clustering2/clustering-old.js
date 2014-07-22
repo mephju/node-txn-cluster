@@ -17,6 +17,14 @@ var cluster = function(txnRows, done) {
 }
 
 
+
+/**
+ * Creates clusters by clustering txnRows.
+ * 
+ * @param  {[type]} txnRows  [description]
+ * @param  {[type]} clusters [description]
+ * @return {[type]}          [description]
+ */
 var clusterIterate = function(txnRows, clusters) {
 	if(clusters.isIterationNeeded) {
 		clusters.clear()
@@ -28,13 +36,9 @@ var clusterIterate = function(txnRows, clusters) {
 			if(c) { 	
 				c.addMember(txnRow) 
 			} 
-			// else {		
-			// 	txnRows[i] = null
-			// }
-
 		})
 		clusters.recomputeCentroids()
-		help.removeNulls(txnRows)
+		//help.removeNulls(txnRows)
 		return clusterIterate(txnRows, clusters)
 	} else {
 		clusters.cleanUp()

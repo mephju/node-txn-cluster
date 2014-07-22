@@ -10,64 +10,11 @@ var insertTransMatrix = function(transMatrix, callback) {
 	insertMatrix('trans_matrix', transMatrix, callback)
 }
 
-var pruneMatrix = function(transMatrix) {
-	console.log('pruneMatrix')
-	var pruned = []
-	for (var i=0; i < transMatrix.length; i++) {
-		var rowSum = transMatrix[i].reduce(function(l, r) {
-			return l+r
-		})	
-		if(rowSum === 0) {
-			pruned.push(i)
-		}
-	}
-
-	if(pruned.length > 0) {
-		pruned.reverse()
-		pruned.forEach(function(index) {
-			transMatrix.splice(index, 1)
-			pruneColumn(index, transMatrix)
-		})
-		pruned = pruned.concat(pruneMatrix(transMatrix))
-	}
-
-	return pruned;
-}
-
-var pruneColumn = function(index, transMatrix) {
-	for(var i=0; i<transMatrix.length; i++) {
-		transMatrix[i].splice(index, 1)
-	}
-}
 
 
 
-var removeNoTransClusters = function(transMatrix, done) {
 
-	//console.log(transMatrix)
 
-	var centroidIds = pruneMatrix(transMatrix)
-	console.log('remove no trans clusters')
-
-	if(centroidIds.length === 0) { 
-		console.log('0 clusters to remove')
-		return done(null, transMatrix)
-	}
-
-	console.log('going to remove clusters', centroidIds)
-
-	async.eachSeries(
-		centroidIds,
-		function(id, next) {
-			db.run('DELETE FROM clusters WHERE cluster_id=$1', id)
-			db.run('DELETE FROM cluster_members WHERE cluster_id=$1', id, next)
-		},
-		function(err) {
-			done(err, transMatrix)
-		}
-	);
-	
-}
 
 var getTransMatrix = function(callback) {
 	console.log('getTransMatrix')
@@ -129,7 +76,7 @@ var init = function(done) {
 			db.run('drop table if exists transitions', next)
 		},
 		function(next) {
-			db.run('create table transitions(transition text)', next)
+			db.run('create table transitions(txn_id integer, sequence text)', next)
 			
 		}
 	], done);
@@ -145,7 +92,13 @@ var insertTransitions = function(manyTransitions, done) {
 			async.eachSeries(
 				manyTransitions,
 				function(tsns, next) {
-					db.run('insert into transitions values($1)', tsns.toString(), next);
+					//console.log(tsns.txn_id, tsns.seq)
+					db.run(
+						'insert into transitions values($1, $2)', 
+						tsns['txn_id'],
+						tsns.seq.toString(), 
+						next
+					);
 				},
 				next
 			);
@@ -160,9 +113,58 @@ var insertTransitions = function(manyTransitions, done) {
 
 
 
+var getTransitions = function(done) {
+	console.log('getTransitions')
+	async.waterfall([
+		function(next) {
+			db.all('select * from transitions', next)
+		},
+		function(rows, next) {
+			rows.forEach(function(item, i) {
+				rows[i] = item['sequence'].split(',').map(function(string) {
+					return parseInt(string)
+				})
+			})
+			done(null, rows)
+		}
+	], done);
+}
+
+
+
+// var removeNoTransClusters = function(transMatrix, done) {
+
+// 	//console.log(transMatrix)
+
+// 	var centroidIds = pruneMatrix(transMatrix)
+// 	console.log('remove no trans clusters')
+
+// 	if(centroidIds.length === 0) { 
+// 		console.log('0 clusters to remove')
+// 		return done(null, transMatrix)
+// 	}
+
+// 	console.log('going to remove clusters', centroidIds)
+
+// 	async.eachSeries(
+// 		centroidIds,
+// 		function(id, next) {
+// 			db.run('DELETE FROM clusters WHERE cluster_id=$1', id)
+// 			db.run('DELETE FROM cluster_members WHERE cluster_id=$1', id, next)
+// 		},
+// 		function(err) {
+// 			done(err, transMatrix)
+// 		}
+// 	);
+	
+// }
+// 
+
+
+exports.getTransitions = getTransitions
 exports.init = init
 exports.insertTransitions = insertTransitions
-exports.removeNoTransClusters = removeNoTransClusters
+
 exports.getTransMatrix = getTransMatrix
 exports.insertTransMatrix = insertTransMatrix
 exports.insertMatrix = insertMatrix

@@ -36,6 +36,7 @@ var init = function(fallbackRecomms, callback) {
 		function(clusters, next) {
 			console.log('loadedClusteritems', clusters.clusters.length)
 			centroidColl = clusters
+			exports.clusters = clusters
 			transDb.getTransMatrix(next)
 		},
 		function(transitionMatrix, next) {

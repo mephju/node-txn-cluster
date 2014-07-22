@@ -1,23 +1,21 @@
 var fs 		= require('fs')
 var async 	= require('async')
 
-
-
 function Dataset() {
 	this.dbTable = null
 	this.datasetSize = 0
 	this.trainingSize = 0
-	this.dataDir = '/home/mephju/stuff/datasets/daport/v4/'
 }
 
 Dataset.prototype.dataDir = function() {
-	return '/home/mephju/stuff/datasets/daport/v4/'
+	return '/home/kokirchn/thesis/results/daport/v4/'
 }
 
 Dataset.prototype.db = function() {
 	return this.dataDir() + this.dbTable + '.sqlite'
 	//return ':memory:'
 }
+
 
 Dataset.prototype.getDatasetSize = function(callback) {
 	console.log('getDatasetSize')
@@ -42,10 +40,10 @@ Dataset.prototype.getDatasetSize = function(callback) {
 }
 
 function Movielens(datasetPath, dbTable) {
-	this.dbTable 		= dbTable
-	this.datasetPath 	= datasetPath
-	this.separator 		= '::'
-	this.timeDistance 	= 300 // 5 mins
+	this.dbTable = dbTable
+	this.datasetPath = datasetPath
+	this.separator = '::'
+	this.timeDistance = 300 // 5 mins
 	this.indices = {
 		userId:0,
 		itemId:1,
@@ -56,15 +54,13 @@ function Movielens(datasetPath, dbTable) {
 
 function LastFm(datasetPath, dbTable) {
 	//userid-timestamp-artid-artname-traid-traname
-	
 	this.dbTable = dbTable
 	this.datasetPath = datasetPath
 	this.separator = '\t'
 	this.timeDistance = 900 //15 mins
 	this.indices = {
 		userId:0,
-		itemId:1,
-		timestamp:3
+		timestamp:1
 	}
 }
 
@@ -85,12 +81,12 @@ TestDataset.prototype.constructor 	= TestDataset
 
 
 exports.dataset = function() {
-	//return new LastFm('/home/mephju/stuff/datasets/lastfm-dataset-1K/feedback_small.tsv', 	'last_fm_small')
-	//return new LastFm('/home/mephju/stuff/datasets/lastfm-dataset-1K/feedback.tsv', 		'last_fm')
+	//return new LastFm('/home/kokirchn/thesis/datasets/lastfm-dataset-1K/feedback_small.tsv', 	'last_fm_small')
+	//return new LastFm('/home/kokirchn/thesis/datasets/lastfm-dataset-1K/feedback.tsv', 		'last_fm')
 	
 	
-	//return new Movielens('/home/mephju/stuff/datasets/movielens/ml-1m/ml-1m/ratings.dat', 	'movielens_1m')
-	return new Movielens('/home/mephju/stuff/datasets/movielens/ratings-custom-large.dat',	'movielens_custom_large')
+	//return new Movielens('/home/kokirchn/thesis/datasets/movielens/ml-1m/ml-1m/ratings.dat', 	'movielens_1m')
+	return   new Movielens('/home/kokirchn/thesis/datasets/movielens/ratings-custom-large.dat',	'movielens_custom_large')
 	
 
 	//return new Movielens('/home/mephju/stuff/datasets/movielens/ratings-custom.dat', 		'movielens_custom')
