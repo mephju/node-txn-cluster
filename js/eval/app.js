@@ -1,7 +1,7 @@
 
 var async		= require('async')
 var txnDb		= require('../transactions/db')
-var recommender = require('../recommend/app')
+var recommender = require('../recommend')
 var baseline 	= require('./most-popular')
 var config		= require('../config')
 var measure 	= require('./measure')

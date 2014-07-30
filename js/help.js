@@ -60,7 +60,9 @@ var arraySum = function(array) {
 var cmp = function(a,b) { 
 	return a<b ? -1 : a>b ? 1 : 0 
 }
-
+var objCmp = function(a,b) { 
+   return a.sum>b.sum ? -1 : a.sum<b.sum ? 1 : 0 
+}
 
 
 
@@ -274,6 +276,7 @@ exports.unionNum           = unionNum
 exports.arrayEqual         = arrayEqual
 exports.arraySum           = arraySum
 exports.numCmp             = cmp
+exports.objCmp             = objCmp
 exports.intersect          = intersect
 exports.intersectNum       = intersectNum
 exports.intersectNumDes    = intersectNumDes

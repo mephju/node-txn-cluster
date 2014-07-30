@@ -1,5 +1,6 @@
 var help = require('../help')
 var assert = require('assert')
+var should = require('should')
 
 describe('help works - ', function() {
 
@@ -88,5 +89,23 @@ describe('help works - ', function() {
 			[[1,2], [1,3]], 
 			[1,3]
 		));
+	})
+
+
+
+
+	describe('objCmp()', function() {
+
+		it('can be used to sort top clusters', function(){
+			var topClusters = [
+				{sum:15, key:'1'},
+				{sum:10, key:'2'},
+				{sum:5, key:'3'},
+				{sum:60, key:'0'}
+			];
+
+			topClusters.sort(help.objCmp)
+			topClusters[0].sum.should.equal(60)
+		})
 	})
 })
