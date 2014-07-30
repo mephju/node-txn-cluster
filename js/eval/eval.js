@@ -1,7 +1,7 @@
 
 
 var async		= require('async')
-var recommender = require('../recommend/app')
+var recommender = require('../recommend/')
 var config		= require('../config')
 var measure 	= require('./measure')
 var help 		= require('../help')
@@ -12,6 +12,13 @@ var evaluate = function(txnRows, baselineItems) {
 	var precisionSumRecommender = 0
 	var len = txnRows.length
 
+	// for(var i=0; i<len; i++) {
+	// 	var txnRow = txnRows[i]
+	// 	var precision = evalTxn(txnRow['item_ids'], baselineItems)
+	// 	precisionSumRecommender 	+= precision.precR		
+	// 	precisionSumBaseline 		+= precision.precB
+	// }
+	
 	txnRows.forEach(function(txnRow) {
 		var precision = evalTxn(txnRow['item_ids'], baselineItems)
 		precisionSumRecommender += precision.precR		
@@ -42,6 +49,8 @@ var evalTxn = function(txn, baselineItems) {
 			baselineItems
 		));
 	}
+
+	recommender.reset()
 
 	
 	var len = hitsTxn.length

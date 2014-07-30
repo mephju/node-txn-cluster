@@ -6,10 +6,12 @@
   "dependencies": {
     "async": "*",
     "sqlite3": "*",
-    "deep-equal":"*",
-    "eachtick":"*"
+    "deep-equal": "*",
+    "eachtick": "*"
   },
-  "devDependencies": {},
+  "devDependencies": {
+    "should": "~4.0.4"
+  },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },

@@ -8,11 +8,31 @@ var rootDb 		= require('../db')
 var config 		= require('../config')
 var eachtick 	= require('eachtick')
 var fs			= require('fs')
+var transMarkovInfo = require('./trans-markov-info')
 
 var N_GRAM_SIZE = config.MARKOV_ORDER + 1
 
 
 
+
+var getMcInfo = function(done) {
+	transMarkovInfo.getInfo(done)
+}
+
+
+var getMarkovChain = function(done) {
+	async.waterfall([
+		function(next) {
+			var name = dataset.dataDir() + dataset.dbTable + '.markov-chain.json'
+			fs.readFile(name, 'utf8', next)
+		},
+		function(markovChain, next) {
+			markovChain = JSON.parse(markovChain)
+			console.log('done reading markov chain')
+			done(null, markovChain)
+		}
+	], done)
+}
 
 
 var buildMarkovChain = function(done) {
@@ -28,16 +48,8 @@ var buildMarkovChain = function(done) {
 			onTransitions(transitions, next)
 		},
 		function(nGramCounts, next) {
-			var name = dataset.dataDir() + dataset.dbTable + '.json'
+			var name = dataset.dataDir() + dataset.dbTable + '.markov-chain.json'
 			fs.writeFile(name, JSON.stringify(nGramCounts), next)
-		},
-		function(next) {
-			var name = dataset.dataDir() + dataset.dbTable + '.json'
-			fs.readFile(name, 'utf8', next)
-		},
-		function(nGramCounts, next) {
-			nGramCounts = JSON.parse(nGramCounts)
-			console.log(nGramCounts)
 		}
 
 	], done)
@@ -101,7 +113,7 @@ var getOrCreateObj = function(obj, key) {
 
 
 exports.buildMarkovChain = buildMarkovChain
-
+exports.getMarkovChain = getMarkovChain
 
 
 
