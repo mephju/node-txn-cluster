@@ -37,6 +37,10 @@ exports.init = function(db, callback) {
 		function(next) {
 			getLastFmItemId = db.prepare('SELECT item_id FROM last_fm_items WHERE artist=? AND song=?', next)
 		},
+		function() {
+			console.log('db-lastfm.init', 'done')
+			callback(null)
+		}
 	],callback)
 }
 
