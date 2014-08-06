@@ -1,5 +1,11 @@
 var config = require('./config')
 var deepEqual = require('deep-equal')
+var _ = require('lodash')
+
+var toItemset = function(array) {
+   array.sort(help.cmp)
+   return _.uniq(array)
+}
 
 var removeNulls = function(array) {
    var i =0
@@ -57,11 +63,17 @@ var arraySum = function(array) {
    })
 }
 
+var toSet = function(array) {
+   array.sort(cmp)
+   
+}
+
 var cmp = function(a,b) { 
-	return a<b ? -1 : a>b ? 1 : 0 
+   return a-b
+	//return a<b ? -1 : a>b ? 1 : 0 
 }
 var objCmp = function(a,b) { 
-   return a.sum>b.sum ? -1 : a.sum<b.sum ? 1 : 0 
+   return a.sum-b.sum; // ? -1 : a.sum<b.sum ? 1 : 0 
 }
 
 

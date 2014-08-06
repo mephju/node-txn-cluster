@@ -36,7 +36,7 @@ var getMarkovChain = function(done) {
 
 
 var buildMarkovChain = function(done) {
-	console.log('buildMarkovChain')
+	console.log('transMarkovChain.buildMarkovChain')
 	async.waterfall([
 		function(next) {
 			//var clusterNum = clusters.clusters.length

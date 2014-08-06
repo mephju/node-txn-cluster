@@ -52,7 +52,7 @@ var main = function() {
 			transitionApp.buildMarkovChain(next)
 		},
 		function(next) {
-			console.log('done building markov chain')
+			//console.log('done building markov chain')
 			console.log('done preparing data')
 			next(null)
 		}

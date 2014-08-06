@@ -10,6 +10,7 @@ exports.VALIDATION_SET_SIZE 		= 1 - exports.TRAINING_SET_SIZE
 
 exports.MIN_SEQUENCE_FREQUENCY 		= 8
 exports.NUM_CENTROIDS				= 4
+exports.MIN_SUPPORT					= 10
 
 //easy sequence size refers to sequences with sizes that are easy/fast to compare to other sequences
 exports.EASY_SEQUENCE_SIZE = 275 
@@ -17,9 +18,15 @@ exports.EASY_SEQUENCE_SIZE = 275
 exports.N = 5
 exports.MAX_CONTRIBUTION = 0.6
 exports.BASELINE_ON = false
-exports.MARKOV_ORDER = 2
+exports.MARKOV_ORDER = 3
 exports. ITEM_CHOICE_STRATEGY = {
-	tfidf:false
+	tfTfidf: false,
+	tfidf:false,
+	bestItemsOfCluster:true,
+	bestItemsOverall: false,
+	withRatings: false,
+	
+
 }
 
 
