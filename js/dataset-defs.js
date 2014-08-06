@@ -61,7 +61,6 @@ function LastFm(datasetPath, dbTable) {
 	this.indices = {
 		userId:0,
 		itemId:1,
-		rating:2,
 		timestamp:3
 	}
 }
@@ -83,8 +82,8 @@ TestDataset.prototype.constructor 	= TestDataset
 
 
 exports.dataset = function() {
-	return new LastFm('/home/kokirchn/thesis/datasets/lastfm-dataset-1K/feedback_small.tsv', 	'last_fm_small')
-	//return new LastFm('/home/kokirchn/thesis/datasets/lastfm-dataset-1K/feedback.tsv', 		'last_fm')
+	//return new LastFm('/home/kokirchn/thesis/datasets/lastfm-dataset-1K/feedback_small.tsv', 	'last_fm_small')
+	return new LastFm('/home/kokirchn/thesis/datasets/lastfm-dataset-1K/feedback.tsv', 		'last_fm')
 	
 	
 	//return new Movielens('/home/kokirchn/thesis/datasets/movielens/ml-1m/ml-1m/ratings.dat', 	'movielens_1m')
