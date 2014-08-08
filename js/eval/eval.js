@@ -1,10 +1,19 @@
 
 
 var async		= require('async')
-var recommender = require('../recommend/')
+
 var config		= require('../config')
 var measure 	= require('./measure')
 var help 		= require('../help')
+
+var recommender = null
+
+if(config.RECOMMENDER === config.REC_REAL) {
+	recommender = require('../recommend/')
+} 
+else if(config.RECOMMENDER === config.REC_APRIORI) {
+	recommender = require('../apriori')
+}
 
 
 var evaluate = function(txnRows, baselineItems) {

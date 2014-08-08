@@ -1,44 +1,47 @@
 var _			= require('lodash')
 var async		= require('async')
 var db 			= require('./db')
-
 var txnDb		= require('../transactions/db')
-
 var config		= require('../config')
 var help 		= require('../help')
+var Recommender = require('./recommend').Recommender
+var assoc 		= require('./assoc')
 
+var fallbackItems = []
 
+var init = function(popularFallbackItems, done) {
 
-
-
-
-
-
-
-var k = 1
-
-var work = function(done) {
-	var txns = null
-
+	fallbackItems =  popularFallbackItems
+	
 	async.waterfall([
 		function(next) {
 			db.getTxnsAsSets(next)
 		},
 		function(transactions, next) {
-			txns = transactions
-			db.getFrequentItemIds(config.MIN_SUPPORT, next)
-		},
-		function(rows, next) {
-			//rows = [{ item_id:1, count:3 }]
-			
-			
-			var store = algorithm(txns);
+			var store 	= algorithm(transactions);
+			var rules 	= assoc.findRules(store)
 
-			console.log(store)
-			
+			var recommender = new Recommender(rules)
+
+
+			done(null, recommender)
 		}
-	])
+	], done)
 }
+
+
+var reset = function() {}
+var recommend = function(item) {
+	var recs = recommender.getRecommendations(item)
+
+	for (var i=0; i<fallbackItems.length && recs.length<config.N; i++) {
+		recs.push(fallbackItems[i])
+	};
+
+	return recs
+}
+
+
 
 
 
@@ -48,13 +51,11 @@ var work = function(done) {
 var algorithm = function(txns) {
 
 	var k = 1
-	var store = [{}, {}]
-			
-	init(store, txns)
+	
+	var store = initApriori(txns)
 
 	while(_.size(store[k]) > 0) {
 		k++
-		store.push({})
 		iteration(store, txns, k)
 	}
 	store.pop() //remove last element since it is an empty {}
@@ -62,14 +63,15 @@ var algorithm = function(txns) {
 }
 
 
-var init = function(store, txns) {
-	var k = 1
+var initApriori = function(txns) {
+	var store = [{}, {}]
 	txns.forEach(function(txn) {
 		txn.forEach(function(itemId) {
-			increment(store[k], itemId)
+			increment(store[1], itemId)
 		})
 	})	
-	prune(store[k])
+	prune(store[1])
+	return store
 }
 
 
@@ -82,15 +84,17 @@ var increment = function(obj, key) {
 
 
 var iteration = function(store, txns, k) {
+	store.push({})
+
 	var candidates = genCandidates(store, k)
-	
+
 	candidates.forEach(function(candidate, i) {
 		var key = candidate.toString()
 		store[k][key] = 0
 		
 		txns.forEach(function(txn, i) {
 			var minLen = candidate.length
-			if(help.intersect(txn, candidate).length === minLen) {
+			if(_.intersection(txn, candidate).length === minLen) {
 				store[k][key]++
 			}
 		})
@@ -99,7 +103,13 @@ var iteration = function(store, txns, k) {
 	prune(store[k])
 }
 
-
+/**
+ * Ggenerates all candidates for round k by uniting all itemsets of round k-1 
+ * with each other. (pair wise)
+ * @param  {[type]} store [description]
+ * @param  {[type]} k     [description]
+ * @return {[type]}       [description]
+ */
 var genCandidates = function(store, k) {
 
 	var candidates = []
@@ -109,9 +119,9 @@ var genCandidates = function(store, k) {
 	frequent.forEach(function(itemset1, i) {
 		frequent.forEach(function(itemset2, h) {
 			if(i !== h) {
-				var c = _.union(itemset1, itemset2)
+				var c = _.union(itemset1, itemset2).sort(help.cmp)
 				var subsets = makeSubsets(c, k-1)
-				if(areSetsIn(subsets, frequent)) {
+				if(c.length === k && !help.arrayContains(candidates, c) && areSetsIn(subsets, frequent)) {
 					candidates.push(c)
 				}
 			}
@@ -121,11 +131,15 @@ var genCandidates = function(store, k) {
 }
 
 
+
+
+
 var areSetsIn = function(sets, frequentSets) {
 	for(var i=0; i<sets.length; i++) {
 		var included = false
 		for(var h=0; h<frequentSets.length; h++) {
-			if(frequentSets[h] === sets[i]) {
+
+			if(_.isEqual(frequentSets[h], sets[i])) {
 				included = true
 				break;
 			}
@@ -139,7 +153,7 @@ var areSetsIn = function(sets, frequentSets) {
 
 var makeSubsets = function(itemset, size) {
 	var subsets = []
-	for(var i=0; i+size<itemset.length; i++) {
+	for(var i=0; i+size<=itemset.length; i++) {
 		subsets.push(itemset.slice(i, i+size))
 	}
 	return subsets
@@ -155,18 +169,21 @@ var prune = function(counts) {
 }
 
 
-exports.work = work
+
+exports.init = init
 exports.test = {
+	init:init,
 	prune:prune,
 	makeSubsets: makeSubsets,
 	algorithm: algorithm,
 	genCandidates: genCandidates,
 	areSetsIn: areSetsIn,
 	iteration: iteration,
-	init: init
+	initApriori: initApriori,
+	increment: increment
 }
 
-work()
+//work()
 /*
 
 var example = [

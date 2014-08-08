@@ -41,7 +41,7 @@ var onData = function(chunk) {
 			buffer = lines.pop()
 
 			//console.log('line', lines)
-			console.log('buffer', buffer)
+			//console.log('buffer', buffer)
 			
 			lineCount += lines.length
 			onLinesAvailable(lines, next)

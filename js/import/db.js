@@ -139,7 +139,7 @@ var insertLastFm = function(records, callback) {
 						null, 
 						new Date(record[1]).getTime()/1000 
 					]; 
-					console.log(r)
+					//console.log(r)
 					//console.log('insertLastFmItem', r, record)
 					insertItem(r, next)
 				}
