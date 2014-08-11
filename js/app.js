@@ -9,8 +9,8 @@ var dataset 		= datasetDefs.dataset()
 var fs 				= require('fs')
 var async			= require('async')
 
-
 var main = function() {
+	
 	var config 			= require('./config')
 	console.log(config)
 	var txnApp 			= require('./transactions/app')

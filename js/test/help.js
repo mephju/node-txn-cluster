@@ -2,6 +2,23 @@ var help = require('../help')
 var assert = require('assert')
 var should = require('should')
 
+
+describe('Array', function() {
+	describe('hasArray', function() { 
+		it('returns true if it finds an array within itself', function() {
+
+			var a = [
+				[1,2],
+				[1,2,3],
+				[1,2,3,4]
+			]
+
+			a.hasArray([1,2]).should.equal(true)
+			a.hasArray([1,2,3,4,5]).should.equal(false)
+		})
+	})
+})
+
 describe('help works - ', function() {
 
 	it('nMaxIndices works', function() {

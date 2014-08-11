@@ -54,6 +54,12 @@ var init = exports.init = function(datasetSize) {
 // init(23000)
 // init(100000)
 // init(500000)
+// 
+// 
+
+
+// var a = [[1],[2],[2,3]]
+// console.log(a.hasArray([1]))
 
 	
 
