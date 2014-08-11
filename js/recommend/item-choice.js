@@ -38,18 +38,18 @@ var fetchMembers = function(clusterIds, done) {
 
 
 
-var bestItemsOfCluster = 
-	'select 	*, 							\
-				count(ti.item_id) as count 	\
-	from 		cluster_members as cm, 		\
-				txn_items as ti 			\
-	where 		cm.txn_id=ti.txn_id 		\
-	and 		cm.cluster_id=$1 			\
-	group by 	cm.cluster_id, ti.item_id 	\
-	order by 	cluster_id ASC, count DESC  \
-	limit ' 	+ config.N
+// var bestItemsOfCluster = 
+// 	'select 	*, 							\
+// 				count(ti.item_id) as count 	\
+// 	from 		cluster_members as cm, 		\
+// 				txn_items as ti 			\
+// 	where 		cm.txn_id=ti.txn_id 		\
+// 	and 		cm.cluster_id=$1 			\
+// 	group by 	cm.cluster_id, ti.item_id 	\
+// 	order by 	cluster_id ASC, count DESC  \
+// 	limit ' 	+ config.N
 
-var bestClusterItemsOverall = 
+var sqlBestItemsOverall = 
 	'select distinct 					\
 				ic.item_id, ic.count 	\
 	from 		cluster_members as cm, 	\
@@ -71,7 +71,7 @@ var sqlWithRatings =
 	order by 	count desc, avg desc 	\
 	limit ' + config.N 
 
-var sqlWithoutRatings = 'select * \
+var sqlBestItemsOfCluster = 'select * \
 			from 		cluster_item_counts \
 			where 		cluster_id=$1 \
 			order by 	count DESC \
@@ -92,17 +92,30 @@ var sqlWithTfidf =
 	order by tfidf desc 	\
 	limit ' + config.N
 
-/*
-	If ratings have been imported, consider them in the item choice strategy
- */
-var sql = typeof dataset.indices.rating !== 'undefined' ? 
-	sqlWithRatings : 
-	sqlWithoutRatings
 
-
-if(config.ITEM_CHOICE_STRATEGY.tfidf) {
+var sql = null
+if(config.ITEM_CHOICE_STRATEGY.tfTfidf) {
+	sql = sqlWithTfTfidf
+} 
+else if(config.ITEM_CHOICE_STRATEGY.tfidf) {
 	sql = sqlWithTfidf
+} 
+else if(config.ITEM_CHOICE_STRATEGY.bestItemsOfCluster) {
+	sql = sqlBestItemsOfCluster
+} 
+else if(config.ITEM_CHOICE_STRATEGY.bestItemsOverall) {
+	sql = sqlBestItemsOverall
+} 
+else if(config.ITEM_CHOICE_STRATEGY.withRatings) {
+	if(typeof dataset.indices.rating === 'undefined') {
+		throw 	'error'
+		var e = 'ITEM_CHOICE_STRATEGY.withRatings requires \
+				ratings to be availabel \
+				no ratings were found!.';
+	} 
+	sql = sqlWithRatings
 }
+
 
 
 var fetchMembersById = function(clusterId, memberStore, done) {

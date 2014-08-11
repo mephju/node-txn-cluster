@@ -43,9 +43,14 @@ MarkovInfo.prototype.getTopClusters = function(N, lastClusters) {
 	var topClusters 	= []
 	var partChain 		= this.info
 
-	lastClusters.forEach(function(clusterId){
-		partChain = partChain[clusterId]
-	})
+	for (var i = 0; i < lastClusters.length; i++) {
+		if(partChain) {
+			var clusterId = lastClusters[i]
+			partChain = partChain[clusterId]
+		} else {
+			return []
+		}
+	};
 
 	var useSum = lastClusters.length < config.MARKOV_ORDER
 

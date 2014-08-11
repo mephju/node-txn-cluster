@@ -60,8 +60,7 @@ function LastFm(datasetPath, dbTable) {
 	this.timeDistance = 900 //15 mins
 	this.indices = {
 		userId:0,
-		itemId:1,
-		timestamp:3
+		timestamp:1
 	}
 }
 
@@ -96,4 +95,3 @@ exports.dataset = function() {
 	
 	//return new TestDataset('/home/mephju/stuff/datasets/movielens/ml-1m/ml-1m/ratings.dat', 	'test_dataset')
 }
-
