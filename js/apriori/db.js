@@ -35,8 +35,7 @@ var getTxnsAsSets = function(done) {
 		function(rows, next) {
 			rows.forEach(function(row, i) {
 				rows[i] = help.textToNumArray(row['item_ids'])
-				rows[i].sort(help.cmp)
-				rows[i] = _.uniq(rows[i], true)
+				rows[i] = help.toItemset(rows[i])
 			})
 			console.log('getTxnsAsSets', rows.length)
 			done(null, rows)
@@ -45,10 +44,7 @@ var getTxnsAsSets = function(done) {
 }
 
 
-var toItemset = function(array) {
-	array.sort(help.cmp)
-	return _.uniq(array)
-}
+
 
 
 

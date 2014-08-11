@@ -25,9 +25,10 @@ exports. ITEM_CHOICE_STRATEGY = {
 	bestItemsOfCluster:true,
 	bestItemsOverall: false,
 	withRatings: false,
-	
-
 }
+exports.REC_REAL = 0
+exports.REC_APRIORI = 1
+exports.RECOMMENDER = exports.REC_APRIORI
 
 
 

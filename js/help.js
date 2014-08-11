@@ -2,8 +2,11 @@ var config = require('./config')
 var deepEqual = require('deep-equal')
 var _ = require('lodash')
 
+
+
+
 var toItemset = function(array) {
-   array.sort(help.cmp)
+   array.sort(cmp)
    return _.uniq(array)
 }
 
@@ -41,6 +44,14 @@ var textToNumArray = function(text) {
    return text.split(',').map(function(textNum) {
       return parseInt(textNum)
    })
+}
+var arrayContains = function(array, target) {
+   for(var i=0, len=array.length; i<len; i++) {
+      if(_.isEqual(array[i], target)) {
+         return true;
+      }
+   }
+   return false
 }
 
 var arrayEqual = function(arr1, arr2) {
@@ -159,6 +170,9 @@ var intersectNum = function(array1, array2) {
 
 
 var intersect = function(array1, array2) {
+   
+   return _.intersection(array1, array2)
+
    var result = [];
    
    var a = array1.slice(0).sort(cmp);
@@ -273,7 +287,7 @@ var contains = function(host, guest) {
    return false
 }
 
-
+exports.toItemset          = toItemset
 exports.contains           = contains
 exports.deepEqual          = require('deep-equal').deepEqual
 exports.removeNulls        = removeNulls
@@ -293,3 +307,4 @@ exports.intersect          = intersect
 exports.intersectNum       = intersectNum
 exports.intersectNumDes    = intersectNumDes
 exports.toBatches          = toBatches
+exports.arrayContains      = arrayContains
