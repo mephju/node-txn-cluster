@@ -64,6 +64,7 @@ var algorithm = function(txns) {
 
 
 var initApriori = function(txns) {
+	console.log('initApriori')
 	var store = [{}, {}]
 	txns.forEach(function(txn) {
 		txn.forEach(function(itemId) {
@@ -84,6 +85,7 @@ var increment = function(obj, key) {
 
 
 var iteration = function(store, txns, k) {
+	console.log('iteration', k)
 	store.push({})
 
 	var candidates = genCandidates(store, k)
@@ -111,6 +113,8 @@ var iteration = function(store, txns, k) {
  * @return {[type]}       [description]
  */
 var genCandidates = function(store, k) {
+
+	console.log('genCandidates', k)
 
 	var candidates = []
 	var frequent = Object.keys(store[k-1]).map(function(key) {
