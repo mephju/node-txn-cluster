@@ -84,6 +84,7 @@ var increment = function(obj, key) {
 
 
 var iteration = function(store, txns, k) {
+	console.log('apriori.iteration', k)
 	store.push({})
 
 	var candidates = genCandidates(store, k)
@@ -112,21 +113,44 @@ var iteration = function(store, txns, k) {
  */
 var genCandidates = function(store, k) {
 
+	console.log('apriori.genCandidates', k)
+
 	var candidates = []
-	var frequent = Object.keys(store[k-1]).map(function(key) {
+	var keys = Object.keys(store[k-1])
+	var frequent = keys.map(function(key) {
 		return help.textToNumArray(key)
 	})
-	frequent.forEach(function(itemset1, i) {
-		frequent.forEach(function(itemset2, h) {
-			if(i !== h) {
-				var c = _.union(itemset1, itemset2).sort(help.cmp)
-				var subsets = makeSubsets(c, k-1)
-				if(c.length === k && !help.arrayContains(candidates, c) && areSetsIn(subsets, frequent)) {
-					candidates.push(c)
+
+	console.log('apriori.frequent', frequent.length)
+
+	var len = frequent.length
+	for(var i=0; i<len; i++) {
+		console.log(i)
+		for(var h=i+1; h<len; h++) {
+			//console.log(i, h)
+			var c = _.union(frequent[i], frequent[h]).sort(help.cmp)
+			
+			if(c.length === k) {
+				//!help.arrayContains(candidates, c))
+				if(!candidates.hasArray(c)) { 
+					var subsets = makeSubsets(c, k-1)
+					if(areSetsIn(subsets, frequent)) {
+					//console.log('push')
+						candidates.push(c)
+						//console.log('push', c)
+					}
 				}
 			}
-		})
-	})
+		}
+	}
+
+	// frequent.forEach(function(itemset1, i) {
+	// 	frequent.forEach(function(itemset2, h) {
+	// 		if(i !== h) {
+				
+	// 		}
+	// 	})
+	// })
 	return candidates
 }
 

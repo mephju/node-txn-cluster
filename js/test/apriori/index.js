@@ -83,7 +83,7 @@ describe('apriori', function() {
 	})
 
 
-	it('genCandidates()', function() {
+	it.only('genCandidates()', function() {
 		config.MIN_SUPPORT = 1
 		
 		var store = []
@@ -120,6 +120,7 @@ describe('apriori', function() {
 
 
 		var candidates = apriori.genCandidates(store, 3)
+		console.log('candidates', candidates)
 			
 		candidates.length.should.equal(4)
 
