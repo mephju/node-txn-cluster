@@ -85,8 +85,8 @@ exports.dataset = function() {
 	//return new LastFm('/home/kokirchn/thesis/datasets/lastfm-dataset-1K/feedback.tsv', 		'last_fm')
 	
 	
-	//return new Movielens('/home/kokirchn/thesis/datasets/movielens/ml-1m/ml-1m/ratings.dat', 	'movielens_1m')
-	return   new Movielens('/home/kokirchn/thesis/datasets/movielens/ratings-custom-large.dat',	'movielens_custom_large')
+	return new Movielens('/home/kokirchn/thesis/datasets/movielens/ml-1m/ml-1m/ratings.dat', 	'movielens_1m')
+	//return   new Movielens('/home/kokirchn/thesis/datasets/movielens/ratings-custom-large.dat',	'movielens_custom_large')
 	
 
 	//return new Movielens('/home/mephju/stuff/datasets/movielens/ratings-custom.dat', 		'movielens_custom')

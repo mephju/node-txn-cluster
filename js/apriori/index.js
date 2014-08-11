@@ -85,11 +85,9 @@ var increment = function(obj, key) {
 
 
 var iteration = function(store, txns, k) {
-<<<<<<< HEAD
-	console.log('iteration', k)
-=======
+
 	console.log('apriori.iteration', k)
->>>>>>> b1961250ca3154d206da182f501e8800e51523ad
+
 	store.push({})
 
 	var candidates = genCandidates(store, k)
@@ -118,11 +116,8 @@ var iteration = function(store, txns, k) {
  */
 var genCandidates = function(store, k) {
 
-<<<<<<< HEAD
-	console.log('genCandidates', k)
-=======
 	console.log('apriori.genCandidates', k)
->>>>>>> b1961250ca3154d206da182f501e8800e51523ad
+
 
 	var candidates = []
 	var keys = Object.keys(store[k-1])
@@ -152,14 +147,6 @@ var genCandidates = function(store, k) {
 			}
 		}
 	}
-
-	// frequent.forEach(function(itemset1, i) {
-	// 	frequent.forEach(function(itemset2, h) {
-	// 		if(i !== h) {
-				
-	// 		}
-	// 	})
-	// })
 	return candidates
 }
 
@@ -169,15 +156,7 @@ var genCandidates = function(store, k) {
 
 var areSetsIn = function(sets, frequentSets) {
 	for(var i=0; i<sets.length; i++) {
-		var included = false
-		for(var h=0; h<frequentSets.length; h++) {
-
-			if(_.isEqual(frequentSets[h], sets[i])) {
-				included = true
-				break;
-			}
-		}
-		if(!included) { return false }
+		if(!frequentSets.hasArray(sets[i])) { return false }
 	}
 	return true
 }
