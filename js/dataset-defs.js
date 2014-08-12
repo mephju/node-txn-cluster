@@ -66,7 +66,7 @@ function Epinions(datasetPath, dbTable) {
 	//ITEM_ID, MEMBER_ID, RATING, STATUS, CREATION,LAST_MODIFIED, TYPE, VERTICAL_ID
 	this.dbTable 		= dbTable
 	this.datasetPath 	= baseDatasetPath + datasetPath
-	this.separator 		= '::'
+	this.separator 		= ','
 	this.timeDistance 	= 300 // 5 mins
 	this.indices = {
 		userId:1,
@@ -86,14 +86,20 @@ function TestDataset(datasetPath, name) {
 
 Movielens.prototype 				= Dataset.prototype
 Movielens.prototype.constructor 	= Movielens
+
 LastFm.prototype 					= Dataset.prototype
 LastFm.prototype.constructor 		= LastFm
+
 TestDataset.prototype 				= Dataset.prototype
 TestDataset.prototype.constructor 	= TestDataset
 
+Epinions.prototype 					= Dataset.prototype
+Epinions.prototype.constructor 		= Epinions
+
 
 exports.dataset = function() {
-	//return new Epinions('epinions/epinions_sorted.txt')
+	return new Epinions('epinions/epinions_custom_small.txt', 'epinions_custom_small')
+	//return new Epinions('epinions/epinions_extended_sorted.txt', 'epinions')
 	//return new Netflix('netflix/netflix_sorted.txt')
 
 	//return new LastFm('lastfm-dataset-1K/feedback_small.tsv', 	'last_fm_small')

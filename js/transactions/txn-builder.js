@@ -123,14 +123,16 @@ var findTxnsInFeedback = function(feedbackRows) {
 	var group
 
 	for(var i=0; i<feedbackRows.length; i++) {
-		var row = feedbackRows[i]
-		var timestamp = row.timestamp
+		//console.log(feedbackRows[i])
+		var row 		= feedbackRows[i]
+		var timestamp 	= row.timestamp
 		
 		if(i !== 0) { 	 
 			lastItemTimestamp = feedbackRows[i-1].timestamp 
 		}
 		
 		//is this item of a new transaction
+		//console.log('time diff', timestamp - lastItemTimestamp)
 		if((timestamp - lastItemTimestamp) > dataset.timeDistance) {
 			group = []
 			feedbackGroups.push(group)

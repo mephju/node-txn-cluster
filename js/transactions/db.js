@@ -122,7 +122,7 @@ exports.getUserIds = function(callback) {
 		}
 	],
 	function(err) {
-		console.log('got user ids', result)
+		//console.log('got user ids', result)
 		callback(err, result)
 	})
 }

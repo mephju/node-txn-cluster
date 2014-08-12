@@ -51,7 +51,7 @@ var start = function(callback) {
 			console.log('Recommender Precision', precision.precR)
 			console.log('Baseline Precision', precision.precB)
 			if(config.RECOMMENDER === config.REC_REAL) {
-				configconsole.log('number of clusters: ', recommender.clusters.clusters.length)
+				console.log('number of clusters: ', recommender.clusters.clusters.length)
 			}
 
 		}

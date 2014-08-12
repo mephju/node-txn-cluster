@@ -113,7 +113,7 @@ describe('help works - ', function() {
 
 
 
-	describe('objCmp()', function() {
+	describe.skip('objCmp()', function() {
 
 		it('can be used to sort top clusters', function(){
 			var topClusters = [
@@ -127,4 +127,33 @@ describe('help works - ', function() {
 			topClusters[0].sum.should.equal(60)
 		})
 	})
+
+
+	describe('arrayInArray', function() {
+		it('finds items of array within another array', function() {
+			var host = [1,2,3,4,5,6]
+			var guest = [1,2,4]
+
+			var result = help.arrayInArray(host, guest)
+			result.should.equal(true)
+
+			result = help.arrayInArray(host, [1,2,7])
+			result.should.equal(false)
+		})
+	})
+
+
+	describe('valueInArray', function() {
+		it('finds items of array within another array', function() {
+			var host = [1,2,3,4,5,6]
+			var guest = [1,2,4]
+
+			var result = help.arrayInArray(host, guest)
+			result.should.equal(true)
+
+			result = help.arrayInArray(host, [1,2,7])
+			result.should.equal(false)
+		})
+	})
+
 })
