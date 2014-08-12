@@ -83,7 +83,7 @@ describe('apriori', function() {
 	})
 
 
-	it('genCandidates()', function() {
+	it.only('genCandidates()', function() {
 		config.MIN_SUPPORT = 1
 		
 		var store = []

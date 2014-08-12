@@ -173,6 +173,7 @@ var makeSubsets = function(itemset, size) {
 
 
 var prune = function(counts) {
+	console.log('prune')
 	for(var key in counts) {
 		if(counts[key] < config.MIN_SUPPORT) {
 			delete counts[key]
