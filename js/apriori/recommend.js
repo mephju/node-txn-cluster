@@ -7,6 +7,7 @@ var help 		= require('../help')
 
 
 function Recommender(rules) {
+	console.log('apriori.Recommender')
 	this.rules = rules
 } 
 
@@ -19,15 +20,19 @@ Recommender.prototype.getRecommendations = function(session, N) {
 		
 		var item = session[s]
 		var itemRules = this.rules[item]
-		
-		for(var i=0; i<itemRules.length; i++) {
-			recs = _.union(recs, itemRules[i].consequent)	
-			recs = _.difference(recs, session)
 
-			if(recs.length >= N) {
-				return recs
+		if(itemRules) {
+			for(var i=0; i<itemRules.length; i++) {
+				recs = _.union(recs, itemRules[i].consequent)	
+				recs = _.difference(recs, session)
+
+				if(recs.length >= N) {
+					return recs
+				}
 			}
 		}
+		
+	
 	}
 		
 

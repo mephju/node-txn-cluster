@@ -15,6 +15,8 @@ describe('Array', function() {
 
 			a.hasArray([1,2]).should.equal(true)
 			a.hasArray([1,2,3,4,5]).should.equal(false)
+
+			
 		})
 	})
 })

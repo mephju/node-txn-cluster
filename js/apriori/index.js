@@ -7,6 +7,10 @@ var help 		= require('../help')
 var Recommender = require('./recommend').Recommender
 var assoc 		= require('./assoc')
 
+console.log('loading apriori.index')
+
+var recommender = null
+
 var fallbackItems = []
 
 var init = function(popularFallbackItems, done) {
@@ -20,11 +24,12 @@ var init = function(popularFallbackItems, done) {
 		function(transactions, next) {
 			var store 	= algorithm(transactions);
 			var rules 	= assoc.findRules(store)
+			
+			console.log('setting recommender')
+			recommender = new Recommender(rules)
 
-			var recommender = new Recommender(rules)
 
-
-			done(null, recommender)
+			done(null)
 		}
 	], done)
 }
@@ -125,9 +130,9 @@ var genCandidates = function(store, k) {
 
 	var len = frequent.length
 	for(var i=0; i<len; i++) {
-		console.log(i)
+		//console.log(i)
 		for(var h=i+1; h<len; h++) {
-			//console.log(i, h)
+			//console.log(i, h, len)
 			var c = _.union(frequent[i], frequent[h]).sort(help.cmp)
 			
 			if(c.length === k) {
@@ -144,6 +149,7 @@ var genCandidates = function(store, k) {
 		}
 	}
 
+	console.log('apriori.genCandidates done.. found', candidates.length)
 	// frequent.forEach(function(itemset1, i) {
 	// 	frequent.forEach(function(itemset2, h) {
 	// 		if(i !== h) {
@@ -159,16 +165,9 @@ var genCandidates = function(store, k) {
 
 
 var areSetsIn = function(sets, frequentSets) {
+	//console.log('areSetsIn')
 	for(var i=0; i<sets.length; i++) {
-		var included = false
-		for(var h=0; h<frequentSets.length; h++) {
-
-			if(_.isEqual(frequentSets[h], sets[i])) {
-				included = true
-				break;
-			}
-		}
-		if(!included) { return false }
+		if(!frequentSets.hasArray(sets[i])) { return false }
 	}
 	return true
 }
@@ -176,6 +175,7 @@ var areSetsIn = function(sets, frequentSets) {
 
 
 var makeSubsets = function(itemset, size) {
+	//console.log('makeSubsets')
 	var subsets = []
 	for(var i=0; i+size<=itemset.length; i++) {
 		subsets.push(itemset.slice(i, i+size))
@@ -195,6 +195,9 @@ var prune = function(counts) {
 
 
 exports.init = init
+exports.recommend = recommend
+exports.reset = reset	
+
 exports.test = {
 	init:init,
 	prune:prune,
