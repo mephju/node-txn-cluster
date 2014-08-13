@@ -10,7 +10,7 @@ exports.VALIDATION_SET_SIZE 		= 1 - exports.TRAINING_SET_SIZE
 
 exports.MIN_SEQUENCE_FREQUENCY 		= 8
 exports.NUM_CENTROIDS				= 4
-exports.MIN_SUPPORT					= 10
+exports.MIN_SUPPORT					= 200
 
 //easy sequence size refers to sequences with sizes that are easy/fast to compare to other sequences
 exports.EASY_SEQUENCE_SIZE = 275 

@@ -8,18 +8,20 @@ var help 		= require('../help')
 
 var recommender = null
 
-if(config.RECOMMENDER === config.REC_REAL) {
-	recommender = require('../recommend/')
-} 
-else if(config.RECOMMENDER === config.REC_APRIORI) {
-	recommender = require('../apriori')
-}
+// if(config.RECOMMENDER === config.REC_REAL) {
+// 	recommender = require('../recommend/')
+// } 
+// else if(config.RECOMMENDER === config.REC_APRIORI) {
+// 	recommender = require('../apriori').recommender
+// }
 
 
-var evaluate = function(txnRows, baselineItems) {
+var evaluate = function(txnRows, baselineItems, theRecommender) {
 	var precisionSumBaseline = 0
 	var precisionSumRecommender = 0
 	var len = txnRows.length
+
+	recommender = theRecommender
 
 	// for(var i=0; i<len; i++) {
 	// 	var txnRow = txnRows[i]

@@ -41,12 +41,18 @@ var start = function(callback) {
 
 			var validTxnRows = filterValidTxns(txnRows)
 
-			var precision = eval.evaluate(validTxnRows, baselineItems)			
+			var precision = eval.evaluate(
+				validTxnRows, 
+				baselineItems, 
+				recommender
+			);			
 			
 			console.log('###########################################')
-			console.log('number of clusters: ', recommender.clusters.clusters.length)
 			console.log('Recommender Precision', precision.precR)
 			console.log('Baseline Precision', precision.precB)
+			if(config.RECOMMENDER === config.REC_REAL) {
+				configconsole.log('number of clusters: ', recommender.clusters.clusters.length)
+			}
 
 		}
 	], 

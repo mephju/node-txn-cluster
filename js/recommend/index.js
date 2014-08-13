@@ -20,6 +20,8 @@ var markovChainInfo = null
 var lastClusters 	= []
 
 
+
+
 var init = function(fallbackRecomms, done) {
 	console.log('init recommender')
 
