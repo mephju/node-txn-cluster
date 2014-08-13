@@ -97,17 +97,17 @@ var iteration = function(store, txns, k) {
 
 	var candidates = genCandidates(store, k)
 
-	candidates.forEach(function(candidate, i) {
+	for(var c=0,clen=candidates.length; c<clen; c++) {
+		var candidate = candidates[c]
 		var key = candidate.toString()
 		store[k][key] = 0
 		
-		txns.forEach(function(txn, i) {
-			var minLen = candidate.length
-			if(_.intersection(txn, candidate).length === minLen) {
+		for(var t=0; t<txns.length; t++) {
+			if(help.arrayInArray(txns[t], candidate)) {
 				store[k][key]++
 			}
-		})
-	})
+		}
+	}
 
 	prune(store[k])
 }
@@ -137,10 +137,10 @@ var genCandidates = function(store, k) {
 		//console.log(i)
 		for(var h=i+1; h<len; h++) {
 			//console.log(i, h, len)
-			var c = _.union(frequent[i], frequent[h]).sort(help.cmp)
+			var c = _.union(frequent[i], frequent[h], true).sort(help.cmp)
 			
 			if(c.length === k) {
-				//!help.arrayContains(candidates, c))
+			
 				if(!candidates.hasArray(c)) { 
 					var subsets = makeSubsets(c, k-1)
 					if(areSetsIn(subsets, frequent)) {
@@ -153,8 +153,7 @@ var genCandidates = function(store, k) {
 		}
 	}
 
-
-	console.log('apriori.genCandidates done.. found', candidates.length)
+	console.log('apriori.genCandidates done.. found', candidates.length, k)
 	// frequent.forEach(function(itemset1, i) {
 	// 	frequent.forEach(function(itemset2, h) {
 	// 		if(i !== h) {

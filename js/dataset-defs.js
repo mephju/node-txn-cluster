@@ -60,7 +60,37 @@ function LastFm(datasetPath, dbTable) {
 	this.timeDistance = 900 //15 mins
 	this.indices = {
 		userId:0,
-		timestamp:1
+		itemId:1,
+		timestamp:3
+	}
+}
+
+function Netflix(datasetPath, dbTable) {
+	//itemID,userID,Rating,timestamp
+	this.dbTable 		= dbTable
+	this.datasetPath 	= baseDatasetPath + datasetPath
+	this.separator 		= ','
+	this.timeDistance 	= 300 // 5 mins
+	this.indices = {
+		userId:1,
+		itemId:0,
+		rating:2,
+		timestamp:3
+	}
+}
+
+function Epinions(datasetPath, dbTable) {
+	//ITEM_ID, MEMBER_ID, RATING, STATUS, CREATION,LAST_MODIFIED, TYPE, VERTICAL_ID
+	this.dbTable 		= dbTable
+	this.datasetPath 	= baseDatasetPath + datasetPath
+	this.separator 		= ','
+	this.timeDistance 	= 300 // 5 mins
+	this.indices = {
+		userId:1,
+		itemId:0,
+		rating:2,
+		timestamp:4
+>>>>>>> origin/master
 	}
 }
 
@@ -74,15 +104,29 @@ function TestDataset(datasetPath, name) {
 
 Movielens.prototype 				= Dataset.prototype
 Movielens.prototype.constructor 	= Movielens
+
 LastFm.prototype 					= Dataset.prototype
 LastFm.prototype.constructor 		= LastFm
+
 TestDataset.prototype 				= Dataset.prototype
 TestDataset.prototype.constructor 	= TestDataset
 
+Epinions.prototype 					= Dataset.prototype
+Epinions.prototype.constructor 		= Epinions
+
 
 exports.dataset = function() {
+<<<<<<< HEAD
 	//return new LastFm('/home/kokirchn/thesis/datasets/lastfm-dataset-1K/feedback_small.tsv', 	'last_fm_small')
 	//return new LastFm('/home/kokirchn/thesis/datasets/lastfm-dataset-1K/feedback.tsv', 		'last_fm')
+=======
+	return new Epinions('epinions/epinions_custom_small.txt', 'epinions_custom_small')
+	//return new Epinions('epinions/epinions_extended_sorted.txt', 'epinions')
+	//return new Netflix('netflix/netflix_sorted.txt')
+
+	//return new LastFm('lastfm-dataset-1K/feedback_small.tsv', 	'last_fm_small')
+	//return new LastFm('lastfm-dataset-1K/feedback.tsv', 		'last_fm')
+>>>>>>> origin/master
 	
 	
 	return new Movielens('/home/kokirchn/thesis/datasets/movielens/ml-1m/ml-1m/ratings.dat', 	'movielens_1m')

@@ -27,7 +27,11 @@ var prepare = exports.prepare = function(callback) {
 		function(next) {
 			if(dataset.dbTable.indexOf('last') !== -1) {
 				dbLastFm.init(db, next)	
-			} else {
+			} 
+			// else if(dataset.dbTable.indexOf('epinions') !== -1) {
+
+			// }
+			else {
 				next(null)
 			}
 		},
@@ -65,6 +69,7 @@ var prepare = exports.prepare = function(callback) {
 
 
 var insertItem = function(record, callback) {
+	//console.log(record)
 	insertFeedbackStmt.run([
 		record[dataset.indices.userId], 
 		record[dataset.indices.itemId], 
@@ -106,11 +111,15 @@ exports.insert = function(records, callback) {
 			db.run('BEGIN TRANSACTION', next)
 		},
 		function(next) {
-			if(table.indexOf('last_fm') === -1) {
-				insertItems(records, next)
-			} 
-			else {
+			if(table.indexOf('last_fm') !== -1) {
 				insertLastFm(records, next)
+			} 
+			if(table.indexOf('epinions') !== -1) {
+				convertTimestamps(records)
+				insertItems(records, next)
+			}
+			else {
+				insertItems(records, next)
 			}
 		},
 		function(next) {
@@ -119,6 +128,27 @@ exports.insert = function(records, callback) {
 		}
 	],
 	callback);
+}
+
+
+var convertTimestamps = function(records) {
+	//year/month/day
+	
+	records.forEach(function(record) {
+		var date = record[dataset.indices.timestamp]
+		date = date.split('/')	
+		date = date[1] + '/' + date[2] + '/' + date[0]
+		record[dataset.indices.timestamp] = parseInt(
+			new Date(date).getTime() / 1000
+		);
+	})
+	
+	// var myDate="26-02-2012";
+	// myDate=myDate.split("-");
+	// var newDate=myDate[1]+"/"+myDate[0]+"/"+myDate[2];
+	// alert(new Date(newDate).getTime());
+
+
 }
 
 
