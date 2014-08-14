@@ -150,6 +150,30 @@ describe('apriori', function() {
 
 	})
 
+	it('findInsertPos', function() {
+		var a = [1,2,3,5,6]
+		
+		var pos = apriori.findInsertPos(a, 4)
+		pos.should.equal(3)
+		pos = apriori.findInsertPos(a, 7)
+		pos.should.equal(5)
+		pos = apriori.findInsertPos(a, 0)
+		pos.should.equal(0)
+
+	})
+
+
+	it('merge', function() {
+		var hostSet = [1,2,3,6,7,8]
+		var newSet = [1,2,4,5,6,7]
+
+		var result = apriori.mergeSets(hostSet, newSet)
+		console.log(result)
+		result.should.eql([1,2,3,4,5,6,7,8])
+	})
+
+
+
 
 	
 })

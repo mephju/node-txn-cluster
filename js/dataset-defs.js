@@ -98,7 +98,7 @@ Epinions.prototype.constructor 		= Epinions
 
 
 exports.dataset = function() {
-	return new Epinions('epinions/epinions_custom_small.txt', 'epinions_custom_small')
+	//return new Epinions('epinions/epinions_custom_small.txt', 'epinions_custom_small')
 	//return new Epinions('epinions/epinions_extended_sorted.txt', 'epinions')
 	//return new Netflix('netflix/netflix_sorted.txt')
 
@@ -107,7 +107,7 @@ exports.dataset = function() {
 	
 	
 	//return new Movielens('movielens/ml-1m/ml-1m/ratings.dat', 	'movielens_1m')
-	return new Movielens('movielens/ratings-custom-large.dat',	'movielens_custom_large')
+	//return new Movielens('movielens/ratings-custom-large.dat',	'movielens_custom_large')
 	
 
 	//return new Movielens('movielens/ratings-custom.dat', 		'movielens_custom')
