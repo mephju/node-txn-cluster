@@ -1,21 +1,22 @@
 var fs 		= require('fs')
 var async 	= require('async')
 
-var baseDatasetPath = '/home/mephju/stuff/datasets/'
+
+var baseDatasetPath = '/home/kokirchn/thesis/'
+var baseDatasetPath = '/stuff/datamining/'
 
 function Dataset() {
 	this.dbTable = null
 	this.datasetSize = 0
 	this.trainingSize = 0
-	this.dataDir = baseDatasetPath + 'daport/v4/'
 }
 
 Dataset.prototype.dataDir = function() {
-	return baseDatasetPath + 'daport/v4/'
+	return baseDatasetPath + 'datasets/'
 }
 
 Dataset.prototype.db = function() {
-	return this.dataDir() + this.dbTable + '.sqlite'
+	return baseDatasetPath + 'results/' + this.dbTable + '.sqlite'
 	//return ':memory:'
 }
 
@@ -23,7 +24,7 @@ Dataset.prototype.db = function() {
 
 function Movielens(datasetPath, dbTable) {
 	this.dbTable 		= dbTable
-	this.datasetPath 	= baseDatasetPath + datasetPath
+	this.datasetPath 	= this.dataDir() + datasetPath
 	this.separator 		= '::'
 	this.timeDistance 	= 300 // 5 mins
 	this.indices = {
@@ -38,7 +39,7 @@ function LastFm(datasetPath, dbTable) {
 	//userid-timestamp-artid-artname-traid-traname
 	
 	this.dbTable = dbTable
-	this.datasetPath 	= baseDatasetPath + datasetPath
+	this.datasetPath 	= this.dataDir() + datasetPath
 	this.separator = '\t'
 	this.timeDistance = 900 //15 mins
 	this.indices = {
@@ -48,38 +49,28 @@ function LastFm(datasetPath, dbTable) {
 	}
 }
 
-function Netflix(datasetPath, dbTable) {
-	//itemID,userID,Rating,timestamp
-	this.dbTable 		= dbTable
-	this.datasetPath 	= baseDatasetPath + datasetPath
-	this.separator 		= ','
-	this.timeDistance 	= 300 // 5 mins
+
+function Gowalla(datasetPath, dbTable) {
+	//userid-timestamp-artid-artname-traid-traname
+	
+	this.dbTable = dbTable
+	this.datasetPath 	= this.dataDir() + datasetPath
+	this.separator = '\t'
+	this.timeDistance =  604800 //48 hours
 	this.indices = {
-		userId:1,
-		itemId:0,
-		rating:2,
-		timestamp:3
+		userId:0,
+		itemId:4,
+		timestamp:1
 	}
 }
 
-function Epinions(datasetPath, dbTable) {
-	//ITEM_ID, MEMBER_ID, RATING, STATUS, CREATION,LAST_MODIFIED, TYPE, VERTICAL_ID
-	this.dbTable 		= dbTable
-	this.datasetPath 	= baseDatasetPath + datasetPath
-	this.separator 		= ','
-	this.timeDistance 	= 300 // 5 mins
-	this.indices = {
-		userId:1,
-		itemId:0,
-		rating:2,
-		timestamp:4
-	}
-}
+
+
 
 
 function TestDataset(datasetPath, name) {
 	this.dbTable = name
-	this.datasetPath = datasetPath
+	this.datasetPath 	= this.dataDir() + datasetPath
 	this.separator = '::'
 	this.timeDistance = 300
 }
@@ -93,14 +84,15 @@ LastFm.prototype.constructor 		= LastFm
 TestDataset.prototype 				= Dataset.prototype
 TestDataset.prototype.constructor 	= TestDataset
 
-Epinions.prototype 					= Dataset.prototype
-Epinions.prototype.constructor 		= Epinions
+Gowalla.prototype 					= Dataset.prototype
+Gowalla.prototype.constructor 		= Gowalla
+
 
 
 exports.dataset = function() {
-	//return new Epinions('epinions/epinions_custom_small.txt', 'epinions_custom_small')
-	//return new Epinions('epinions/epinions_extended_sorted.txt', 'epinions')
-	//return new Netflix('netflix/netflix_sorted.txt')
+
+	//return new Gowalla('gowalla/checkins.txt',			'gowalla')
+	return new Gowalla('gowalla/checkins_small.txt',	'gowalla_small')
 
 	//return new LastFm('lastfm-dataset-1K/feedback_small.tsv', 	'last_fm_small')
 	//return new LastFm('lastfm-dataset-1K/feedback.tsv', 		'last_fm')

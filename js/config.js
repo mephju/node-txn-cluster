@@ -8,9 +8,11 @@ exports.TRAINING_SET_SIZE 			= 0.8
 exports.VALIDATION_SET_SIZE 		= 1 - exports.TRAINING_SET_SIZE
 //exports.MAX_TIME_DISTANCE 			= 900
 
+exports.MIN_CLUSTER_SIZE 			= 1
 exports.MIN_SEQUENCE_FREQUENCY 		= 8
 exports.NUM_CENTROIDS				= 4
 exports.MIN_SUPPORT					= 50
+
 
 //easy sequence size refers to sequences with sizes that are easy/fast to compare to other sequences
 exports.EASY_SEQUENCE_SIZE = 275 
@@ -28,8 +30,8 @@ exports. ITEM_CHOICE_STRATEGY = {
 }
 exports.REC_REAL = 0
 exports.REC_APRIORI = 1
-exports.RECOMMENDER = exports.REC_APRIORI 
-//exports.RECOMMENDER = exports.REC_REAL
+//exports.RECOMMENDER = exports.REC_APRIORI 
+exports.RECOMMENDER = exports.REC_REAL
 
 
 
