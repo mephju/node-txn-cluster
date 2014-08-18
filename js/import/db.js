@@ -69,7 +69,7 @@ var prepare = exports.prepare = function(callback) {
 
 
 var insertItem = function(record, callback) {
-	//console.log(record)
+	// console.log(record)
 	insertFeedbackStmt.run([
 		record[dataset.indices.userId], 
 		record[dataset.indices.itemId], 
@@ -112,15 +112,16 @@ exports.insert = function(records, callback) {
 		},
 		function(next) {
 			if(table.indexOf('last_fm') !== -1) {
-				insertLastFm(records, next)
+				return insertLastFm(records, next)
 			} 
 			if(table.indexOf('epinions') !== -1) {
 				convertTimestamps(records)
-				insertItems(records, next)
 			}
-			else {
-				insertItems(records, next)
+			else if(table.indexOf('gowalla') !== -1) {
+				convertTimestamps(records)
 			}
+			insertItems(records, next)
+			
 		},
 		function(next) {
 			console.log('inserted')
@@ -133,14 +134,14 @@ exports.insert = function(records, callback) {
 
 var convertTimestamps = function(records) {
 	//year/month/day
+	//2010-07-24T13:45:06Z
 	
 	records.forEach(function(record) {
 		var date = record[dataset.indices.timestamp]
-		date = date.split('/')	
-		date = date[1] + '/' + date[2] + '/' + date[0]
 		record[dataset.indices.timestamp] = parseInt(
-			new Date(date).getTime() / 1000
+			new Date(record[dataset.indices.timestamp]).getTime()/1000
 		);
+
 	})
 	
 	// var myDate="26-02-2012";

@@ -63,7 +63,11 @@ var onData = function(chunk) {
 
 
 var onLinesAvailable = function(lines, done) {
+	// console.log(lines[0])
+	// console.log(dataset.separator)
+	// console.log(lines[0].split('\t'))
 	console.log('onLinesAvailable ', lines.length)
+	
 	var records = lines.map(function(line) {
 		return line.split(dataset.separator)
 	})

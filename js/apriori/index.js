@@ -137,7 +137,8 @@ var genCandidates = function(store, k) {
 		//console.log(i)
 		for(var h=i+1; h<len; h++) {
 			//console.log(i, h, len)
-			var c = _.union(frequent[i], frequent[h], true).sort(help.cmp)
+			var c = mergeSets(frequent[i], frequent[h])
+			//var c = _.union(frequent[i], frequent[h], true).sort(help.cmp)
 			
 			if(c.length === k) {
 			
@@ -163,6 +164,29 @@ var genCandidates = function(store, k) {
 	// })
 
 	return candidates
+}
+
+
+var mergeSets = function(hostSet, newSet) {
+	for(var i=0,len=newSet.length; i<len; i++) {
+		var pos = findInsertPos(hostSet, newSet[i])
+		if(pos !== -1) {
+			hostSet.splice(pos, 0, newSet[i])
+		}
+	}
+	return hostSet
+}
+
+var findInsertPos = function(set, value) {
+	for(var i=0,len=set.length; i<len; i++) {
+		if(value === set[i-1]) {
+				return -1
+		} 
+		if(value < set[i]) {
+			return i
+		}
+	}	
+	return set.length
 }
 
 
@@ -205,6 +229,7 @@ exports.recommend = recommend
 exports.reset = reset	
 
 exports.test = {
+
 	init:init,
 	prune:prune,
 	makeSubsets: makeSubsets,
@@ -213,7 +238,9 @@ exports.test = {
 	areSetsIn: areSetsIn,
 	iteration: iteration,
 	initApriori: initApriori,
-	increment: increment
+	increment: increment,
+	findInsertPos: findInsertPos,
+	mergeSets: mergeSets
 }
 
 //work()

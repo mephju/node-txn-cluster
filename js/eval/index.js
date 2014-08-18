@@ -34,12 +34,16 @@ var start = function(callback) {
 			recommender.init(fallbackItems, next)
 		},
 		function(next) {
-			txnDb.getAllTxns(next, true)
+			var isValidation = true
+			txnDb.getAllTxns(next, isValidation)
 		},
 		function(txnRows, next) {
-			
+			console.log('txnRows', txnRows.length)
 
 			var validTxnRows = filterValidTxns(txnRows)
+
+			console.log('validtxnRows', validTxnRows.length)
+
 
 			var precision = eval.evaluate(
 				validTxnRows, 

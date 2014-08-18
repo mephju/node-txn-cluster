@@ -152,21 +152,6 @@ exports.getTxn = function(txnId, callback) {
 
 
 
-var getTxnIdsForValidation = function(callback) {
-	async.waterfall([
-		function(next) {
-			rootDb.getTrainingSetSize(next)
-		},
-		function(trainingSetSize, next) {
-			getTxnIdsHelper(
-				'SELECT txn_id from txns LIMIT 999999999 OFFSET ' + trainingSetSize, 
-				callback
-			);
-		}
-	], callback)
-}
-
-
 
 
 
@@ -184,17 +169,15 @@ var getAllTxnIds = function(callback) {
 		function(size, next) {
 			var trainingSize = Math.floor(size*config.TRAINING_SET_SIZE)
 			console.log(config.TRAINING_SET_SIZE, trainingSize)
-			getTxnIdsHelper(sql.getAllTxnIds(trainingSize), callback);
+			getTxnIdsHelper(
+				'SELECT txn_id FROM txns_random ORDER BY rowid LIMIT ' + trainingSize, 
+				callback
+			);
 		}
 	], callback)	
 }
 
-exports.getTxnIds = function(dataset, callback) {
-	getTxnIdsHelper(
-		sql.getTxnIdsStmt(dataset.dbTable),
-		callback
-	);
-}
+
 
 var getTxnIdsHelper = function(sql, callback) {
 	db.all(
@@ -300,7 +283,6 @@ var getClusteredTxns = function(done) {
 
 exports.getManyTxns = getManyTxns
 exports.getAllTxns = getAllTxns
-exports.getTxnIdsForValidation = getTxnIdsForValidation
 exports.getTxnIdsForTraining = getAllTxnIds
 exports.getAllTxnIds = getAllTxnIds
 exports.getClusteredTxns = getClusteredTxns

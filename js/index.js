@@ -23,31 +23,31 @@ var main = function() {
 	var startTime = new Date().getTime()
 
 	async.waterfall([
-		// function(next) {
-		// 	importApp.makeImport(next)
-		// },
-		// function(next) {
-		// 	console.log('build txns')
-		// 	txnApp.buildTxns(next)
-		// }, 
-		// function(next) {
-		// 	clusterApp.start(next)
-		// },
-		// function(next) {
-		// 	next(null, '')
-		// },
-		// function(clusterGroup, next) {
-		// 	// read clusters from db again so we can remove 
-		// 	// the previous step if we want to skip it
-		// 	clusterGroup = null 
-		// 	clusterGroupModule.buildFromDb(next)
-		// },
-		// function(clusterGroup, next) {
-		// 	clusters = clusterGroup
-		// 	console.log('this is clusterGroup')
-		// 	//console.log(clusterGroup)
-		// 	transitionApp.buildTransitions(clusters, next)	
-		// },
+		 function(next) {
+		 	importApp.makeImport(next)
+		 },
+		 function(next) {
+		 	console.log('build txns')
+		 	txnApp.buildTxns(next)
+		 }, 
+		 function(next) {
+		 	clusterApp.start(next)
+		 },
+//		 function(next) {
+//		 	next(null, '')
+//		 },
+		 function(clusterGroup, next) {
+		 	// read clusters from db again so we can remove 
+		 	// the previous step if we want to skip it
+		 	clusterGroup = null 
+		 	clusterGroupModule.buildFromDb(next)
+		 },
+		 function(clusterGroup, next) {
+		 	clusters = clusterGroup
+		 	console.log('this is clusterGroup')
+		 	//console.log(clusterGroup)
+		 	transitionApp.buildTransitions(clusters, next)	
+		 },
 		function(next) {
 			transitionApp.buildMarkovChain(next)
 		},

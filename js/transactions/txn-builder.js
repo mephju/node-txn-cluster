@@ -28,12 +28,7 @@ exports.buildTxnsForSet = function(next) {
 		function(next) {
 			txnDb.db.run(sql.createIndexStmt(), next)
 		},
-		function(next) {
-			txnDb.db.run('DROP TABLE IF EXISTS txn_item_groups', next)
-		},
-		function(next) {
-			txnDb.db.run(sql.createTableTxnItemGroups, next)
-		},
+
 		function(next) {
 			txnDb.db.run('drop table if exists item_counts', next)
 		},
@@ -57,7 +52,26 @@ exports.buildTxnsForSet = function(next) {
 				order by count desc',
 				next
 			);
-		}
+		},
+		function(next) {
+			txnDb.db.run(
+				'drop table if exists txns_random'
+			);
+			txnDb.db.run(
+				'create table if not exists txns_random 	\
+				as select 	* 				\
+				from 		txns 			\
+				order by random()',
+				next
+
+			);
+		}, 
+		function(next) {
+			txnDb.db.run('DROP TABLE IF EXISTS txn_item_groups', next)
+		},
+		function(next) {
+			txnDb.db.run(sql.createTableTxnItemGroups, next)
+		},
 	], 
 	function(err) {
 		err && console.log('error building txns for set', err)

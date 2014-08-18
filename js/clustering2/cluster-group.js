@@ -83,7 +83,7 @@ ClusterGroup.prototype.clear = function() {
 ClusterGroup.prototype.cleanUp = function() {
 	var cleaned = []
 	this.clusters.forEach(function(cluster) {
-		if(cluster.members.length > 4) {
+		if(cluster.members.length > config.MIN_CLUSTER_SIZE) {
 			cleaned.push(cluster)
 		}
 	})
