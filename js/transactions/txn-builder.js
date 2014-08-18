@@ -13,7 +13,7 @@ var dataset		= require('../dataset-defs').dataset()
 
 
 
-exports.buildTxnsForSet = function(next) {
+exports.buildTxns = function(next) {
 	async.waterfall([
 		function(next) {
 			txnDb.prepareDb(next)
@@ -23,7 +23,7 @@ exports.buildTxnsForSet = function(next) {
 			txnDb.getUserIds(next)
 		}, 
 		function(userIds, next) {
-			buildTxns(userIds, next)
+			buildTxnsForUsers(userIds, next)
 		},
 		function(next) {
 			txnDb.db.run(sql.createIndexStmt(), next)
@@ -36,6 +36,7 @@ exports.buildTxnsForSet = function(next) {
 			rootDb.getTrainingSetSize(next)
 		},
 		function(trainingSetSize, next) {
+			console.log('creating table item_counts')
 			txnDb.db.run(
 				'create table 	item_counts		\
 				as select 		item_id,  		\
@@ -54,11 +55,16 @@ exports.buildTxnsForSet = function(next) {
 			);
 		},
 		function(next) {
+			console.log('creating table txns_random')
 			txnDb.db.run(
-				'drop table if exists txns_random'
+				'drop table if exists txns_random',
+				next
+
 			);
+		},
+		function(next) {
 			txnDb.db.run(
-				'create table if not exists txns_random 	\
+				'create table txns_random 	\
 				as select 	* 				\
 				from 		txns 			\
 				order by random()',
@@ -82,18 +88,18 @@ exports.buildTxnsForSet = function(next) {
 
 
 
-var buildTxns = function(userIds, callback) {
+var buildTxnsForUsers = function(userIds, callback) {
 
-	var feedbackGroups = []
+	var txns = []
 	async.eachSeries(
 		userIds,
 		function(userId, next) {
 			console.log('find feedback for user', userId)
-			findUserTxns(userId, feedbackGroups, next)
+			findUserTxns(userId, txns, next)
 		},
 		function(err) {
-			if(feedbackGroups.length > 0) {
-				txnDb.insertTxns(feedbackGroups, callback)
+			if(txns.length > 0) {
+				txnDb.insertTxns(txns, callback)
 			} else {
 				callback(err)
 			}
@@ -112,8 +118,12 @@ var findUserTxns = function(userId, txns, done) {
 		function(feedbackRows, next) {
 			
 			var userTxns = findTxnsInFeedback(feedbackRows)	
+			userTxns.forEach(function(txn) {
+				txns.push(txn)
+			})
 
-			txns.push.apply(txns, userTxns)
+			console.log('findUserTxns', txns.length)
+			
 			if(txns.length > 1000) {
 				console.log('insert txns START', txns.length)
 				txnDb.insertTxns(txns, function(err) {
@@ -131,9 +141,9 @@ var findUserTxns = function(userId, txns, done) {
 
 
 var findTxnsInFeedback = function(feedbackRows) {
-	
+	console.log('findTxnsInFeedback of length', feedbackRows.length)
 	var lastItemTimestamp = 0
-	var feedbackGroups = []
+	var txns = []
 	var group
 
 	for(var i=0; i<feedbackRows.length; i++) {
@@ -149,15 +159,15 @@ var findTxnsInFeedback = function(feedbackRows) {
 		//console.log('time diff', timestamp - lastItemTimestamp)
 		if((timestamp - lastItemTimestamp) > dataset.timeDistance) {
 			group = []
-			feedbackGroups.push(group)
+			txns.push(group)
 		}
 		
 		group.push(row)
 	}
 
-	console.log('txnBuilder.findTxnsInFeedback result', feedbackGroups.length)
+	console.log('txnBuilder.findTxnsInFeedback result', txns.length)
 
-	return feedbackGroups
+	return txns
 }
 
 

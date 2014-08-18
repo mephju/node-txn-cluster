@@ -51,17 +51,17 @@ function LastFm(datasetPath, dbTable) {
 
 
 function Gowalla(datasetPath, dbTable) {
-	//userid-timestamp-artid-artname-traid-traname
+	// //userid-timestamp-artid-artname-traid-traname
 	
-	this.dbTable = dbTable
-	this.datasetPath 	= this.dataDir() + datasetPath
-	this.separator = '\t'
-	this.timeDistance =  604800 //48 hours
-	this.indices = {
-		userId:0,
-		itemId:4,
-		timestamp:1
-	}
+	// this.dbTable = dbTable
+	// this.datasetPath 	= this.dataDir() + datasetPath
+	// this.separator = '\t'
+	// this.timeDistance =  31536000 //48 hours
+	// this.indices = {
+	// 	userId:0,
+	// 	itemId:4,
+	// 	timestamp:1
+	// }
 }
 
 
@@ -95,7 +95,7 @@ exports.dataset = function() {
 	//return new Gowalla('gowalla/checkins_small.txt',	'gowalla_small')
 
 	//return new LastFm('lastfm-dataset-1K/feedback_small.tsv', 	'last_fm_small')
-	//return new LastFm('lastfm-dataset-1K/feedback.tsv', 		'last_fm')
+	return new LastFm('lastfm-dataset-1K/feedback.tsv', 		'last_fm')
 	
 	
 	//return new Movielens('movielens/ml-1m/ml-1m/ratings.dat', 	'movielens_1m')

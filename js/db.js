@@ -25,6 +25,7 @@ var getTrainingSetSize = function(done) {
 		},
 		function(size, next) {
 			var trainingSetSize = Math.floor(size*config.TRAINING_SET_SIZE)
+			console.log('getTrainingSetSize', trainingSetSize)
 			done(null, trainingSetSize)
 		}
 	], done)
