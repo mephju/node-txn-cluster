@@ -87,4 +87,4 @@ var filterValidTxns = function(txnRows) {
 
 
 exports.start = start
-start()
+//start()

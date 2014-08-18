@@ -8,6 +8,7 @@ var datasetDefs 	= require('./dataset-defs')
 var dataset 		= datasetDefs.dataset()
 var fs 				= require('fs')
 var async			= require('async')
+var evalApp			= require('./eval')
 
 var main = function() {
 	
@@ -55,6 +56,9 @@ var main = function() {
 			//console.log('done building markov chain')
 			console.log('done preparing data')
 			next(null)
+		},
+		function(next) {
+			evalApp.start(next)
 		}
 
 	], 
