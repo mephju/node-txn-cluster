@@ -17,7 +17,7 @@ var buildTxns = function(callback) {
 	var dataset = require('../dataset-defs').dataset()
 	
 	console.log('txnBuilder.buildTxns for ' + dataset.dbTable)
-	txnBuilder.buildTxnsForSet(callback)
+	txnBuilder.buildTxns(callback)
 
 }
 

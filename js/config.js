@@ -20,8 +20,8 @@ exports.EASY_SEQUENCE_SIZE = 275
 exports.N = 5
 exports.MAX_CONTRIBUTION = 0.6
 exports.BASELINE_ON = false
-exports.MARKOV_ORDER = 3
-exports. ITEM_CHOICE_STRATEGY = {
+exports.MARKOV_ORDER = 2
+exports.ITEM_CHOICE_STRATEGY = {
 	tfTfidf: false,
 	tfidf:false,
 	bestItemsOfCluster:true,

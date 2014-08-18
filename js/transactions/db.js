@@ -57,6 +57,7 @@ exports.getUserFeedback = function(id, callback) {
 var inscount = 1
 exports.insertTxns = function(feedbackGroups, callback) {
 	
+	console.log('txndb.insertTxns', feedbackGroups.length)
 	function insertIntoTxns(groups, callback) {
 
 		
