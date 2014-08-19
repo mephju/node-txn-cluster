@@ -91,8 +91,8 @@ Gowalla.prototype.constructor 		= Gowalla
 
 exports.dataset = function() {
 
-	//return new Gowalla('gowalla/checkins.txt',			'gowalla')
-	return new Gowalla('gowalla/checkins_small.txt',	'gowalla_small')
+	return new Gowalla('gowalla/checkins.txt',			'gowalla')
+	//return new Gowalla('gowalla/checkins_small.txt',	'gowalla_small')
 
 	//return new LastFm('lastfm-dataset-1K/feedback_small.tsv', 	'last_fm_small')
 	//return new LastFm('lastfm-dataset-1K/feedback.tsv', 		'last_fm')

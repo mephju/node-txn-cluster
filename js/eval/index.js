@@ -88,3 +88,13 @@ var filterValidTxns = function(txnRows) {
 
 exports.start = start
 //start()
+
+var file 	= process.argv[1]
+var method 	= process.argv[2]
+// was this file was started from the command line?
+// if so, call entry level method
+if(file === __filename) { 
+	if(method) {
+		exports[method]()
+	}
+}
