@@ -12,7 +12,7 @@ var apriori = require('../../apriori/index').test
 describe('apriori', function() {
 
 	config.MIN_SUPPORT = 1
-	var store = null
+	
 	var txns = [
 		[1,2,3],
 		[1,2,5],
@@ -21,7 +21,7 @@ describe('apriori', function() {
 
 	it('initApriori() counts items correctly', function() {
 	
-		store = apriori.initApriori(txns)
+		var store = apriori.initApriori(txns)
 
 		store[1]['1'].should.equal(3)
 		store[1]['2'].should.equal(3)
@@ -34,6 +34,7 @@ describe('apriori', function() {
 
 	it('prune() removes entries not satisfying MIN_SUPPORT', function() {
 		config.MIN_SUPPORT = 3
+		var store = apriori.initApriori(txns)
 		apriori.prune(store[1])
 		Object.keys(store[1]).length.should.equal(2)
 		store[1]['1'].should.equal(3)
@@ -41,9 +42,11 @@ describe('apriori', function() {
 	})
 
 	it('iteration()', function() {
-		config.MIN_SUPPORT = 1
-
+		config.MIN_SUPPORT = 3
+		var store = apriori.initApriori(txns)
+		apriori.prune(store[1])
 		apriori.iteration(store, txns, 2)
+		console.log(store[2])
 		store[2].should.eql({'1,2':3})
 	})
 
@@ -108,6 +111,7 @@ describe('apriori', function() {
 			'2,4':1,
 			'3,4':1
 		})
+		store.push({})
 		//console.log(candidates)
 		var truth = [
 			[1,2,3],
@@ -163,13 +167,13 @@ describe('apriori', function() {
 	})
 
 
-	it('merge', function() {
+	it('merge puts elements of one array into another in ordered way', function() {
 		var hostSet = [1,2,3,6,7,8]
-		var newSet = [1,2,4,5,6,7]
+		var newSet = [1,2,4,5,6,7,90]
 
 		var result = apriori.mergeSets(hostSet, newSet)
 		console.log(result)
-		result.should.eql([1,2,3,4,5,6,7,8])
+		result.should.eql([1,2,3,4,5,6,7,8,90])
 	})
 
 

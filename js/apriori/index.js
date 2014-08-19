@@ -23,7 +23,9 @@ var init = function(popularFallbackItems, done) {
 		},
 		function(transactions, next) {
 			var store 	= algorithm(transactions);
+			console.log(store)
 			var rules 	= assoc.findRules(store)
+			console.log(rules)
 			
 			console.log('setting recommender')
 			recommender = new Recommender(rules)
@@ -127,13 +129,15 @@ var genCandidates = function(store, k) {
 	})
 
 	console.log('apriori.frequent', frequent.length)
+	console.log('apriori.frequent', frequent)
 
 	var len = frequent.length
 	for(var i=0; i<len; i++) {
 		//console.log(i)
 		for(var h=i+1; h<len; h++) {
-			//console.log(i, h, len)
+			
 			var c = mergeSets(frequent[i], frequent[h])
+			console.log(i, h, frequent[i], frequent[h], c)
 			//var c = _.union(frequent[i], frequent[h], true).sort(help.cmp)
 			
 			if(c.length === k) {
@@ -151,30 +155,25 @@ var genCandidates = function(store, k) {
 	}
 
 	console.log('apriori.genCandidates done.. found', candidates.length, k)
-	// frequent.forEach(function(itemset1, i) {
-	// 	frequent.forEach(function(itemset2, h) {
-	// 		if(i !== h) {
-				
-	// 		}
-	// 	})
-	// })
+
 	return candidates
 }
 
 
-var mergeSets = function(hostSet, newSet) {
-	for(var i=0,len=newSet.length; i<len; i++) {
-		var pos = findInsertPos(hostSet, newSet[i])
+var mergeSets = function(set1, set2) {
+	var newSet = set1.slice()
+	for(var i=0,len=set2.length; i<len; i++) {
+		var pos = findInsertPos(newSet, set2[i])
 		if(pos !== -1) {
-			hostSet.splice(pos, 0, newSet[i])
+			newSet.splice(pos, 0, set2[i])
 		}
 	}
-	return hostSet
+	return newSet
 }
 
 var findInsertPos = function(set, value) {
 	for(var i=0,len=set.length; i<len; i++) {
-		if(value === set[i-1]) {
+		if(value === set[i]) {
 				return -1
 		} 
 		if(value < set[i]) {
