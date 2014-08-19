@@ -17,6 +17,9 @@ var makeImport = function(callback) {
 			var dataset = datasetDefs.dataset()
 			console.log('going to import ' + dataset.datasetPath)
 			reader.import(next)
+		},
+		function(next) {
+			db.createFeedbackIdx(next)
 		}
 	], callback);
 

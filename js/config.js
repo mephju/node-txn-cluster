@@ -31,8 +31,10 @@ exports. ITEM_CHOICE_STRATEGY = {
 }
 exports.REC_REAL = 0
 exports.REC_APRIORI = 1
-exports.RECOMMENDER = exports.REC_APRIORI 
-//exports.RECOMMENDER = exports.REC_REAL
+
+//exports.RECOMMENDER = exports.REC_APRIORI 
+exports.RECOMMENDER = exports.REC_APRIORI
+
 
 
 

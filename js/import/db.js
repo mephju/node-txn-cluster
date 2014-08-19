@@ -185,3 +185,12 @@ var insertLastFm = function(records, callback) {
 }
 
 
+exports.createFeedbackIdx = function(done) {
+	db.run(
+		'create index 	user_id_on_feedback_index \
+		on 				feedback(user_id asc)',
+		done
+	);
+}
+
+

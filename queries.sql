@@ -314,6 +314,10 @@ create index 	item_counts_index
 on 				item_counts(item_id ASC);
 
 
+create index 	user_id_on_feedback_index
+on 				feedback(user_id asc)
+
+
 
 
 select distinct item_id, count
