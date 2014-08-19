@@ -129,7 +129,7 @@ var genCandidates = function(store, k) {
 	})
 
 	console.log('apriori.frequent', frequent.length)
-	console.log('apriori.frequent', frequent)
+	//console.log('apriori.frequent', frequent)
 
 	var len = frequent.length
 	for(var i=0; i<len; i++) {
@@ -137,7 +137,7 @@ var genCandidates = function(store, k) {
 		for(var h=i+1; h<len; h++) {
 			
 			var c = mergeSets(frequent[i], frequent[h])
-			console.log(i, h, frequent[i], frequent[h], c)
+			//console.log(i, h, frequent[i], frequent[h], c)
 			//var c = _.union(frequent[i], frequent[h], true).sort(help.cmp)
 			
 			if(c.length === k) {
