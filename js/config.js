@@ -12,7 +12,7 @@ exports.MIN_CLUSTER_SIZE 			= 4
 exports.MIN_SEQUENCE_FREQUENCY 		= 8
 exports.NUM_CENTROIDS				= 4
 
-exports.MIN_SUPPORT					= 200
+exports.MIN_SUPPORT					= 50
 
 
 //easy sequence size refers to sequences with sizes that are easy/fast to compare to other sequences
