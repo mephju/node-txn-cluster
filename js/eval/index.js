@@ -57,7 +57,7 @@ var start = function(callback) {
 			if(config.RECOMMENDER === config.REC_REAL) {
 				console.log('number of clusters: ', recommender.clusters.clusters.length)
 			}
-			next(null)
+			callback(null, precision)
 
 		}
 	], 

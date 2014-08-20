@@ -21,8 +21,8 @@ var getHitsVs = function(sessionEnd, recommendations, baselineItems) {
 			
 	})
 	return {
-		hitsR: hitsR,
-		hitsB: hitsB
+		hitsR: hitsR / recommendations.length,
+		hitsB: hitsB / baselineItems.length
 	}
 }
 

@@ -8,13 +8,6 @@ var help 		= require('../help')
 
 var recommender = null
 
-// if(config.RECOMMENDER === config.REC_REAL) {
-// 	recommender = require('../recommend/')
-// } 
-// else if(config.RECOMMENDER === config.REC_APRIORI) {
-// 	recommender = require('../apriori').recommender
-// }
-
 
 var evaluate = function(txnRows, baselineItems, theRecommender) {
 	var precisionSumBaseline = 0
@@ -23,12 +16,6 @@ var evaluate = function(txnRows, baselineItems, theRecommender) {
 
 	recommender = theRecommender
 
-	// for(var i=0; i<len; i++) {
-	// 	var txnRow = txnRows[i]
-	// 	var precision = evalTxn(txnRow['item_ids'], baselineItems)
-	// 	precisionSumRecommender 	+= precision.precR		
-	// 	precisionSumBaseline 		+= precision.precB
-	// }
 	
 	txnRows.forEach(function(txnRow) {
 		var precision = evalTxn(txnRow['item_ids'], baselineItems)
@@ -54,12 +41,15 @@ var evalTxn = function(txn, baselineItems) {
 		var sessionEnd 	 	= txn.slice(i, i+config.N)
 		var recommendations = recommender.recommend(sessionBegin, config.N)
 		//console.log('recommended output', recommendations)
+		console.log(sessionBegin, sessionEnd, baselineItems)
 		hitsTxn.push(measure.getHitsVs(
 			sessionEnd, 
 			recommendations, 
 			baselineItems
 		));
 	}
+
+	console.log(hitsTxn)
 
 	recommender.reset()
 
