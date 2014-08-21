@@ -30,8 +30,12 @@ var evaluate = function(txnRows, baselineItems, theRecommender) {
 }
 
 
-var evalTxn = function(txn, baselineItems) {
 
+var evalTxn = function(txn, baselineItems, r) {
+
+	if(r) {
+		recommender = r
+	}
 	//console.log('compare txn with length', txn.length)
 
 	var hitsTxn = []
@@ -49,7 +53,7 @@ var evalTxn = function(txn, baselineItems) {
 		));
 	}
 
-	console.log(hitsTxn)
+	//console.log(hitsTxn)
 
 	recommender.reset()
 
@@ -76,5 +80,6 @@ var evalTxn = function(txn, baselineItems) {
 
 exports.evaluate = evaluate
 exports.test = {
+	evaluate: evaluate,
 	evalTxn: evalTxn
 }
