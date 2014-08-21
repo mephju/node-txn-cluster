@@ -35,29 +35,46 @@ describe('eval', function() {
 		return this.recommendations
 	}
 
+	var recommender = new Recommender([2,3,4,5,6])
+
 
 	it('computes correct precision for one txn', function() {
 
-		var precision = eval.evalTxn(txn, baselineItems, new Recommender([9,10,11,12,13]))
+		var precision = eval.evalTxn(txn, baselineItems, recommender)
 
-		console.log('')
-		console.log(precision.precR)
+		//console.log(precision.precR)
 
-		precision.precR.should.equal(1/5/4)
+		
 
-		var precision = eval.evalTxn(txn, baselineItems, new Recommender([2,3,4,5,6]))
+		// var precision = eval.evalTxn(txn, baselineItems, recommender)
 
-		console.log(precision)		
+		
 
 		//1/5 : 4
 		//
-		// 1 		:: 2,3,4,5,6
-		// 1,2 		:: 3,4,5,6,7
-		// 1,2,3	:: 4,5,6,7,8
-		// 1,2,3,4 	:: 5,6,7,8,9
+		// 1 		:: 2,3,4,5,6  	5/5 = 1
+		// 1,2 		:: 3,4,5,6,7 	4/5 = 0.8
+		// 1,2,3	:: 4,5,6,7,8	3/5 = 0.6
+		// 1,2,3,4 	:: 5,6,7,8,9 	2/5 = 0.4
+		// 							--------
+		// 							2.8
+		// 							2.8/4 = 0.7
 		// 
-		
+		console.log('onetxn',precision)		
+		precision.precR.should.equal(0.7 )
+	})
 
+	it('evaluate() computes correct precision for 2 txns', function() {
+		var txns = [
+			{ item_ids:[1,2,3,4,5,6,7,8,9] },
+			{ item_ids:[1,2,3,4,5,6,7,8,9] },
+			{ item_ids:[1,2,3,4,5,6] }
+		]
+		var result = eval.evaluate(txns, baselineItems, recommender)
+		var truth = (0.7+0.7+1) / 3
+
+		console.log(result)
+		result.precR.should.equal(2.4/3)
 	})
 
 

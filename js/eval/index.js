@@ -6,13 +6,14 @@ var config		= require('../config')
 var measure 	= require('./measure')
 var help 		= require('../help')
 var eval 		= require('./eval')
+var resultStore = require('../result-store')
 
 var recommender = null
 
-if(config.RECOMMENDER === config.REC_REAL) {
+if(config.RECOMMENDER === 1) {
 	recommender = require('../recommend/')
 } 
-else if(config.RECOMMENDER === config.REC_APRIORI) {
+else if(config.RECOMMENDER === 0) {
 	recommender = require('../apriori')
 }
 
@@ -57,8 +58,11 @@ var start = function(callback) {
 			if(config.RECOMMENDER === config.REC_REAL) {
 				console.log('number of clusters: ', recommender.clusters.clusters.length)
 			}
-			callback(null, precision)
+			next(null, precision)
 
+		},
+		function(precision, next) {
+			resultStore.storeResult(precision.precR, next)
 		}
 	], 
 	function(err) {
