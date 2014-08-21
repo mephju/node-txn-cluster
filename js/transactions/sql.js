@@ -43,13 +43,13 @@ exports.getTxnItemsStmt = function() {
 
 
 
-exports.getTxnIdsStmt = function() {
-	var stmt = util.format(
-		'SELECT txn_id, count(txn_id) as c FROM txn_items GROUP BY txn_id HAVING c>=%d',
-		config.MIN_SEQUENCE_SIZE
-	);
-	return stmt
-}
+// exports.getTxnIdsStmt = function() {
+// 	var stmt = util.format(
+// 		'SELECT txn_id, count(txn_id) as c FROM txn_items GROUP BY txn_id HAVING c>=%d',
+// 		config.MIN_SEQUENCE_SIZE
+// 	);
+// 	return stmt
+// }
 
 // exports.getAllTxnIds = function(limit) {
 // 	var stmt = 'SELECT txn_id FROM txns ORDER BY txn_id LIMIT ' + limit

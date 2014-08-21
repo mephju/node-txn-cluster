@@ -36,7 +36,6 @@ var evalTxn = function(txn, baselineItems, r) {
 	if(r) {
 		recommender = r
 	}
-	//console.log('compare txn with length', txn.length)
 
 	var hitsTxn = []
 

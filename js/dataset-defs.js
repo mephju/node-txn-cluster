@@ -20,6 +20,12 @@ Dataset.prototype.db = function() {
 	//return ':memory:'
 }
 
+Dataset.prototype.resultDbPath = function() {
+	return baseDatasetPath + 'results/evaluation-results' + '.sqlite'
+}
+
+
+
 
 
 function Movielens(datasetPath, dbTable) {
@@ -100,7 +106,7 @@ Gowalla.prototype.constructor 		= Gowalla
 exports.dataset = function() {
 
 	//return new Gowalla('gowalla/checkins.txt',			'gowalla')
-	//return new Gowalla('gowalla/checkins_small.txt',	'gowalla_small')
+	return new Gowalla('gowalla/checkins_small.txt',	'gowalla_small')
 
 	//return new LastFm('lastfm-dataset-1K/feedback_small.tsv', 	'last_fm_small')
 	//return new LastFm('lastfm-dataset-1K/feedback.tsv', 		'last_fm')
@@ -114,7 +120,7 @@ exports.dataset = function() {
 	//return new Movielens('movielens/ratings-small.dat', 		'movielens_small')
 	//return new Movielens('movielens/ml-10M100K/ratings.dat', 	'movielens_10m')
 	
-	return new TestDataset('test/ratings.dat', 	'test_dataset')
+	//return new TestDataset('test/ratings.dat', 	'test_dataset')
 }
 
 
