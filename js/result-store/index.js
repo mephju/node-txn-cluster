@@ -25,10 +25,6 @@ var storeResult = function(precision, done) {
 	store.values.push(new Date().getTime())
 		
 	async.waterfall([
-
-		function(next) {
-			db.run('drop table if exists results', next)
-		},
 		function(next) {
 
 			db.run(
