@@ -12,7 +12,7 @@ exports.MIN_CLUSTER_SIZE 			= 4
 exports.MIN_SEQUENCE_FREQUENCY 		= 8
 exports.NUM_CENTROIDS				= 4
 
-exports.MIN_SUPPORT					= 50
+exports.MIN_SUPPORT					= 100
 
 
 //easy sequence size refers to sequences with sizes that are easy/fast to compare to other sequences
@@ -20,7 +20,7 @@ exports.EASY_SEQUENCE_SIZE = 275
 //number of recommendations which are requested
 exports.N = 5
 exports.MAX_CONTRIBUTION = 0.6
-exports.BASELINE_ON = false
+exports.BASELINE_ON = true
 exports.MARKOV_ORDER = 2
 exports. ITEM_CHOICE_STRATEGY = {
 	tfTfidf: false,

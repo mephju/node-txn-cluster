@@ -41,7 +41,7 @@ var evalTxn = function(txn, baselineItems) {
 		var sessionEnd 	 	= txn.slice(i, i+config.N)
 		var recommendations = recommender.recommend(sessionBegin, config.N)
 		//console.log('recommended output', recommendations)
-		console.log(sessionBegin, sessionEnd, baselineItems)
+		//console.log(sessionBegin, sessionEnd, baselineItems)
 		hitsTxn.push(measure.getHitsVs(
 			sessionEnd, 
 			recommendations, 
