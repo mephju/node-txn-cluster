@@ -2,7 +2,7 @@
 
 exports.MIN_CLUSTER_SIZE 			= 1
 exports.NUM_CENTROIDS				= 4
-exports.MIN_SUPPORT					= 50
+exports.MIN_SUPPORT					= 100
 exports.TRAINING_SET_SIZE 			= 0.8
 exports.VALIDATION_SET_SIZE 		= 1 - exports.TRAINING_SET_SIZE
 exports.TXN_ID_BATCH_SIZE 			= 900
