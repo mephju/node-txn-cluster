@@ -5,21 +5,38 @@
 
 
 var datasetDefs 	= require('./dataset-defs')
+var config 			= require('./config')
+
+var file 			= process.argv[1]
+var datasetName 	= process.argv[2]
+var recommenderType	= process.argv[3]
+
+// was this file was started from the command line?
+// if so, check for given datasetname and initiate corresponding dataset
+if(file === __filename && datasetName) { 
+	datasetDefs.init(datasetName)
+	if(recommenderType) {
+		config.RECOMMENDER = recommenderType
+	}
+}
 var dataset 		= datasetDefs.dataset()
 var fs 				= require('fs')
 var async			= require('async')
 var evalApp			= require('./eval')
+var clusterApp			= require('./clustering2/index')
+var clusterGroupModule 	= require('./clustering2/cluster-group')
+
+console.log(config)
+var txnApp 				= require('./transactions/app')
+
+var importApp			= require('./import/app')
+var transitionApp		= require('./transitions/app')
+var rootDb 				= require('./db')
+var clusters	 		= null
 
 var main = function() {
 	
-	var config 			= require('./config')
-	console.log(config)
-	var txnApp 			= require('./transactions/app')
-	var clusterApp		= require('./clustering2/index')
-	var clusterGroupModule = require('./clustering2/cluster-group')
-	var importApp		= require('./import/app')
-	var transitionApp	= require('./transitions/app')
-	var clusters	 	= null
+	
 
 	var startTime = new Date().getTime()
 
@@ -30,13 +47,41 @@ var main = function() {
 		function(next) {
 			console.log('build txns')
 			txnApp.buildTxns(next)
-		}, 
+		},
+		function(next) {
+			rootDb.getTrainingSetSize(next)
+		},
+		function(trainingSetSize, next) {
+			config.reconfigure(trainingSetSize)
+
+			if(config.RECOMMENDER === 'own-method') {
+				useOwnMethod(next)
+			} else {
+				next(null)
+			}
+		},
+		function(next) {
+			console.log('done preparing data')
+			next(null)
+		},
+		function(next) {
+			evalApp.start(next)
+		}
+
+	], 
+	function(err){
+		err && console.log(err)
+		console.log('finished', datasetDefs.dataset())
+		console.log('time: ', (new Date().getTime() - startTime) / 1000)
+	})
+}
+
+
+var useOwnMethod = function(done) {
+	async.waterfall([
 		function(next) {
 			clusterApp.start(next)
 		},
-		// function(next) {
-		// 	next(null, '')
-		// },
 		function(clusterGroup, next) {
 			// read clusters from db again so we can remove 
 			// the previous step if we want to skip it
@@ -51,40 +96,12 @@ var main = function() {
 		},
 		function(next) {
 			transitionApp.buildMarkovChain(next)
-		},
-		function(next) {
-			//console.log('done building markov chain')
-			console.log('done preparing data')
-			next(null)
-		},
-		function(next) {
-			evalApp.start(next)
 		}
-
-	], 
-	function(err){
-		err && console.log(err)
-		console.log('finished', datasetDefs.dataset())
-		console.log('time: ', (new Date().getTime() - startTime) / 1000)
-	})
-
+	], done)
 }
 
 
-async.waterfall([
-	function(next) {
-		dataset.getDatasetSize(next)
-	},
-	function(datasetSize, next) {
-		console.log('datasetSize', datasetSize)
-		require('./config').init(datasetSize)
-		main()
-	},
-], function(err) {
-	if(err) {
-		console.log('initApp failed', err)
-	}
-})
+main()
 
 
 

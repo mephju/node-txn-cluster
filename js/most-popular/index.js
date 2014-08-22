@@ -20,7 +20,7 @@ var buildItemMap = function(popularItems) {
 
 
 var getPopularItemsForN = function(n) {
-	console.log('getPopularItemsForN', popularItemMap[n])
+	//console.log('getPopularItemsForN', popularItemMap[n])
 	return popularItemMap[n]
 }
 
@@ -45,7 +45,14 @@ var getPopularItemsSql = function(n, trainingSize) {
 }
 
 
-var init = function(callback) {
+var init = function(arg1, arg2) {
+
+	if(arg2) {
+		callback = arg2
+	} else {
+		callback = arg1
+	}
+
 	console.log('mostpopular.init')
 	async.waterfall([
 		function(next) {
@@ -72,13 +79,13 @@ var init = function(callback) {
 }
 
 
-var recommend = function(n, callback) {
-
-	callback(null, getPopularItemsForN(n))
+var recommend = function(sessionBegin, n) {
+	return getPopularItemsForN(n)
 }
 	
 
 
 exports.init = init
 exports.recommend = recommend
+exports.reset = function() {}
 exports.getPopularItemsForN = getPopularItemsForN

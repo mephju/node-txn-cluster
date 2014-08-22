@@ -50,21 +50,20 @@ var storeResult = function(precision, done) {
 
 
 var addKeyVals = function(object, store) {
-	var keys = Object.keys(object)
+	var keys = Object.keys(object).filter(function(key) {
+		return typeof object[key] !== 'function' && typeof object[key] !== 'object'
+	})
+
+
 	
 	var values = keys.forEach(function(key) {
 		var val = object[key]
 		
-		if(typeof val === 'object' || key === 'init') {
-			if(key === 'ITEM_CHOICE_STRATEGY') {
-				store.values.push(JSON.stringify(val))
-			} else {
-				store.values.push('-')			
-			}
+		if(typeof val === 'object'){
+			store.values.push('-')			
 		} else {
 			store.values.push(val)	
-		}
-		
+		}		
 	})
 
 	keys = keys.map(function(key) {

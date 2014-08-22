@@ -93,7 +93,7 @@ describe('most popular baseline', function() {
 
 describe('eval', function() {
 	var eval = require('../../eval/index')
-	config.RECOMMENDER = config.REC_APRIORI
+	config.RECOMMENDER = 'apriori-baseline'
 	config.MIN_SUPPORT = 1
 
 	it('computes correct precision for baseline', function(done) {

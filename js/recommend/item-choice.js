@@ -94,19 +94,19 @@ var sqlWithTfidf =
 
 
 var sql = null
-if(config.ITEM_CHOICE_STRATEGY.tfTfidf) {
+if(config.ITEM_CHOICE_STRATEGY === 'tfTfidf') {
 	sql = sqlWithTfTfidf
 } 
-else if(config.ITEM_CHOICE_STRATEGY.tfidf) {
+else if(config.ITEM_CHOICE_STRATEGY === 'tfidf') {
 	sql = sqlWithTfidf
 } 
-else if(config.ITEM_CHOICE_STRATEGY.bestItemsOfCluster) {
+else if(config.ITEM_CHOICE_STRATEGY === 'bestItemsOfCluster') {
 	sql = sqlBestItemsOfCluster
 } 
-else if(config.ITEM_CHOICE_STRATEGY.bestItemsOverall) {
+else if(config.ITEM_CHOICE_STRATEGY === 'bestItemsOverall') {
 	sql = sqlBestItemsOverall
 } 
-else if(config.ITEM_CHOICE_STRATEGY.withRatings) {
+else if(config.ITEM_CHOICE_STRATEGY === 'withRatings') {
 	if(typeof dataset.indices.rating === 'undefined') {
 		throw 	'error'
 		var e = 'ITEM_CHOICE_STRATEGY.withRatings requires \
