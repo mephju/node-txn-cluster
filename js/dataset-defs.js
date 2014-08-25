@@ -103,47 +103,61 @@ Gowalla.prototype.constructor 		= Gowalla
 
 
 
+var datasetInstance = null
+
+
+exports.init = function(datasetName) {
+	switch(datasetName) {
+		case 'gowalla': 
+			datasetInstance = new Gowalla('gowalla/checkins.txt', 'gowalla'); 
+			break;
+		case 'gowalla_small': 
+			datasetInstance = new Gowalla('gowalla/checkins_small.txt', 'gowalla_small'); 
+			break;
+		case 'last_fm': 
+			datasetInstance = new LastFm('lastfm-dataset-1K/feedback.tsv', 		'last_fm')
+			break;
+		case 'last_fm_small': 
+			datasetInstance = new LastFm('lastfm-dataset-1K/feedback_small.tsv', 	'last_fm_small')
+			break;
+		case 'movielens_1m': 
+			datasetInstance = new Movielens('movielens/ml-1m/ml-1m/ratings.dat', 	'movielens_1m')
+			break;
+		case 'movielens_custom_large': 
+			datasetInstance = new Movielens('movielens/ratings-custom-large.dat',	'movielens_custom_large') 
+			break;
+		case 'test_dataset': 
+			datasetInstance = new TestDataset('test/ratings.dat', 	'test_dataset')
+			break;
+		default: throw 'invalid dataset name given'
+	}
+
+}
+
+
+
 exports.dataset = function() {
 
+	if(!datasetInstance) {
 
-	return new Gowalla('gowalla/checkins.txt',			'gowalla')
-	//return new Gowalla('gowalla/checkins_small.txt',	'gowalla_small')
+		console.log('CREATING NEW DATASET INSTANCE')
+		//datasetInstance = new Gowalla('gowalla/checkins.txt',			'gowalla')
+		datasetInstance = new Gowalla('gowalla/checkins_small.txt',	'gowalla_small')
 
-	//return new LastFm('lastfm-dataset-1K/feedback_small.tsv', 	'last_fm_small')
-	//return new LastFm('lastfm-dataset-1K/feedback.tsv', 		'last_fm')
-	
-	//return new Movielens('movielens/ml-1m/ml-1m/ratings.dat', 	'movielens_1m')
-	//return new Movielens('movielens/ratings-custom-large.dat',	'movielens_custom_large')
-	
+		//datasetInstance = new LastFm('lastfm-dataset-1K/feedback_small.tsv', 	'last_fm_small')
+		//datasetInstance = new LastFm('lastfm-dataset-1K/feedback.tsv', 		'last_fm')
+		
+		
+		//datasetInstance = new Movielens('movielens/ml-1m/ml-1m/ratings.dat', 	'movielens_1m')
+		//datasetInstance = new Movielens('movielens/ratings-custom-large.dat',	'movielens_custom_large')
+		
+		//datasetInstance = new Movielens('movielens/ratings-custom.dat', 		'movielens_custom')
+		//datasetInstance = new Movielens('movielens/ratings-small.dat', 		'movielens_small')
+		//datasetInstance = new Movielens('movielens/ml-10M100K/ratings.dat', 	'movielens_10m')
+		
+		//datasetInstance = new TestDataset('test/ratings.dat', 	'test_dataset')
+	}
 
-	//return new Movielens('movielens/ratings-custom.dat', 		'movielens_custom')
-	//return new Movielens('movielens/ratings-small.dat', 		'movielens_small')
-	//return new Movielens('movielens/ml-10M100K/ratings.dat', 	'movielens_10m')
-	
-	//return new TestDataset('test/ratings.dat', 	'test_dataset')
+	return datasetInstance
 }
 
-
-
-
-Dataset.prototype.getDatasetSize = function(callback) {
-	console.log('getDatasetSize')
-	var num = 0
-	fs
-	.createReadStream(this.datasetPath)
-	.on('data', function(chunk) {
-
-		num += chunk
-        .toString('utf8')
-        .split(/\r\n|[\n\r\u0085\u2028\u2029]/g)
-        .length-1
-
-        console.log('chun', num)
-	})
-	.on('end', function(){
-		this.datasetSize = num
-		console.log('end', this.datasetSize)
-		callback(null, this.datasetSize)
-	})
-	.on('error', callback)
-}

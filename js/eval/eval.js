@@ -1,37 +1,27 @@
-
-
 var async		= require('async')
-
 var config		= require('../config')
 var measure 	= require('./measure')
 var help 		= require('../help')
-
 var recommender = null
 
 
-var evaluate = function(txnRows, baselineItems, theRecommender) {
-	var precisionSumBaseline = 0
+var evaluate = function(txnRows, theRecommender) {
 	var precisionSumRecommender = 0
 	var len = txnRows.length
 
 	recommender = theRecommender
 
-	
 	txnRows.forEach(function(txnRow) {
-		var precision = evalTxn(txnRow['item_ids'], baselineItems)
-		precisionSumRecommender += precision.precR		
-		precisionSumBaseline += precision.precB
+		var precision = evalTxn(txnRow['item_ids'])
+		precisionSumRecommender += precision
 	})
 
-	return {
-		precR: precisionSumRecommender / len,
-		precB: precisionSumBaseline / len
-	}
+	return precisionSumRecommender / len
 }
 
 
 
-var evalTxn = function(txn, baselineItems, r) {
+var evalTxn = function(txn, r) {
 
 	if(r) {
 		recommender = r
@@ -45,34 +35,24 @@ var evalTxn = function(txn, baselineItems, r) {
 		var recommendations = recommender.recommend(sessionBegin, config.N)
 		//console.log('recommended output', recommendations)
 		//console.log(sessionBegin, sessionEnd, baselineItems)
+		//console.log(hitsTxn)
 		hitsTxn.push(measure.getHitsVs(
 			sessionEnd, 
-			recommendations, 
-			baselineItems
+			recommendations
 		));
 	}
-
-	//console.log(hitsTxn)
 
 	recommender.reset()
 
 	
 	var len = hitsTxn.length
 	
-	hitsTxn = hitsTxn.reduce(function(left, right) {
-		right.hitsR += left.hitsR
-		right.hitsB += left.hitsB
-		return right
-	})
+	var prec = hitsTxn.reduce(function(left, right) {
+		return right + left
+	}) / len
 
-	console.log('hitsTxn', hitsTxn)
-
-	
-
-	return {
-		precR: hitsTxn.hitsR / len,
-		precB: hitsTxn.hitsB / len
-	}
+	console.log('avg precision', prec)
+	return prec
 }
 
 

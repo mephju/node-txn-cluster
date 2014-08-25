@@ -1,7 +1,7 @@
 
 var async		= require('async')
 var txnDb		= require('../transactions/db')
-var baseline 	= require('./most-popular')
+var baseline 	= require('../most-popular')
 var config		= require('../config')
 var measure 	= require('./measure')
 var help 		= require('../help')
@@ -10,13 +10,15 @@ var resultStore = require('../result-store')
 
 var recommender = null
 
-if(config.RECOMMENDER === 1) {
+if(config.RECOMMENDER === 'own-method') {
 	recommender = require('../recommend/')
 } 
-else if(config.RECOMMENDER === 0) {
+else if(config.RECOMMENDER === 'apriori-baseline') {
 	recommender = require('../apriori')
 }
-
+else if(config.RECOMMENDER === 'most-popular-baseline') {
+	recommender = require('../most-popular')
+}
 
 var baselineItems = null
 
@@ -44,25 +46,22 @@ var start = function(callback) {
 			var validTxnRows = filterValidTxns(txnRows)
 
 			console.log('validtxnRows', validTxnRows.length)
-
-
 			var precision = eval.evaluate(
 				validTxnRows, 
-				baselineItems, 
 				recommender
 			);			
 			
 			console.log('###########################################')
-			console.log('Recommender Precision', precision.precR)
-			console.log('Baseline Precision', precision.precB)
-			if(config.RECOMMENDER === config.REC_REAL) {
+			console.log('Recommender Precision', precision)
+			if(config.RECOMMENDER === 'own-method') {
 				console.log('number of clusters: ', recommender.clusters.clusters.length)
+				config.NUM_CENTROIDS_POST_CLEAN_UP = recommender.clusters.clusters.length
 			}
 			next(null, precision)
 
 		},
 		function(precision, next) {
-			resultStore.storeResult(precision.precR, next)
+			resultStore.storeResult(precision, next)
 		}
 	], 
 	function(err) {
