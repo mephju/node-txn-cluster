@@ -41,13 +41,13 @@ var main = function() {
 	var startTime = new Date().getTime()
 
 	async.waterfall([
-		function(next) {
-			importApp.makeImport(next)
-		},
-		function(next) {
-			console.log('build txns')
-			txnApp.buildTxns(next)
-		},
+		// function(next) {
+		// 	importApp.makeImport(next)
+		// },
+		// function(next) {
+		// 	console.log('build txns')
+		// 	txnApp.buildTxns(next)
+		// },
 		function(next) {
 			rootDb.getTrainingSetSize(next)
 		},
