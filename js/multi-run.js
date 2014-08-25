@@ -4,9 +4,9 @@ var async = require('async')
  
 var datasetNames = [
 	'gowalla',
-	'movielens_1m',
-	'last_fm',
-	// 'last_fm_small',
+	// 'movielens_1m',
+	// 'last_fm',
+	//'last_fm_small',
 	// 'gowalla_small',
 	// 'movielens_custom_large'
 ];
@@ -42,17 +42,27 @@ var main = function(recommenderType, done) {
 
 
 var handleNode = function(datasetName, node, done) {
+	var output = []
 	node.stdout.setEncoding('utf8');
 	node.stdout.on('data', function(data) {
-		console.log('\x1b[32m', datasetName, data.toString())
+		output.push(data)
+		if(data.length > 100) {
+			console.log('\x1b[32m', datasetName, output.toString())	
+		}
+		
 		//process.stdout.write('datasetName', data.toString())
 	})
 
 	node.stderr.on('data', function(data) {
-		console.log('\x1b[31m', datasetName,'ERROR', data.toString().toUpperCase())
+		output.push(data)
+		if(data.length > 100) {
+			console.log('\x1b[31m', datasetName,'ERROR', output.toString().toUpperCase())
+		}
+		
 	})
 
 	node.on('close', function(code, signal) {
+		console.log('\x1b[31m', datasetName, output.toString())
 		console.log(datasetName, 'close', code, signal)
 		done(null)
 	})
