@@ -30,7 +30,7 @@ exports.RECOMMENDER = 'own-method'
 
 exports.reconfigure = function(trainingsetSize) {
 	exports.NUM_CENTROIDS = Math.max(2, parseInt(
-		Math.ceil(trainingsetSize / 200)
+		Math.ceil(trainingsetSize / 750)
 	));
 	exports.NUM_CENTROIDS_POST_CLEAN_UP = exports.NUM_CENTROIDS
 	if(trainingsetSize < 400) {
