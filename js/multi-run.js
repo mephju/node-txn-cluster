@@ -46,8 +46,9 @@ var handleNode = function(datasetName, node, done) {
 	node.stdout.setEncoding('utf8');
 	node.stdout.on('data', function(data) {
 		output.push(data)
-		if(data.length > 100) {
+		if(output.length > 100) {
 			console.log('\x1b[32m', datasetName, output.toString())	
+			output = []
 		}
 		
 		//process.stdout.write('datasetName', data.toString())
@@ -55,8 +56,10 @@ var handleNode = function(datasetName, node, done) {
 
 	node.stderr.on('data', function(data) {
 		output.push(data)
-		if(data.length > 100) {
+		if(output.length > 100) {
+			output = []	
 			console.log('\x1b[31m', datasetName,'ERROR', output.toString().toUpperCase())
+
 		}
 		
 	})
