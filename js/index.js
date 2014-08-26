@@ -1,7 +1,8 @@
-//Transaction Builder
-//Build transaction out of datasets containing user feedback such as ratings or watches
-//	1. Load dataset into db
 
+
+// start this app with the following command
+// node index.js datasetname recommendertype
+// node index.js lastfm_small own-method
 
 
 var datasetDefs 	= require('./dataset-defs')
@@ -44,10 +45,10 @@ var main = function() {
 		// function(next) {
 		// 	importApp.makeImport(next)
 		// },
-		// function(next) {
-		// 	console.log('build txns')
-		// 	txnApp.buildTxns(next)
-		// },
+		function(next) {
+			console.log('build txns')
+			txnApp.buildTxns(next)
+		},
 		function(next) {
 			rootDb.getTrainingSetSize(next)
 		},

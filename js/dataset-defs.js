@@ -63,7 +63,7 @@ function Gowalla(datasetPath, dbTable) {
 	this.datasetPath 	= this.dataDir() + datasetPath
 	this.separator = '\t'
 	//this.timeDistance =  31536000
-	this.timeDistance = 86400 //24 hours
+	this.timeDistance = 259200 //24 hours
 	this.indices = {
 		userId:0,
 		itemId:4,
