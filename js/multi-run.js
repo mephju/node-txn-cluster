@@ -5,11 +5,11 @@ var config = require('./config')
 // USE childProcess fork
 // 
 var datasetNames = [
-	'gowalla',
+	//'gowalla',
 	// 'movielens_1m',
 	// 'last_fm',
 	//'last_fm_small',
-	// 'gowalla_small',
+	'gowalla_small',
 	// 'movielens_custom_large'
 ];
 

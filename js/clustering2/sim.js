@@ -26,6 +26,12 @@ var jaccLev = function(array1, array2) {
     return 1/4 * (1-jaccard(array1, array2)) + 3/4 * levenshtein(array1, array2)
 }
 
+var jaccLevSim = function(array1, array2) {
+    return 
+        1/4 * jaccard(array1, array2) + 
+        3/4 * (1 - levenshtein(array1, array2))
+}
+
 
 var jaccardBigramDist = function(array1, array2) {
     return 1-jaccardBigram(array1, array2)

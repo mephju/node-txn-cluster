@@ -4,7 +4,7 @@
 // node index.js datasetname recommendertype
 // node index.js lastfm_small own-method
 
-
+require('./init')
 var datasetDefs 	= require('./dataset-defs')
 var config 			= require('./config')
 
