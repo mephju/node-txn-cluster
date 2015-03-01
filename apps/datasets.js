@@ -5,7 +5,10 @@ var async 	= require('async')
 //var baseDatasetPath = '/home/kokirchn/thesis/'
 
 function Dataset(filepath, name) {
-	var basePath = '/stuff/datamining/'
+	log('BASE_PATH', process.env.BASE_PATH)
+
+	var basePath = process.env.BASE_PATH ? process.env.BASE_PATH : '/stuff/datamining/'
+
 	this.name = name
 	this.filepath 	= basePath + 'datasets/' + filepath 
 	this.dbPath 	= basePath + 'results/' + name + '.sqlite'
