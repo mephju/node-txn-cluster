@@ -9,7 +9,7 @@ var insertFeedbackStmt = null
 
 exports.prepare = function(dataset, done) {
 	
-	console.log('preparing feedback tables')
+	console.log('preparing feedback tables', dataset.dbPath)
 
 	async.series([
 		function(next) {
@@ -47,26 +47,6 @@ exports.prepare = function(dataset, done) {
 
 
 
-var insertItem = function(dataset, record, next) {
-	insertFeedbackStmt.run([ //user, item, timestamp, rating
-		record[dataset.indices.userId], 
-		record[dataset.indices.itemId], 
-		record[dataset.indices.timestamp], 
-		record[dataset.indices.rating]
-	], next);
-}
-var insertItems = function(dataset, records, callback) {
-
-	async.eachSeries(
-		records,
-		function(record, next) {
-			insertItem(dataset, record, next)
-		},
-		function(err) {
-			callback(err)
-		}
-	);
-}
 
 
 
@@ -93,9 +73,6 @@ exports.insert = function(dataset, records, callback) {
 			else if(table.indexOf('gowalla') !== -1) {
 				convertTimestamps(dataset, records)
 			}
-			next()	
-		},
-		function(next) {
 			insertItems(dataset, records, next)
 		},
 		function(next) {
@@ -128,6 +105,27 @@ var convertTimestamps = function(dataset, records) {
 }
 
 
+var insertItem = function(dataset, record, next) {
+	log(2, record[0], record[1])
+	insertFeedbackStmt.run([ //user, item, timestamp, rating
+		record[dataset.indices.userId], 
+		record[dataset.indices.itemId], 
+		record[dataset.indices.timestamp], 
+		record[dataset.indices.rating]
+	], next);
+}
+var insertItems = function(dataset, records, callback) {
+
+	async.eachSeries(
+		records,
+		function(record, next) {
+			insertItem(dataset, record, next)
+		},
+		function(err) {
+			callback(err)
+		}
+	);
+}
 
 /**
  * Takes a last fm dataset record. Creates an item out
@@ -138,11 +136,13 @@ var convertTimestamps = function(dataset, records) {
  * @param  {Function} callback [description]
  * @return {[type]}            [description]
  */
-var insertLastFm = function(dataset, records, callback) {
+var insertLastFm = function(dataset, records, done) {
 
 	async.eachSeries(
 		records,
 		function(record, next) {
+			//log(record[0],record[1],record[2],record[3],record[4],record[5])
+			//log(record[0],record[1], record[3], '   -----  ',record[5])
 			dbLastFm.makeLastFmItem(record, function(err, itemId) {
 				if(err) { return next(err) }
 					
@@ -152,15 +152,28 @@ var insertLastFm = function(dataset, records, callback) {
 					null, 
 					new Date(record[1]).getTime()/1000 
 				]; 
+
+				log(1, rec[0], rec[1])
 				insertItem(dataset, rec, next)
 			})
 		},
 		function(err) {
 			console.log('insertLastFm.finished', err)
-			callback(err)
+			insertLastFmFeedback(dataset, records, done)
 		}
 	);
 		
+}
+
+
+var insertLastFmFeedback = function(dataset, records, done) {
+	async.eachSeries(
+		records,
+		function(rec, next) {
+			db.run('INSERT INTO last_fm_feedback VALUES(?,?,?,?,?,?)', rec, next)
+		},
+		done
+	);
 }
 
 

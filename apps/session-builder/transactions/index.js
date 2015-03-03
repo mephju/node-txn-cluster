@@ -1,6 +1,8 @@
-var txnBuilder = require('./txn-builder')
-var db = require('./db')
+var TxnBuilder = require('./txn-builder').TxnBuilder
+
 var async = require('async')
+
+
 
 //	fetch all user ids
 //	for each user id 
@@ -11,66 +13,14 @@ var async = require('async')
 //			for each item of the group
 //				create txn item 
 exports.buildTxns = function(dataset, done) {
-
 	console.log('txnBuilder.buildTxns for ' + dataset.name)
-	txnBuilder.buildTxns(dataset, done)
+	new TxnBuilder(dataset).buildTxns(done)
 
 }
 
 
 
-//
-// getTxnBatches(txnIds, onBatch, callback)
-// getTxnBatches(onBatch, callback)
-// onBatch(idbatch, txnbatch, next);
-// 
-exports.getTxnBatches = function() {
 
-	var arglen = arguments.length
-	var callback = arguments[arglen-1]
-	var onBatch = null
-
-	var processIdBatches = function(txnIds, next) {
-		var txnIdBatches = help.toBatches(txnIds)
-		forTxnIdBatches(txnIdBatches, onBatch, next)
-	}
-
-	if(arglen === 3) {
-		var txnIds = arguments[0]
-		onBatch = arguments[1]
-		processIdBatches(txnIds, callback)
-	} else if(arglen === 2) {
-		onBatch = arguments[0]
-		async.waterfall([
-			db.getAllTxnIds,
-			processIdBatches
-		], callback)
-	}
-}
-
-
-
-
-var forTxnIdBatches = function(txnIdBatches, onBatch, callback) {
-
-	async.eachSeries(
-		txnIdBatches,
-		function(txnIdBatch,  next) {
-			async.waterfall([
-				function(next) {
-					db.getManyTxns(txnIdBatch, next)
-				},
-				function(txnBatch, next) {
-					console.log('got batch from db', txnIdBatch.length)
-					onBatch(txnIdBatch, txnBatch, next)
-				}
-			],
-			next)
-
-		},
-		callback
-	);
-}
 
 
 

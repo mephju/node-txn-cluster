@@ -1,50 +1,47 @@
 
-var txnDb 	= require('./db')
-var dbHelp 	= require('../../db-help')
-var db 		= null
+
+
+
 var util 	= require('util')
-var async 	= require('async')
 var sql 	= require('./sql')
-var sqlite3 = require('sqlite3').verbose()
+
 
 
 
 function TxnBuilder(dataset) {
-
+	 var TxnModel = require('./model').Model
+	this.model = new TxnModel(dataset)
 }
+exports.TxnBuilder = TxnBuilder
+
 TxnBuilder.prototype.buildTxns = function(next) {
-
-}
-
-
-exports.buildTxns = function(dataset, next) {
 	
-	db = new sqlite3.Database(dataset.dbPath)
+	var builder = this
 
 	async.waterfall([
 		function(next) {
-			txnDb.prepareDb(dataset, next)
+			builder.model.prepareDb(next)
 		},
 		function(next) {
 			console.log('prepared')
-			txnDb.getUserIds(next)
+			builder.model.getUserIds(next)
 		}, 
 		function(userIds, next) {
-			buildTxnsForUsers(dataset, userIds, next)
+			builder.buildTxnsForUsers(userIds, next)
 		},
 		function(next) {
-			db.run(sql.createIndexStmt(), next)
+			builder.model.db.run(sql.createIndexStmt(), next)
 		},
 
 		function(next) {
-			db.run('drop table if exists item_counts', next)
+			builder.model.db.run('drop table if exists item_counts', next)
 		},
 		function(next) {
-			dbHelp.getTrainingSetSize(db, next)
+			help.getTrainingSetSize(builder.model.db, next)
 		},
 		function(trainingSetSize, next) {
 			console.log('creating table item_counts')
-			db.run(
+			builder.model.db.run(
 				'create table 	item_counts		\
 				as select 		item_id,  		\
 								count(item_id) 	\
@@ -63,27 +60,35 @@ exports.buildTxns = function(dataset, next) {
 		},
 		function(next) {
 			console.log('creating table txns_random')
-			db.run(
+			builder.model.db.run(
 				'drop table if exists txns_random',
 				next
 
 			);
 		},
 		function(next) {
-			db.run(
-				'create table txns_random 	\
-				as select 	* 				\
-				from 		txns 			\
-				order by random()',
+			builder.model.db.run(
+				'create table txns_random as 	\
+					select 	* 				\
+					from 		txns 			\
+					order by random()',
 				next
 
 			);
 		}, 
 		function(next) {
-			db.run('DROP TABLE IF EXISTS txn_item_groups', next)
+			builder.model.db.run('DROP TABLE IF EXISTS txn_item_groups', next)
 		},
 		function(next) {
-			db.run(sql.createTableTxnItemGroups, next)
+			builder.model.db.run(
+				'CREATE TABLE IF NOT EXISTS	txn_item_groups AS \
+					SELECT 			txn_id, group_concat(item_id) as item_ids \
+					FROM 			txn_items \
+					GROUP BY 		txn_id \
+					ORDER BY  		random()',
+				next
+			);
+
 		},
 	], 
 	function(err) {
@@ -95,18 +100,20 @@ exports.buildTxns = function(dataset, next) {
 
 
 
-var buildTxnsForUsers = function(dataset, userIds, callback) {
+TxnBuilder.prototype.buildTxnsForUsers = function(userIds, callback) {
 
 	var txns = []
+	var builder = this
+
 	async.eachSeries(
 		userIds,
 		function(userId, next) {
 			console.log('find feedback for user', userId)
-			findUserTxns(dataset, userId, txns, next)
+			builder.findUserTxns(userId, txns, next)
 		},
 		function(err) {
 			if(txns.length > 0) {
-				txnDb.insertTxns(txns, callback)
+				builder.model.insertTxns(txns, callback)
 			} else {
 				callback(err)
 			}
@@ -116,15 +123,15 @@ var buildTxnsForUsers = function(dataset, userIds, callback) {
 
 
 
-var findUserTxns = function(dataset, userId, txns, done) {
-	
+TxnBuilder.prototype.findUserTxns = function(userId, txns, done) {
+	var builder = this
 	async.waterfall([
 		function(next) {
-			txnDb.getUserFeedback(userId, next)
+			builder.model.getUserFeedback(userId, next)
 		},
 		function(feedbackRows, next) {
 			
-			var userTxns = findTxnsInFeedback(dataset, feedbackRows)	
+			var userTxns = builder.findTxnsInFeedback(feedbackRows)	
 			userTxns.forEach(function(txn) {
 				txns.push(txn)
 			})
@@ -133,7 +140,7 @@ var findUserTxns = function(dataset, userId, txns, done) {
 			
 			if(txns.length > 1000) {
 				console.log('insert txns START', txns.length)
-				txnDb.insertTxns(txns, function(err) {
+				builder.model.insertTxns(txns, function(err) {
 					help.clearArray(txns)
 					next(err)
 				})
@@ -147,7 +154,7 @@ var findUserTxns = function(dataset, userId, txns, done) {
 
 
 
-var findTxnsInFeedback = function(dataset, feedbackRows) {
+TxnBuilder.prototype.findTxnsInFeedback = function(feedbackRows) {
 	console.log('findTxnsInFeedback of length', feedbackRows.length)
 	var lastItemTimestamp = 0
 	var txns = []
@@ -164,7 +171,7 @@ var findTxnsInFeedback = function(dataset, feedbackRows) {
 		
 		//is this item of a new transaction
 		//console.log('time diff', timestamp - lastItemTimestamp)
-		if((timestamp - lastItemTimestamp) > dataset.timeDistance) {
+		if((timestamp - lastItemTimestamp) > this.model.dataset.timeDistance) {
 			group = []
 			txns.push(group)
 		}

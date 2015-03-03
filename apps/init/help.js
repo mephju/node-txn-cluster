@@ -375,8 +375,22 @@ Array.prototype.push = function(item) {
 	 }
 }
 
-
-
+var getTrainingSetSize = function(db, done) {
+	async.waterfall([
+		function(next) {
+			db.get('SELECT count(*) as count FROM txns', next)
+		},
+		function(row, next) {
+			console.log(row)
+			next(null, row.count)
+		},
+		function(size, next) {
+			var trainingSetSize = Math.floor(size*config.TRAINING_SET_SIZE)
+			log('getTrainingSetSize', trainingSetSize)
+			done(null, trainingSetSize)
+		}
+	], done)
+}
 
 
 exports.toItemset          = toItemset
@@ -403,3 +417,4 @@ exports.arrayContains      = arrayContains
 exports.arrayInArray       = arrayInArray
 exports.valueInArray       = valueInArray
 exports.intoSortedArray    = intoSortedArray
+exports.getTrainingSetSize = getTrainingSetSize

@@ -1,7 +1,7 @@
-require('../init')
+
 var importApp = require('./import')
 var txnApp = require('./transactions')
-
+require('../init')
 var datasets = require('../datasets')
 
 

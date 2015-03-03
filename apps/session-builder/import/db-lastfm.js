@@ -24,6 +24,12 @@ var getLastFmItemId 		= null;
 exports.init = function(db, callback) {
 	async.series([
 		function(next) {
+			db.run('DROP TABLE IF EXISTS last_fm_feedback', next)
+		},
+		function(next) {
+			db.run('create table last_fm_feedback(user_id, timestamp, artist_id, artist, song_id, song)', next)
+		},
+		function(next) {
 			db.run('DROP TABLE IF EXISTS last_fm_items', next)
 		},
 		function(next) {
@@ -55,12 +61,14 @@ var itemIdStore = {}
  */
 exports.makeLastFmItem = function(record, callback) {
 	
-	var bindParams = [ record[3], record[5] ]
+	var bindParams = [ record[3], record[5] ] //aritst and song
 	var itemId = itemIdStore[bindParams.toString()]
 
 	//console.log('itemidstore', itemId)
+	//log(bindParams.toString())
 	
 	if(itemId) {
+		// log('1', itemId)
 		return callback(null, itemId)
 	} 
 	async.waterfall([
@@ -70,6 +78,7 @@ exports.makeLastFmItem = function(record, callback) {
 			});
 		},
 		function(itemId, next) {
+			// log('2', itemId)
 			itemIdStore[bindParams.toString()] = itemId
 			callback(null, itemId)
 		}

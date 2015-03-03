@@ -1,5 +1,7 @@
 
 
+
+
 exports.MIN_SUPPORT					= 50
 exports.TRAINING_SET_SIZE 			= 0.8
 exports.VALIDATION_SET_SIZE 		= 1 - exports.TRAINING_SET_SIZE

@@ -8,7 +8,7 @@ function Dataset(filepath, name) {
 	log('BASE_PATH', process.env.BASE_PATH)
 
 	var basePath = process.env.BASE_PATH ? process.env.BASE_PATH : '/stuff/datamining/'
-
+	this.basePath = basePath
 	this.name = name
 	this.filepath 	= basePath + 'datasets/' + filepath 
 	this.dbPath 	= basePath + 'results/' + name + '.sqlite'
@@ -124,7 +124,8 @@ var gowallaSmall  	= new Gowalla('gowalla/checkins_small.txt', 			'gowalla_small
 var lastFm 			= new LastFm('lastfm-dataset-1K/feedback.tsv', 			'last_fm')
 var lastFmSmall 	= new LastFm('lastfm-dataset-1K/feedback_small.tsv', 	'last_fm_small')
 var movielens 		= new Movielens('movielens/ml-1m/ml-1m/ratings.dat', 	'movielens_1m')
-var movielensSmall 	= new Movielens('movielens/ratings-custom-large.dat',	'movielens_custom_large') 
+var movielensCustom = new Movielens('movielens/ratings-custom-large.dat',	'movielens_custom_large') 
+var movielensSmall 	= new Movielens('movielens/ratings-small.dat',			'movielens_small') 
 var testDataset 	= new TestDataset('test/ratings.dat', 					'test_dataset')
 
 
@@ -185,8 +186,8 @@ exports.dataset = function() {
 exports.all = [gowalla, movielens, lastFm]
 exports.all = [
 	lastFmSmall,
-	movielensSmall, 
-	gowallaSmall,
-
+	// movielensSmall,
+	// //movielensCustom, 
+	// gowallaSmall,
 ]
 

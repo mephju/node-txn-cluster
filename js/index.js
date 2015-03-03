@@ -33,7 +33,7 @@ var txnApp 				= require('./transactions/app')
 var importApp			= require('./import/app')
 var transitionApp		= require('./transitions/app')
 var rootDb 				= require('./db')
-var clusters	 		= null
+
 
 var main = function() {
 	
@@ -83,14 +83,14 @@ var useOwnMethod = function(done) {
 		function(next) {
 			clusterApp.start(next)
 		},
-		function(clusterGroup, next) {
+		function(clusters, next) {
 			// read clusters from db again so we can remove 
 			// the previous step if we want to skip it
-			clusterGroup = null 
+			clusters = null 
 			clusterGroupModule.buildFromDb(next)
 		},
-		function(clusterGroup, next) {
-			clusters = clusterGroup
+		function(_clusters, next) {
+			clusters = _clusters
 			console.log('this is clusterGroup')
 			//console.log(clusterGroup)
 			transitionApp.buildTransitions(clusters, next)	
