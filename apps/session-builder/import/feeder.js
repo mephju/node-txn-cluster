@@ -55,12 +55,7 @@ Feeder.prototype.import = function(done) {
 		console.log('onLinesAvailable ', lines.length)
 		
 		var records = lines.map(function(line) {
-			line = line.split(feeder.dataset.separator)
-			//log('length of line', line.length)
-			if(line.length != 6) {
-				log.red(line)
-			}
-			return line
+			return line.split(feeder.dataset.separator)
 		})
 
 		db.insert(feeder.dataset, records,  function(err) {

@@ -106,7 +106,7 @@ var convertTimestamps = function(dataset, records) {
 
 
 var insertItem = function(dataset, record, next) {
-	log(2, record[0], record[1])
+	//log(2, record[0], record[1])
 	insertFeedbackStmt.run([ //user, item, timestamp, rating
 		record[dataset.indices.userId], 
 		record[dataset.indices.itemId], 
@@ -153,7 +153,7 @@ var insertLastFm = function(dataset, records, done) {
 					new Date(record[1]).getTime()/1000 
 				]; 
 
-				log(1, rec[0], rec[1])
+				//log(1, rec[0], rec[1])
 				insertItem(dataset, rec, next)
 			})
 		},
