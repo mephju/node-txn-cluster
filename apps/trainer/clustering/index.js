@@ -24,7 +24,7 @@ exports.buildClusters = function(dataset, done) {
 			next(null)
 		},
 		function(next) {
-			clustering.cluster(txnRows, next)
+			clustering.cluster(dataset, txnRows, next)
 		},
 		function(_clusters, next) {
 			clusters = _clusters
@@ -32,21 +32,30 @@ exports.buildClusters = function(dataset, done) {
 			clusterModel.insertClusters(clusters, next)
 		},
 		function(next) {
+			_buildClusterTables(clusterModel, next)
+		} 
+		
+	], function(err) {
+		done(err, clusters)
+	})
+}
+
+
+var _buildClusterTables = function(clusterModel, done) {
+	async.waterfall([
+		function(next) {
 			clusterModel.tableClusterItemCounts(next)
 		},
 		function(next) { // correct
 			clusterModel.tableTxnItemRatings(next)
 		},
 		function(next) {
-			log('2nd')
 			clusterModel.tableClusterItemRatings(next)
 		},
 		function(next) {
-			clusterModel.tableItemClusterCounts(next)
+			clusterModel.tableItemClusterCounts(done)
 		}
-	], function(err) {
-		done(err, clusters)
-	})
+	], done)
 }
 
 

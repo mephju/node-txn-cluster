@@ -1,3 +1,3 @@
-var sim = require('./sim')
+var Distance = require('./distance').Distance
 
-exports.calcSim = sim.calcSim
+exports.Distance = Distance

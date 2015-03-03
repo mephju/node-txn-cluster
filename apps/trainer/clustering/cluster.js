@@ -2,9 +2,10 @@
 var sim = require('../similarity')
 
 
-var Cluster = function(centroidRow) {
+var Cluster = function(centroidRow, distanceMeasure) {
 	this.centroidRow 	= centroidRow
 	this.members 		= []
+	this.distanceMeasure = distanceMeasure
 }
 
 
@@ -15,7 +16,7 @@ Cluster.prototype.addMember = function(txnRow) {
 
 
 Cluster.prototype.distance = function(txn) {
-	return sim.calcSim(
+	return this.distanceMeasure.distance(
 		this.centroidRow['item_ids'],
 		txn
 	);
@@ -30,12 +31,12 @@ Cluster.prototype.recomputeCentroid = function() {
 		return false
 	}
 	
-	var similaritySums = getSimSumsSlow(this.members)	
+	var similaritySums = this.getSimSumsSlow(this.members)	
 	
-	var maxIdx	 		= help.minIdx(similaritySums)
-	var nextCentroid 	= this.members[maxIdx]
+	var minIdx	 		= help.minIdx(similaritySums)
+	var nextCentroid 	= this.members[minIdx]
 
-	console.log('recomputeCentroid maxidx', maxIdx, 'members.length', this.members.length)
+	console.log('recomputeCentroid maxidx', minIdx, 'members.length', this.members.length)
 	var changed 		= nextCentroid['txn_id'] !== this.centroidRow['txn_id']
 	this.centroidRow 	= nextCentroid
 	return changed
@@ -43,7 +44,7 @@ Cluster.prototype.recomputeCentroid = function() {
 
 
 
-var getSimSumsSlow = function(members) {
+Cluster.prototype.getSimSumsSlow = function(members) {
 	var similarities	= []
 	var len 			= members.length
 
@@ -54,7 +55,7 @@ var getSimSumsSlow = function(members) {
 		for (var j=0; j<len; j++) {
 			if(j != i) {
 				var memberB = members[j]
-				similarity += sim.calcSim(
+				similarity += this.distanceMeasure.distance(
 					memberA['item_ids'], 
 					memberB['item_ids']
 				);	

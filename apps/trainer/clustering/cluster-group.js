@@ -2,7 +2,6 @@
 var Cluster 	= require('./cluster').Cluster
 
 
-
 /**
  * ClusterGroup represents all clusters within a dataset
  * @param {[type]} clusterArray [description]

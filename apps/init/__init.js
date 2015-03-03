@@ -1,7 +1,10 @@
 global.log 		= require('./log')
+global.Config	= require('./config')
+global.config 	= new Config()
+
 global.help 	= require('./help')
 global.colors 	= require('./colors')
-global.config 	= require('./config')
+
 global._ 		= require('lodash')
 global.async 	= require('async')
 

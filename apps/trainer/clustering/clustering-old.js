@@ -1,14 +1,21 @@
 
-var Cluster 	= require('./cluster')
-var ClusterGroup = require('./cluster-group')
+var Cluster 		= require('./cluster')
+var ClusterGroup 	= require('./cluster-group')
+var Distance 		= require('../similarity').Distance
 
 
 
-
-var cluster = function(txnRows, done) {
+/**
+ * Clusters all txnRows via the kmeans algorithm
+ * 
+ * @param  {[type]}   txnRows [description]
+ * @param  {Function} done    [description]
+ * @return {[type]}           [description]
+ */
+exports.cluster = function(dataset, txnRows, done) {
 
 	log('cluster')
-	var clusters = init(txnRows)
+	var clusters = init(dataset, txnRows)
 	clusterGroup = clusterIterate(txnRows, clusters)
 	done(null, clusterGroup)
 }
@@ -50,9 +57,9 @@ var clusterIterate = function(txnRows, clusters) {
  * @param  {[type]} txnRows [description]
  * @return {[type]}         [description]
  */
-var init = function(txnRows) {
+var init = function(dataset, txnRows) {
 	
-	var K = Math.max(
+	const K = Math.max(
 		parseInt(txnRows.length / 750), 
 		4
 	);
@@ -64,6 +71,8 @@ var init = function(txnRows) {
 	var clusters	 	= []
 	
 	process.stdout.write('-' + K)
+
+	var distanceMeasure = new Distance(dataset)
 	
 	while(centroids.length < K) {
 		process.stdout.write('.')
@@ -72,7 +81,7 @@ var init = function(txnRows) {
 		
 		if(centroids.indexOf(centroid) === -1) {
 			centroids.push(centroid)
-			clusters.push(new Cluster(centroid))
+			clusters.push(new Cluster(centroid, distanceMeasure))
 		}
 	}
 
@@ -81,10 +90,4 @@ var init = function(txnRows) {
 }
 
 
-
-
-
-
-//exports.fromDb = fromDb
-exports.cluster = cluster
 

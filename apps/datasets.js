@@ -17,6 +17,7 @@ function Dataset(filepath, name) {
 	this.separator = null
 	this.timeDistance = 0
 	this.indices = null
+	this.config = config
 }
 
 
@@ -186,8 +187,8 @@ exports.dataset = function() {
 exports.all = [gowalla, movielens, lastFm]
 exports.all = [
 	lastFmSmall,
-	// movielensSmall,
-	// //movielensCustom, 
-	// gowallaSmall,
+	movielensSmall,
+	movielensCustom, 
+	gowallaSmall,
 ]
 

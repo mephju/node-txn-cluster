@@ -1,12 +1,13 @@
 
 var fs			= require('fs')
 
-var N_GRAM_SIZE = config.MARKOV_ORDER + 1
+
 
 function MarkovChain(dataset, transModel) {
 	this.dataset = dataset
 	this.transModel = transModel
 	this.filepath = dataset.basePath + 'results/' + dataset.name + '-markov-chain.json'
+	this.N_GRAM_SIZE = dataset.config.MARKOV_ORDER + 1
 }
 
 exports.MarkovChain = MarkovChain
@@ -48,11 +49,12 @@ MarkovChain.prototype.build = function(done) {
 }
 
 
-var onTransitions = function(transitions, done) {
+MarkovChain.prototype.onTransitions = function(transitions, done) {
 	//console.log(transitions)
+	var chain = this
 	var nGramCounts = {}
 	transitions.forEach(function(tsnSeq, idx) {
-		var nGrams = makeNGrams(tsnSeq)
+		var nGrams = chain.makeNGrams(tsnSeq)
 		nGrams.forEach(function(nGram) {
 			countNGram(nGram, nGramCounts)
 		})
@@ -62,12 +64,12 @@ var onTransitions = function(transitions, done) {
 }
 
 
-var makeNGrams = function(tsnSeq) {
+MarkovChain.prototype.makeNGrams = function(tsnSeq) {
 	//console.log('makeNGrams', tsnSeq.length, N_GRAM_SIZE)
 	var nGrams = []
-	for(var i=0; i+N_GRAM_SIZE <= tsnSeq.length; i++) {
+	for(var i=0; i+this.N_GRAM_SIZE <= tsnSeq.length; i++) {
 		
-		nGrams.push(tsnSeq.slice(i, i+N_GRAM_SIZE))
+		nGrams.push(tsnSeq.slice(i, i+this.N_GRAM_SIZE))
 	}
 	return nGrams
 }

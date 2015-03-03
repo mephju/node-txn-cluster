@@ -1,50 +1,57 @@
 
 
+function Config() {
+	this.MIN_SUPPORT					= 50
+	this.TRAINING_SET_SIZE 			= 0.8
+	this.VALIDATION_SET_SIZE 		= 1 - this.TRAINING_SET_SIZE
+	this.TXN_ID_BATCH_SIZE 			= 900
+	this.MIN_CLUSTER_SIZE 			= 4
 
+	//easy sequence size refers to sequences with sizes that are 
+	//easy/fast to compare to other sequences
+	this.EASY_SEQUENCE_SIZE = 275 
+	//number of recommendations which are requested
+	this.N = 5
+	this.MAX_CONTRIBUTION = 0.6
+	this.BASELINE_ON = true
+	this.MARKOV_ORDER = 2
 
-exports.MIN_SUPPORT					= 50
-exports.TRAINING_SET_SIZE 			= 0.8
-exports.VALIDATION_SET_SIZE 		= 1 - exports.TRAINING_SET_SIZE
-exports.TXN_ID_BATCH_SIZE 			= 900
-exports.MIN_CLUSTER_SIZE 			= 4
+	this.ITEM_CHOICE_STRATEGY = 'bestItemsOfCluster'
+	this.DISTANCE_MEASURE = 'jaccard-levenshtein'
+	// this.ITEM_CHOICE_STRATEGY = 'tfTfidf'
+	// this.ITEM_CHOICE_STRATEGY = 'tfidf'
+	// this.ITEM_CHOICE_STRATEGY = 'bestItemsOverall'
+	// this.ITEM_CHOICE_STRATEGY = 'withRatings'
 
-//easy sequence size refers to sequences with sizes that are 
-//easy/fast to compare to other sequences
-exports.EASY_SEQUENCE_SIZE = 275 
-//number of recommendations which are requested
-exports.N = 5
-exports.MAX_CONTRIBUTION = 0.6
-exports.BASELINE_ON = true
-exports.MARKOV_ORDER = 2
+	const REC_REAL = 1
+	const REC_APRIORI = 0
 
-exports.ITEM_CHOICE_STRATEGY = 'bestItemsOfCluster'
-// exports.ITEM_CHOICE_STRATEGY = 'tfTfidf'
-// exports.ITEM_CHOICE_STRATEGY = 'tfidf'
-// exports.ITEM_CHOICE_STRATEGY = 'bestItemsOverall'
-// exports.ITEM_CHOICE_STRATEGY = 'withRatings'
+	this.RECOMMENDER = 'own-method'
+	//this.RECOMMENDER = 'apriori-baseline'
+	//this.RECOMMENDER = 'most-popular-baseline'
 
-const REC_REAL = 1
-const REC_APRIORI = 0
-
-exports.RECOMMENDER = 'own-method'
-//exports.RECOMMENDER = 'apriori-baseline'
-//exports.RECOMMENDER = 'most-popular-baseline'
-
-exports.reconfigure = function(trainingsetSize) {
-	exports.NUM_CENTROIDS = Math.max(2, parseInt(
-		Math.ceil(trainingsetSize / 750)
-	));
-	exports.NUM_CENTROIDS_POST_CLEAN_UP = exports.NUM_CENTROIDS
-	if(trainingsetSize < 400) {
-		exports.MIN_CLUSTER_SIZE = 2
+	this.reconfigure = function(trainingsetSize) {
+		this.NUM_CENTROIDS = Math.max(2, parseInt(
+			Math.ceil(trainingsetSize / 750)
+		));
+		this.NUM_CENTROIDS_POST_CLEAN_UP = this.NUM_CENTROIDS
+		if(trainingsetSize < 400) {
+			this.MIN_CLUSTER_SIZE = 2
+		}
 	}
+
+
+
+	//this.TXN_VECTOR_BATCH_SIZE 		= 4000
+	// this.MIN_SEQUENCE_FREQUENCY 		= 8
+	//this.MIN_SEQUENCE_SIZE 			= 2
+	//this.MAX_SEQUENCE_SIZE 			= 8
+	//this.NUM_RECOMMENDATIONS 			= 10
+	//this.MAX_TIME_DISTANCE 			= 900
 }
 
 
+module.exports = Config
 
-//exports.TXN_VECTOR_BATCH_SIZE 		= 4000
-// exports.MIN_SEQUENCE_FREQUENCY 		= 8
-//exports.MIN_SEQUENCE_SIZE 			= 2
-//exports.MAX_SEQUENCE_SIZE 			= 8
-//exports.NUM_RECOMMENDATIONS 			= 10
-//exports.MAX_TIME_DISTANCE 			= 900
+
+	

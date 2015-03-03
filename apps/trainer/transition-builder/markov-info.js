@@ -1,36 +1,12 @@
-var async 		= require('async')
-var dataset 	= require('../dataset-defs').dataset()
-var db			= require('./db')
-var txnApp		= require('../transactions/app')
-var txnDb		= require('../transactions/db')
-var help 		= require('../help')
-var rootDb 		= require('../db')
-var config 		= require('../config')
-var eachtick 	= require('eachtick')
-var fs			= require('fs')
-var transMarkovChain = require('./trans-markov-chain')
-
-var N_GRAM_SIZE = config.MARKOV_ORDER + 1
-
-
-var getInfo = function(done) {
-	async.waterfall([
-		function(next) {
-			transMarkovChain.getMarkovChain(next)
-		},
-		function(markovChain, next) {
-			var markovInfo = new MarkovInfo(markovChain)
-			done(null, markovInfo)
-		}
-	], done)
-}
 
 
 
 function MarkovInfo(markovChain) {
 	computeMcSums(markovChain)
-	this.info = markovChain
+	this.markovChain = markovChain
 }
+
+
 
 
 /**
@@ -61,7 +37,7 @@ MarkovInfo.prototype.getTopClusters = function(N, lastClusters) {
 				idx:key,
 				sum: isNaN(value) ? value.sum : value
 			}
-			addTopCluster(candidate, N, topClusters)
+			_addTopCluster(candidate, N, topClusters)
 		}
 			
 	}
@@ -76,7 +52,7 @@ MarkovInfo.prototype.getTopClusters = function(N, lastClusters) {
  * @param {[type]} MAX         [description]
  * @param {[type]} topClusters [description]
  */
-var addTopCluster = function(candidate, MAX, topClusters) {
+var _addTopCluster = function(candidate, MAX, topClusters) {
 	if(topClusters.length < MAX) {
 		return topClusters.push(candidate)
 	} 
@@ -117,7 +93,13 @@ var getMinIdx = function(topClusters) {
 
 
 
-
+/**
+ * Enriches each level of the markov chain 
+ * with the sum attribute. sum contains the sum of all values 
+ * at the current level.
+ * @param  {[type]} value [description]
+ * @return {[type]}       [description]
+ */
 var computeMcSums = function(value) {
 
 	var sum = 0
@@ -127,7 +109,6 @@ var computeMcSums = function(value) {
 			sum += computeMcSums(subvalue)
 		} else {
 			sum += subvalue
-			//delete value[key]
 		}
 	}
 	value.sum = sum
@@ -143,7 +124,6 @@ var isObject = function(value) {
 
 
 exports.MarkovInfo = MarkovInfo
-exports.getInfo = getInfo
 exports.test = {
 	MarkovInfo: MarkovInfo,
 	getInfo: getInfo,

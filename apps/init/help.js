@@ -1,4 +1,4 @@
-var config = require('./config')
+
 var deepEqual = require('deep-equal')
 var _ = require('lodash')
 
@@ -386,7 +386,7 @@ var getTrainingSetSize = function(db, done) {
 		},
 		function(size, next) {
 			var trainingSetSize = Math.floor(size*config.TRAINING_SET_SIZE)
-			log('getTrainingSetSize', trainingSetSize)
+			log('getTrainingSetSize', size, '*', config.TRAINING_SET_SIZE, trainingSetSize)
 			done(null, trainingSetSize)
 		}
 	], done)

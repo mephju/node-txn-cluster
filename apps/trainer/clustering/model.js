@@ -17,6 +17,9 @@ Model.prototype.buildClustersFromDb = function(done) {
 
 	var Cluster = require('./cluster')
 	var ClusterGroup = require('./cluster-group')
+	var Distance  = require('../similarity').Distance
+
+	var distanceMeasure = new Distance(this.dataset)
 
 	var clusters = null
 
@@ -30,7 +33,7 @@ Model.prototype.buildClustersFromDb = function(done) {
 		function(centroidRows) {
 			console.log('buildClustersFromDb', centroidRows.length)			
 			var clusters = centroidRows.map(function(centroidRow) {
-				return new Cluster(centroidRow)
+				return new Cluster(centroidRow, distanceMeasure)
 			})
 			
 			async.eachSeries(
@@ -91,8 +94,11 @@ Model.prototype.tableClusterItemCounts = function(done) {
 
 Model.prototype.tableTxnItemRatings = function(done) {
 	log('ClusterModel.tableTxnItemRatings')
-	log(arguments)
 	var model = this
+
+	if(this.dataset.name.indexOf('last') != -1) {
+		return done()
+	}
 	
 	async.waterfall([
 		function(next) {
@@ -109,8 +115,9 @@ Model.prototype.tableTxnItemRatings = function(done) {
 									'txns as t ' +
 					'where 			ti.txn_id=t.txn_id ' +
 					'and 			t.user_id=f.user_id	' +
-					'and 			ti.item_id=f.item_id'
-			
+					'and 			ti.item_id=f.item_id '
+			var sql = 'create table txn_item_ratings as select ti.txn_id,ti.item_id,f.rating from txn_items as ti,feedback as f,txns as t where ti.txn_id=t.txn_id and t.user_id=f.user_id and ti.item_id=f.item_id'
+
 			model.db.run(sql, done)
 			//model.db.run('select * from txnsii limit 0', next)
 		},
@@ -119,6 +126,10 @@ Model.prototype.tableTxnItemRatings = function(done) {
 
 Model.prototype.tableClusterItemRatings = function(done) {
 	log('ClusterModel.tableClusterItemRatings')
+
+	if(this.dataset.name.indexOf('last') != -1) {
+		return done()
+	}
 
 	var model = this
 
