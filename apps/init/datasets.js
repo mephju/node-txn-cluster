@@ -133,6 +133,9 @@ var testDataset 	= new TestDataset('test/ratings.dat', 					'test_dataset')
 exports.movielens = movielens
 exports.testDataset = testDataset
 exports.movielensSmall = movielensSmall
+exports.movielensCustom = movielensCustom
+exports.gowallaSmall = gowallaSmall
+exports.lastFmSmall = lastFmSmall
 
 exports.init = function(datasetName) {
 	switch(datasetName) {
