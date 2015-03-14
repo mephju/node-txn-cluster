@@ -1,14 +1,21 @@
 
 
-function Config() {
-	this.MIN_SUPPORT					= 50
-	this.TRAINING_SET_SIZE 			= 0.8
+function Config(_distanceMeasure, _numTxns) {
+
+	this.MIN_SUPPORT				= 50
+	this.TRAINING_SET_SIZE 			= 0.75
 	this.VALIDATION_SET_SIZE 		= 1 - this.TRAINING_SET_SIZE
 	this.TXN_ID_BATCH_SIZE 			= 900
 	this.MIN_CLUSTER_SIZE 			= 4
+	this.MAX_CLUSTER_SIZE 			= _numTxns ? parseInt(_numTxns / 140) : 500
 
-	//easy sequence size refers to sequences with sizes that are 
-	//easy/fast to compare to other sequences
+	/**
+	 * Distances of 2 sequences longer than the specified value 
+	 * will will be stored in a map to save time the next time the same distance is 
+	 * required. 
+	 * 
+	 * @type {Number}
+	 */
 	this.EASY_SEQUENCE_SIZE = 275 
 	//number of recommendations which are requested
 	this.N = 5
@@ -17,7 +24,8 @@ function Config() {
 	this.MARKOV_ORDER = 2
 
 	this.ITEM_CHOICE_STRATEGY = 'bestItemsOfCluster'
-	this.DISTANCE_MEASURE = 'jaccard-levenshtein'
+	//this.DISTANCE_MEASURE = 'jaccard-levenshtein'
+	this.DISTANCE_MEASURE = _distanceMeasure ? _distanceMeasure : 'levenshtein'
 	// this.ITEM_CHOICE_STRATEGY = 'tfTfidf'
 	// this.ITEM_CHOICE_STRATEGY = 'tfidf'
 	// this.ITEM_CHOICE_STRATEGY = 'bestItemsOverall'

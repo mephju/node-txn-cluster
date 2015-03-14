@@ -152,11 +152,79 @@ var intersectNumDes = function(a, b) {
 
 
 var intersectNum = function(array1, array2) {
-	 
+	 return fastIntersetcNum(array1, array2)
+	 return array_intersect(array1, array2).length
 	 var a = array1.slice(0)
 	 var b = array2.slice(0)
 	 
 	 return intersectNumDes(a, b)
+}
+
+function fastIntersetcNum() {
+	var ret = 0
+	var i, all, shortest, nShortest, n, len, obj={}, nOthers;
+	nOthers = arguments.length-1;
+	nShortest = arguments[0].length;
+	shortest = 0;
+	for (i=0; i<=nOthers; i++){
+	n = arguments[i].length;
+	if (n<nShortest) {
+	  shortest = i;
+	  nShortest = n;
+	}
+	}
+
+	for (i=0; i<=nOthers; i++) {
+		n = (i===shortest)?0:(i||shortest); //Read the shortest array first. Read the first array instead of the shortest
+		len = arguments[n].length;
+		for (var j=0; j<len; j++) {
+		    var elem = arguments[n][j];
+		    if(obj[elem] === i-1) {
+		      if(i === nOthers) {
+		        ret++
+		        obj[elem]=0;
+		      } else {
+		        obj[elem]=i;
+		      }
+		    }else if (i===0) {
+		      obj[elem]=0;
+		    }
+		}
+	}
+	return ret;
+	}
+
+function array_intersect() {
+  var i, all, shortest, nShortest, n, len, ret = [], obj={}, nOthers;
+  nOthers = arguments.length-1;
+  nShortest = arguments[0].length;
+  shortest = 0;
+  for (i=0; i<=nOthers; i++){
+    n = arguments[i].length;
+    if (n<nShortest) {
+      shortest = i;
+      nShortest = n;
+    }
+  }
+ 
+  for (i=0; i<=nOthers; i++) {
+    n = (i===shortest)?0:(i||shortest); //Read the shortest array first. Read the first array instead of the shortest
+    len = arguments[n].length;
+    for (var j=0; j<len; j++) {
+        var elem = arguments[n][j];
+        if(obj[elem] === i-1) {
+          if(i === nOthers) {
+            ret.push(elem);
+            obj[elem]=0;
+          } else {
+            obj[elem]=i;
+          }
+        }else if (i===0) {
+          obj[elem]=0;
+        }
+    }
+  }
+  return ret;
 }
 
 

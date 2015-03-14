@@ -4,7 +4,7 @@ var async 	= require('async')
 
 //var baseDatasetPath = '/home/kokirchn/thesis/'
 
-function Dataset(filepath, name) {
+function Dataset(filepath, name, config) {
 	log('BASE_PATH', process.env.BASE_PATH)
 
 	var basePath = process.env.BASE_PATH ? process.env.BASE_PATH : '/stuff/datamining/'
@@ -75,7 +75,8 @@ function Gowalla(filepath, name) {
 	Dataset.call(this, filepath, name)
 	this.separator = '\t'
 	//this.timeDistance =  31536000
-	this.timeDistance = 259200 //24 hours
+	this.timeDistance = 43200 //24 hours
+	this.timeDistance = 
 	this.indices = {
 		userId:0,
 		itemId:4,
@@ -129,6 +130,9 @@ var movielensCustom = new Movielens('movielens/ratings-custom-large.dat',	'movie
 var movielensSmall 	= new Movielens('movielens/ratings-small.dat',			'movielens_small') 
 var testDataset 	= new TestDataset('test/ratings.dat', 					'test_dataset')
 
+exports.movielens = movielens
+exports.testDataset = testDataset
+exports.movielensSmall = movielensSmall
 
 exports.init = function(datasetName) {
 	switch(datasetName) {
@@ -148,7 +152,7 @@ exports.init = function(datasetName) {
 			datasetInstance = movielens
 			break;
 		case 'movielens_custom_large': 
-			datasetInstance = movielens
+			datasetInstance = movielensCustom
 			break;
 		case 'test_dataset': 
 			datasetInstance = testDataset
@@ -191,4 +195,6 @@ exports.all = [
 	movielensCustom, 
 	gowallaSmall,
 ]
+
+exports.all = [movielensCustom]
 

@@ -1,9 +1,4 @@
-
-var sqlite3		= require('sqlite3').verbose()
-
 var sql 		= require('./sql')
-var async 		= require('async')
-var db 			= null 
 
 
 function Model(dataset) {
@@ -231,64 +226,51 @@ Model.prototype.getClusteredTxns = function(done) {
 // 
 // Returns all txnRows for either training set or validation set
 // 
-Model.prototype.getAllTxns = function(done, validation) {
-
+Model.prototype._getAllTxns = function(validation, done) {
+	var _this = this
 	async.waterfall([
 		function(next) {
-			model.getTableSize('txns', next)
+			_this.tableSize('txns', next)
 		},
 		function(tableSize, next) {
 			var trainingSize = Math.floor(tableSize * config.TRAINING_SET_SIZE)
-			console.log('TRAINING SET SIZE', config.TRAINING_SET_SIZE, trainingSize)
 			
+			log('TRAINING SET SIZE', config.TRAINING_SET_SIZE, trainingSize)
+			var sql = 'SELECT DISTINCT txn_id, item_ids FROM txn_item_groups LIMIT ' + trainingSize
 			if(validation) {
-				db.all(
-					'SELECT DISTINCT txn_id, item_ids FROM txn_item_groups LIMIT 999999999 OFFSET ' + trainingSize, 
-					next
-				);
+				sql = 'SELECT DISTINCT txn_id, item_ids FROM txn_item_groups LIMIT 999999999 OFFSET ' + trainingSize		
 			} 
-			else {
-				db.all(
-					'SELECT DISTINCT txn_id, item_ids FROM txn_item_groups LIMIT ' + trainingSize, 
-					next
-				);
-			}
-				
+			_this._txns(sql, done, validation);
 		},  
-		function(rows, next) {			
-			rows.forEach(function(row, i) {
-				row['item_ids'] = help.textToNumArray(row['item_ids'])
-			})
-			done(null, rows)
-		}
 	], done)
 }
 
-Model.prototype.getTxnsForTraining = function(done) {
-	
-	var model = this
+Model.prototype.txnsForValidation = function(done) {
+	this._getAllTxns(true, done)
+}
+
+Model.prototype.txnsForTraining = function(done) {
+	this._getAllTxns(false, done)
+}
+Model.prototype.txns = function(done) {
+	this._txns('select * from txn_item_groups', done)
+}
+
+Model.prototype._txns = function(sql, done, validation) {
 
 	async.waterfall([
 		function(next) {
-			help.getTrainingSetSize(model.db, next)
-		},
-		function(trainingSetSize, next) {
-			log('TRAINING SET SIZE', config.TRAINING_SET_SIZE, trainingSetSize)
-				
-			model.db.all(
-				'SELECT DISTINCT txn_id, item_ids FROM txn_item_groups LIMIT ' + trainingSetSize, 
-				next
-			);
-		},  
-		function(rows, next) {			
-			rows.forEach(function(row, i) {
+			this.db.all(sql, next);
+		}.bind(this),
+		function(rows, next) {
+			rows = rows.filter(function(row, i) {
 				row['item_ids'] = help.textToNumArray(row['item_ids'])
+				return !validation || row['item_ids'].length > config.N //if validation, the txns should have a minimum length 
 			})
 			done(null, rows)
 		}
 	], done)
 }
-
 
 
 //

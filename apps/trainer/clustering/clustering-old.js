@@ -14,10 +14,22 @@ var Distance 		= require('../similarity').Distance
  */
 exports.cluster = function(dataset, txnRows, done) {
 
+	var bag = {}
+
+	if(txnRows.length === 0) { return done('cannot cluster 0 txn rows')} 
+
+
 	log('cluster')
-	var clusters = init(dataset, txnRows)
-	clusterGroup = clusterIterate(txnRows, clusters)
-	done(null, clusterGroup)
+	async.waterfall([
+		function(next) {	
+			var clusters = init(dataset, txnRows)
+			clusterIterate(txnRows, clusters, next)
+		},
+		function(_clusters) {
+			done(null, _clusters)
+		}
+	], done)
+			
 }
 
 
@@ -29,25 +41,32 @@ exports.cluster = function(dataset, txnRows, done) {
  * @param  {[type]} clusters [description]
  * @return {[type]}          [description]
  */
-var clusterIterate = function(txnRows, clusters) {
-	if(clusters.isIterationNeeded) {
-		clusters.clear()
-		console.log('clusterIterate ', txnRows.length)
-		
-		txnRows.forEach(function(txnRow, i) {
+var clusterIterate = function(txnRows, clusters, done) {
+	console.log('clusterIterate ', txnRows.length)
 
-			var c = clusters.findBestMatch(txnRow)
-			if(c) { 	
-				c.addMember(txnRow) 
-			} 
-		})
-		clusters.recomputeCentroids()
-		//help.removeNulls(txnRows)
-		return clusterIterate(txnRows, clusters)
-	} else {
+	if(!clusters.isIterationNeeded) {
 		clusters.cleanUp()
-		return clusters
-	}	
+		return done(null, clusters)
+	}
+
+
+	clusters.clear()
+	
+	for(var i=0, len=txnRows.length; i<len; i++) {
+		var c = clusters.findBestMatch(txnRows[i])
+		if(c) { 	
+			c.addMember(txnRows[i]) 
+		}
+	}
+	
+	async.waterfall([
+		function(next) {		
+			clusters.recomputeCentroids(next)
+		},
+		function() {
+			return clusterIterate(txnRows, clusters, done)
+		}
+	], done)
 }
 
 
@@ -78,7 +97,7 @@ var init = function(dataset, txnRows) {
 		process.stdout.write('.')
 		var randomIdx = Math.floor(Math.random() * max)
 		var centroid = txnRows[randomIdx]
-		
+
 		if(centroids.indexOf(centroid) === -1) {
 			centroids.push(centroid)
 			clusters.push(new Cluster(centroid, distanceMeasure))

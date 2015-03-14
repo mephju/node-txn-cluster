@@ -1,9 +1,10 @@
 
 var importApp = require('./import')
 var txnApp = require('./transactions')
-require('../init')
-var datasets = require('../datasets')
 
+require('../init')
+
+var TxnModel 		= require('./transactions/model').Model
 
 
 
@@ -20,6 +21,9 @@ var buildSessions = function(dataset, done) {
 			txnApp.buildTxns(dataset, next)
 		},
 		function(next) {
+			new TxnModel(dataset).txnsForTraining(next)
+		},
+		function(txnRows, next) {
 			log('sessions built!', dataset.name)
 			done()
 		}

@@ -1,24 +1,31 @@
+var DistanceStore = require('./distance-store')
 
 function Distance(dataset) {
     this.dataset = dataset
     this.config = dataset.config
+    
 
     switch(this.config.DISTANCE_MEASURE) {
         case 'jaccard-levenshtein':
-            this.distance = jaccLevDistance
+            this.distanceAlgo = jaccLevDistance
             break;
         case 'jaccard':
-            this.distance = jaccardDistance
+            this.distanceAlgo = jaccardDistance
             break;
         case 'jaccard-bigram':
-            this.distance = jaccardBigramDistance
+            this.distanceAlgo = jaccardBigramDistance
             break;
         case 'levenshtein':
-            this.distance = levenshteinDistance
+            this.distanceAlgo = levenshtein
             break;
         default: throw 'no distance measure defined'
-
     }
+
+    this.distanceStore = new DistanceStore(dataset, this)
+}
+
+Distance.prototype.distance = function(left, right) {
+    return this.distanceStore.distance(left, right)
 }
 
 exports.Distance = Distance
@@ -30,9 +37,11 @@ exports.Distance = Distance
  * Calculates distance of jaccard and levenshtein
  * @param  {[type]} array1 [description]
  * @param  {[type]} array2 [description]
- * @return {[type]}        [description]
+
+      *       [description]
  */
 var jaccLevDistance = function(array1, array2) {
+    //log('jaccLevDistance', array1, array2)
     return 1/4 * jaccardDistance(array1, array2) + 3/4 * levenshtein(array1, array2)
 }
 
@@ -93,14 +102,10 @@ var jaccardBigram = function(array1, array2) {
 
 
 
-var jaccard = function(array1, array2) {
-   var intersectNum = help.intersectNum(array1, array2)
-   if(intersectNum == 0) return 0
-   return intersectNum/help.unionNum(array1, array2, intersectNum)
-}
-
 var jaccardDistance = function(array1, array2) {
-    return 1 - jaccard(array1, array2)
+   var intersectNum = help.intersectNum(array1, array2)
+   if(intersectNum == 0) return 1
+   return 1 - intersectNum/help.unionNum(array1, array2, intersectNum)
 }
 
 
@@ -109,7 +114,7 @@ var jaccardDistance = function(array1, array2) {
 
 
 
-var levenshteinDistance = function(s, t) {
+var levenshtein = function(s, t) {
     // degenerate cases
     //if (s == t) return 0;
     if (s.length == 0) return t.length;
@@ -143,7 +148,7 @@ var levenshteinDistance = function(s, t) {
             v0[j] = v1[j];
     }
  
-    return v1[t.length];
+    return v1[t.length] / Math.max(s.length, t.length);
 }
 
 
@@ -151,9 +156,7 @@ var levenshteinDistance = function(s, t) {
 		
 
 
-var levenshtein = function(s1, s2) {
-	return levenshteinDistance(s1, s2) / Math.max(s1.length, s2.length)
-}
+
 
 
 //exports.levenshteinDistance = levenshteinDistance
@@ -161,6 +164,6 @@ var levenshtein = function(s1, s2) {
 exports.test = {
     jaccardBigram: jaccardBigram,
     levenshtein:levenshtein,
-    jaccard: jaccard,
+    jaccardDistance: jaccardDistance,
     jaccLev: jaccLevDistance
 }

@@ -1,11 +1,10 @@
 
-var sim = require('../similarity')
-
 
 var Cluster = function(centroidRow, distanceMeasure) {
 	this.centroidRow 	= centroidRow
 	this.members 		= []
 	this.distanceMeasure = distanceMeasure
+
 }
 
 
@@ -23,48 +22,49 @@ Cluster.prototype.distance = function(txn) {
 }
 
 
-Cluster.prototype.recomputeCentroid = function() {
+/**
+ * Find the member withing the cluster that has least summed distance to 
+ * all other members.
+ * 
+ * @return {[type]} [description]
+ */
+Cluster.prototype.recomputeCentroid = function(done) {
 
-	console.log('recomputeCentroid', this.centroidRow['txn_id'], this.members.length)
+	console.log(this.centroidRow['txn_id'], 'recomputeCentroid with length', this.members.length)
 
 	if(this.members.length === 0) {
-		return false
+		return done(null, false)
 	}
 	
-	var similaritySums = this.getSimSumsSlow(this.members)	
-	
-	var minIdx	 		= help.minIdx(similaritySums)
+	var distanceSums 	= this._distanceSums()		
+	var minIdx	 		= help.minIdx(distanceSums)
 	var nextCentroid 	= this.members[minIdx]
 
-	console.log('recomputeCentroid maxidx', minIdx, 'members.length', this.members.length)
+	console.log('recomputeCentroid minidx', minIdx)
 	var changed 		= nextCentroid['txn_id'] !== this.centroidRow['txn_id']
 	this.centroidRow 	= nextCentroid
-	return changed
+	
+	done(null, changed)		
 }
 
 
 
-Cluster.prototype.getSimSumsSlow = function(members) {
-	var similarities	= []
-	var len 			= members.length
+Cluster.prototype._distanceSums = function() {
 
-	for (var i=0; i<len; i++) {
-		var similarity = 0
-		var memberA = members[i]
+	var distanceSums = []
 
-		for (var j=0; j<len; j++) {
-			if(j != i) {
-				var memberB = members[j]
-				similarity += this.distanceMeasure.distance(
-					memberA['item_ids'], 
-					memberB['item_ids']
-				);	
-			}
+	for(var a=0,len=this.members.length; a<len; a++) {
+		var memberA = this.members[a]
+		var sum = 0
+		for(var b=0; b<len; b++) {
+			var memberB = this.members[b]
+			sum += this.distanceMeasure.distance(memberA['item_ids'], memberB['item_ids'])
 		}
-
-		similarities[i] = similarity
-	};
-	return similarities
+		distanceSums.push(sum)
+	}
+		
+	return distanceSums
 }
+
 
 module.exports = Cluster

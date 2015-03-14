@@ -1,49 +1,77 @@
 
 
-
+/**
+ * MarkovInfo is like MarkovChain but is enriched by the 
+ * sums of values on each level.
+ * {
+ * 	00: {
+ * 		22: 10,
+ * 		34: 11,
+ * 		sum: 21
+ * 	},
+ * 	44: {
+ * 		2: 3
+ * 		sum: 3
+ * 	},
+ * 	sum: 24
+ * }
+ *
+ * So 00 has 21 outgoing edges and 00-22 has 10 edges.
+ * So P(22 | 00) = 10 / 21
+ *
+ * 
+ * @param {[type]} markovChain [description]
+ */
 function MarkovInfo(markovChain) {
-	computeMcSums(markovChain)
-	this.markovChain = markovChain
+	this.markovChain = computeMcSums(markovChain)
+	
 }
 
 
 
 
 /**
- * get N cluster ids with highest values
+ * get N cluster ids with highest sums.
  * @param  {[type]} N            [description]
  * @param  {[type]} lastClusters [description]
  * @return {[type]}              [description]
  */
 MarkovInfo.prototype.getTopClusters = function(N, lastClusters) {
 	var topClusters 	= []
-	var partChain 		= this.info
+	var chain 		= subChain(lastClusters, this.markovChain)
 
-	for (var i = 0; i < lastClusters.length; i++) {
-		if(partChain) {
-			var clusterId = lastClusters[i]
-			partChain = partChain[clusterId]
-		} else {
-			return []
-		}
-	};
+	if(!chain) { return [] }
+	/*
+		Travel to the part within markovChain as denoted by lastClusters
+		and save it in partChain.
+	 */
+	
 
-	var useSum = lastClusters.length < config.MARKOV_ORDER
-
-	for(var key in partChain) {
+	for(var key in chain) {
 		if(key !== 'sum') {
-			var value = partChain[key]
+			var value = chain[key]
 			var candidate = {
 				idx:key,
 				sum: isNaN(value) ? value.sum : value
 			}
-			_addTopCluster(candidate, N, topClusters)
+			_addTopCluster(candidate, this.markovChain.dataset.config.N, topClusters)
 		}
 			
 	}
 
 	return topClusters
 }
+
+var subChain = function(lastClusters, chain) {
+	for (var i = 0; i < lastClusters.length; i++) {
+		if(!chain) { return null }
+		var clusterId = lastClusters[i]
+		chain = chain[clusterId]
+	}
+	return chain
+}
+
+
 
 
 /**
@@ -57,6 +85,7 @@ var _addTopCluster = function(candidate, MAX, topClusters) {
 		return topClusters.push(candidate)
 	} 
 
+	// the candidate might replace a current topCluster
 	for(var i=0; i<topClusters.length; i++) {
 		var topKeyVal = topClusters[i]
 
@@ -126,10 +155,9 @@ var isObject = function(value) {
 exports.MarkovInfo = MarkovInfo
 exports.test = {
 	MarkovInfo: MarkovInfo,
-	getInfo: getInfo,
 	computeMcSums: computeMcSums,
 	getMinIdx: getMinIdx,
-	addTopCluster: addTopCluster
+	addTopCluster: _addTopCluster
 }
 
 

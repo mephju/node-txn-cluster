@@ -47,7 +47,6 @@ exports.findTransitions = function(transModel, clusters, txnRows, done) {
 	);
 }
 
-const ALWAYS_RETURN_CLUSTER_IDX = true
 
 var findProbsForTxn = function(clusters, txn) {
 		

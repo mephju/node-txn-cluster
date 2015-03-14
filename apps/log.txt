@@ -1,0 +1,334 @@
+[36m { Model: [Function: Model] } [0m
+BASE_PATH /stuff/datamining/
+BASE_PATH /stuff/datamining/
+BASE_PATH /stuff/datamining/
+BASE_PATH /stuff/datamining/
+BASE_PATH /stuff/datamining/
+BASE_PATH /stuff/datamining/
+BASE_PATH /stuff/datamining/
+BASE_PATH /stuff/datamining/
+[35m session based recommender start [0m
+processDataset { basePath: '/stuff/datamining/',
+  name: 'movielens_custom_large',
+  filepath: '/stuff/datamining/datasets/movielens/ratings-custom-large.dat',
+  dbPath: '/stuff/datamining/results/movielens_custom_large.sqlite',
+  datasetSize: 0,
+  trainingSize: 0,
+  separator: '::',
+  timeDistance: 300,
+  indices: { userId: 0, itemId: 1, rating: 2, timestamp: 3 },
+  config: 
+   { MIN_SUPPORT: 50,
+     TRAINING_SET_SIZE: 0.75,
+     VALIDATION_SET_SIZE: 0.25,
+     TXN_ID_BATCH_SIZE: 900,
+     MIN_CLUSTER_SIZE: 4,
+     EASY_SEQUENCE_SIZE: 275,
+     N: 5,
+     MAX_CONTRIBUTION: 0.6,
+     BASELINE_ON: true,
+     MARKOV_ORDER: 2,
+     ITEM_CHOICE_STRATEGY: 'bestItemsOfCluster',
+     DISTANCE_MEASURE: 'jaccard-levenshtein',
+     RECOMMENDER: 'own-method',
+     reconfigure: [Function] } }
+trainRecommender
+getTableSize
+TRAINING SET SIZE 0.75 1371
+clustering 1371 txns
+cluster
+clustering.init centroids 4 txnRows count 1371
+-4....clusterIterate  1371
+recomputeCentroids
+1712 'recomputeCentroid with length' 392
+recomputeCentroid minidx 339
+309 'recomputeCentroid with length' 111
+recomputeCentroid minidx 89
+38 'recomputeCentroid with length' 21
+recomputeCentroid minidx 3
+881 'recomputeCentroid with length' 63
+recomputeCentroid minidx 0
+clusterIterate  1371
+recomputeCentroids
+1691 'recomputeCentroid with length' 486
+recomputeCentroid minidx 407
+309 'recomputeCentroid with length' 90
+recomputeCentroid minidx 74
+1703 'recomputeCentroid with length' 19
+recomputeCentroid minidx 2
+1790 'recomputeCentroid with length' 40
+recomputeCentroid minidx 0
+clusterIterate  1371
+[33m { clusters: 
+   [ { centroidRow: [Object],
+       members: [Object],
+       distanceMeasure: [Object] },
+     { centroidRow: [Object],
+       members: [Object],
+       distanceMeasure: [Object] },
+     { centroidRow: [Object],
+       members: [Object],
+       distanceMeasure: [Object] },
+     { centroidRow: [Object],
+       members: [Object],
+       distanceMeasure: [Object] } ],
+  isIterationNeeded: false } [0m
+ClusterModel.insertClusters 4
+inserting cluster 0
+inserting cluster 1
+inserting cluster 2
+inserting cluster 3
+create table cluster_item_counts
+ClusterModel.tableTxnItemRatings
+ClusterModel.tableClusterItemRatings
+ClusterModel.tableItemClusterCounts
+[32m clusters have been built [0m
+buildClustersFromDb
+getCentroidRows
+buildClustersFromDb 4
+getClusterMembers for 0
+getClusterMembers for 1
+getClusterMembers for 2
+getClusterMembers for 3
+buildTransitions { basePath: '/stuff/datamining/',
+  name: 'movielens_custom_large',
+  filepath: '/stuff/datamining/datasets/movielens/ratings-custom-large.dat',
+  dbPath: '/stuff/datamining/results/movielens_custom_large.sqlite',
+  datasetSize: 0,
+  trainingSize: 0,
+  separator: '::',
+  timeDistance: 300,
+  indices: { userId: 0, itemId: 1, rating: 2, timestamp: 3 },
+  config: 
+   { MIN_SUPPORT: 50,
+     TRAINING_SET_SIZE: 0.75,
+     VALIDATION_SET_SIZE: 0.25,
+     TXN_ID_BATCH_SIZE: 900,
+     MIN_CLUSTER_SIZE: 4,
+     EASY_SEQUENCE_SIZE: 275,
+     N: 5,
+     MAX_CONTRIBUTION: 0.6,
+     BASELINE_ON: true,
+     MARKOV_ORDER: 2,
+     ITEM_CHOICE_STRATEGY: 'bestItemsOfCluster',
+     DISTANCE_MEASURE: 'jaccard-levenshtein',
+     RECOMMENDER: 'own-method',
+     reconfigure: [Function] } }
+{ basePath: '/stuff/datamining/',
+  name: 'movielens_custom_large',
+  filepath: '/stuff/datamining/datasets/movielens/ratings-custom-large.dat',
+  dbPath: '/stuff/datamining/results/movielens_custom_large.sqlite',
+  datasetSize: 0,
+  trainingSize: 0,
+  separator: '::',
+  timeDistance: 300,
+  indices: { userId: 0, itemId: 1, rating: 2, timestamp: 3 },
+  config: 
+   { MIN_SUPPORT: 50,
+     TRAINING_SET_SIZE: 0.75,
+     VALIDATION_SET_SIZE: 0.25,
+     TXN_ID_BATCH_SIZE: 900,
+     MIN_CLUSTER_SIZE: 4,
+     EASY_SEQUENCE_SIZE: 275,
+     N: 5,
+     MAX_CONTRIBUTION: 0.6,
+     BASELINE_ON: true,
+     MARKOV_ORDER: 2,
+     ITEM_CHOICE_STRATEGY: 'bestItemsOfCluster',
+     DISTANCE_MEASURE: 'jaccard-levenshtein',
+     RECOMMENDER: 'own-method',
+     reconfigure: [Function] } }
+[33m getClusteredTxns 635 [0m
+findTransitions for txns 635
+...........................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................insertTransitions 996
+done
+findTransitions done
+transMarkovChain.buildMarkovChain
+getTransitions
+[32m 996 [0m
+[32m finished training the recommender [0m
+init recommender
+mostpopular.init
+{ count: 1828 }
+getTrainingSetSize 1828 * 0.75 1371
+buildItemMap
+[32m fallbackItems [ 2858, 480, 2028, 3578, 1196 ] [0m
+init recommender
+buildClustersFromDb
+getCentroidRows
+buildClustersFromDb 4
+getClusterMembers for 0
+getClusterMembers for 1
+getClusterMembers for 2
+getClusterMembers for 3
+fetchMembers
+fetchMembersById 0
+{ dataset: 
+   { basePath: '/stuff/datamining/',
+     name: 'movielens_custom_large',
+     filepath: '/stuff/datamining/datasets/movielens/ratings-custom-large.dat',
+     dbPath: '/stuff/datamining/results/movielens_custom_large.sqlite',
+     datasetSize: 0,
+     trainingSize: 0,
+     separator: '::',
+     timeDistance: 300,
+     indices: { userId: 0, itemId: 1, rating: 2, timestamp: 3 },
+     config: 
+      { MIN_SUPPORT: 50,
+        TRAINING_SET_SIZE: 0.75,
+        VALIDATION_SET_SIZE: 0.25,
+        TXN_ID_BATCH_SIZE: 900,
+        MIN_CLUSTER_SIZE: 4,
+        EASY_SEQUENCE_SIZE: 275,
+        N: 5,
+        MAX_CONTRIBUTION: 0.6,
+        BASELINE_ON: true,
+        MARKOV_ORDER: 2,
+        ITEM_CHOICE_STRATEGY: 'bestItemsOfCluster',
+        DISTANCE_MEASURE: 'jaccard-levenshtein',
+        RECOMMENDER: 'own-method',
+        reconfigure: [Function] } },
+  db: 
+   { open: true,
+     filename: '/stuff/datamining/results/movielens_custom_large.sqlite',
+     mode: 65542,
+     _events: {} },
+  memberStore: {},
+  sql: { sql: 'select * \t\t\tfrom \t\tcluster_item_counts \t\t\twhere \t\tcluster_id=$1 \t\t\torder by \tcount DESC \t\t\tlimit 5' } }
+members [ 2571, 480, 1196, 2858, 1210 ]
+fetchMembersById 1
+{ dataset: 
+   { basePath: '/stuff/datamining/',
+     name: 'movielens_custom_large',
+     filepath: '/stuff/datamining/datasets/movielens/ratings-custom-large.dat',
+     dbPath: '/stuff/datamining/results/movielens_custom_large.sqlite',
+     datasetSize: 0,
+     trainingSize: 0,
+     separator: '::',
+     timeDistance: 300,
+     indices: { userId: 0, itemId: 1, rating: 2, timestamp: 3 },
+     config: 
+      { MIN_SUPPORT: 50,
+        TRAINING_SET_SIZE: 0.75,
+        VALIDATION_SET_SIZE: 0.25,
+        TXN_ID_BATCH_SIZE: 900,
+        MIN_CLUSTER_SIZE: 4,
+        EASY_SEQUENCE_SIZE: 275,
+        N: 5,
+        MAX_CONTRIBUTION: 0.6,
+        BASELINE_ON: true,
+        MARKOV_ORDER: 2,
+        ITEM_CHOICE_STRATEGY: 'bestItemsOfCluster',
+        DISTANCE_MEASURE: 'jaccard-levenshtein',
+        RECOMMENDER: 'own-method',
+        reconfigure: [Function] } },
+  db: 
+   { open: true,
+     filename: '/stuff/datamining/results/movielens_custom_large.sqlite',
+     mode: 65542,
+     _events: {} },
+  memberStore: { '0': [ 2571, 480, 1196, 2858, 1210 ] },
+  sql: { sql: 'select * \t\t\tfrom \t\tcluster_item_counts \t\t\twhere \t\tcluster_id=$1 \t\t\torder by \tcount DESC \t\t\tlimit 5' } }
+members [ 260, 2028, 858, 1250, 593 ]
+fetchMembersById 2
+{ dataset: 
+   { basePath: '/stuff/datamining/',
+     name: 'movielens_custom_large',
+     filepath: '/stuff/datamining/datasets/movielens/ratings-custom-large.dat',
+     dbPath: '/stuff/datamining/results/movielens_custom_large.sqlite',
+     datasetSize: 0,
+     trainingSize: 0,
+     separator: '::',
+     timeDistance: 300,
+     indices: { userId: 0, itemId: 1, rating: 2, timestamp: 3 },
+     config: 
+      { MIN_SUPPORT: 50,
+        TRAINING_SET_SIZE: 0.75,
+        VALIDATION_SET_SIZE: 0.25,
+        TXN_ID_BATCH_SIZE: 900,
+        MIN_CLUSTER_SIZE: 4,
+        EASY_SEQUENCE_SIZE: 275,
+        N: 5,
+        MAX_CONTRIBUTION: 0.6,
+        BASELINE_ON: true,
+        MARKOV_ORDER: 2,
+        ITEM_CHOICE_STRATEGY: 'bestItemsOfCluster',
+        DISTANCE_MEASURE: 'jaccard-levenshtein',
+        RECOMMENDER: 'own-method',
+        reconfigure: [Function] } },
+  db: 
+   { open: true,
+     filename: '/stuff/datamining/results/movielens_custom_large.sqlite',
+     mode: 65542,
+     _events: {} },
+  memberStore: 
+   { '0': [ 2571, 480, 1196, 2858, 1210 ],
+     '1': [ 260, 2028, 858, 1250, 593 ] },
+  sql: { sql: 'select * \t\t\tfrom \t\tcluster_item_counts \t\t\twhere \t\tcluster_id=$1 \t\t\torder by \tcount DESC \t\t\tlimit 5' } }
+members [ 3510, 3408, 3578, 3753, 648 ]
+fetchMembersById 3
+{ dataset: 
+   { basePath: '/stuff/datamining/',
+     name: 'movielens_custom_large',
+     filepath: '/stuff/datamining/datasets/movielens/ratings-custom-large.dat',
+     dbPath: '/stuff/datamining/results/movielens_custom_large.sqlite',
+     datasetSize: 0,
+     trainingSize: 0,
+     separator: '::',
+     timeDistance: 300,
+     indices: { userId: 0, itemId: 1, rating: 2, timestamp: 3 },
+     config: 
+      { MIN_SUPPORT: 50,
+        TRAINING_SET_SIZE: 0.75,
+        VALIDATION_SET_SIZE: 0.25,
+        TXN_ID_BATCH_SIZE: 900,
+        MIN_CLUSTER_SIZE: 4,
+        EASY_SEQUENCE_SIZE: 275,
+        N: 5,
+        MAX_CONTRIBUTION: 0.6,
+        BASELINE_ON: true,
+        MARKOV_ORDER: 2,
+        ITEM_CHOICE_STRATEGY: 'bestItemsOfCluster',
+        DISTANCE_MEASURE: 'jaccard-levenshtein',
+        RECOMMENDER: 'own-method',
+        reconfigure: [Function] } },
+  db: 
+   { open: true,
+     filename: '/stuff/datamining/results/movielens_custom_large.sqlite',
+     mode: 65542,
+     _events: {} },
+  memberStore: 
+   { '0': [ 2571, 480, 1196, 2858, 1210 ],
+     '1': [ 260, 2028, 858, 1250, 593 ],
+     '2': [ 3510, 3408, 3578, 3753, 648 ] },
+  sql: { sql: 'select * \t\t\tfrom \t\tcluster_item_counts \t\t\twhere \t\tcluster_id=$1 \t\t\torder by \tcount DESC \t\t\tlimit 5' } }
+members [ 2858, 480, 3578, 648, 3753 ]
+done reading markov chain
+[32m recommenders created successfully [0m
+getTableSize
+TRAINING SET SIZE 0.75 1371
+...................................................................................................................................................................................................................[32m iteration complete, precision is 0.023624175763253142 { basePath: '/stuff/datamining/',
+  name: 'movielens_custom_large',
+  filepath: '/stuff/datamining/datasets/movielens/ratings-custom-large.dat',
+  dbPath: '/stuff/datamining/results/movielens_custom_large.sqlite',
+  datasetSize: 0,
+  trainingSize: 0,
+  separator: '::',
+  timeDistance: 300,
+  indices: { userId: 0, itemId: 1, rating: 2, timestamp: 3 },
+  config: 
+   { MIN_SUPPORT: 50,
+     TRAINING_SET_SIZE: 0.75,
+     VALIDATION_SET_SIZE: 0.25,
+     TXN_ID_BATCH_SIZE: 900,
+     MIN_CLUSTER_SIZE: 4,
+     EASY_SEQUENCE_SIZE: 275,
+     N: 5,
+     MAX_CONTRIBUTION: 0.6,
+     BASELINE_ON: true,
+     MARKOV_ORDER: 2,
+     ITEM_CHOICE_STRATEGY: 'bestItemsOfCluster',
+     DISTANCE_MEASURE: 'jaccard-levenshtein',
+     RECOMMENDER: 'own-method',
+     reconfigure: [Function] } } [0m
+[33m finished session based recommender exec [0m

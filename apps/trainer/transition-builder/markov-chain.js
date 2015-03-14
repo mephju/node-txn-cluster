@@ -12,11 +12,19 @@ function MarkovChain(dataset, transModel) {
 
 exports.MarkovChain = MarkovChain
 
-MarkovChain.prototype.getMarkovChain = function(done) {
-	var mc = this
+
+/**
+ * Static Class Method
+ * 
+ * @param  {[type]}   dataset [description]
+ * @param  {Function} done    [description]
+ * @return {[type]}           [description]
+ */
+MarkovChain.getMarkovChain = function(dataset, done) {
+
 	async.waterfall([
 		function(next) {
-			fs.readFile(mc.dataset.filepath, 'utf8', next)
+			fs.readFile(dataset.basePath + 'results/' + dataset.name + '-markov-chain.json', 'utf8', next)
 		},
 		function(markovChain, next) {
 			markovChain = JSON.parse(markovChain)
@@ -36,7 +44,7 @@ MarkovChain.prototype.build = function(done) {
 		},
 		function(transitions, next) {
 			log.green(transitions.length)
-			onTransitions(transitions, next)
+			mc.buildFromTransitions(transitions, next)
 		},
 		function(nGramCounts, next) {
 			fs.writeFile(mc.filepath, JSON.stringify(nGramCounts), next)
@@ -49,12 +57,12 @@ MarkovChain.prototype.build = function(done) {
 }
 
 
-MarkovChain.prototype.onTransitions = function(transitions, done) {
+MarkovChain.prototype.buildFromTransitions = function(transitions, done) {
 	//console.log(transitions)
 	var chain = this
 	var nGramCounts = {}
-	transitions.forEach(function(tsnSeq, idx) {
-		var nGrams = chain.makeNGrams(tsnSeq)
+	transitions.forEach(function(tsn, idx) {
+		var nGrams = chain.makeNGrams(tsn)
 		nGrams.forEach(function(nGram) {
 			countNGram(nGram, nGramCounts)
 		})

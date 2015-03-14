@@ -9,11 +9,12 @@ function ItemChoice(dataset) {
 	this.sql = null
 	
 	switch(dataset.config.ITEM_CHOICE_STRATEGY) {
-		case 'tfTfidf':					sql = db.prepare(sqlWithTfTfidf);			break;
-		case 'tfidf':					sql = db.prepare(sqlWithTfidf);				break;
-		case 'bestItemsOfCluster':		sql = db.prepare(sqlBestItemsOfCluster);	break;
-		case 'bestItemsOverall':		sql = db.prepare(sqlBestItemsOverall);		break
-		case 'withRatings': 			sql = db.prepare(sqlWithRatings); 
+		case 'tfTfidf':					this.sql = this.db.prepare(sqlWithTfTfidf);			break;
+		case 'tfidf':					this.sql = this.db.prepare(sqlWithTfidf);			break;
+		case 'bestItemsOfCluster':		this.sql = this.db.prepare(sqlBestItemsOfCluster);	break;
+		case 'bestItemsOverall':		this.sql = this.db.prepare(sqlBestItemsOverall);		break
+		case 'withRatings': 			
+			this.sql = this.db.prepare(sqlWithRatings); 
 			if(typeof dataset.indices.rating === 'undefined') {
 				throw 	'ITEM_CHOICE_STRATEGY.withRatings cannot be applied to dataset without ratings'
 			} 
@@ -21,11 +22,7 @@ function ItemChoice(dataset) {
 		default: 
 			throw 'no item choice strategy chosen'
 	}
-	else if(config.ITEM_CHOICE_STRATEGY === 'withRatings') {
-			
-	}
 }
-
 module.exports = ItemChoice
 
 ItemChoice.prototype.init = function(done) {
@@ -42,13 +39,14 @@ ItemChoice.prototype.init = function(done) {
 
 ItemChoice.prototype.fetchMembers = function(clusterIds, done) {
 	console.log('fetchMembers')
+	var _this = this
 	async.eachSeries(
 		clusterIds,
 		function(clusterId, next) {
-			fetchMembersById(clusterId['cluster_id'], next)
+			_this.fetchMembersById(clusterId['cluster_id'], next)
 		},
 		function(err) {
-			done(err, memberStore)
+			done(err)
 		}
 	);
 }
@@ -58,15 +56,16 @@ ItemChoice.prototype.fetchMembers = function(clusterIds, done) {
 //first get all centroid ids
 //then get all best 5 items of each cluster and save them.
 //so no db access is needed during evaluation.
-var ItemChoice.prototype.getBestItems = function(n, clusterId) {
+ItemChoice.prototype.getBestItems = function(n, clusterId) {
 	return this.memberStore[clusterId].slice(0,n)
 }
 
-var ItemChoice.prototype.fetchMembersById = function(clusterId, done) {
+ItemChoice.prototype.fetchMembersById = function(clusterId, done) {
 	console.log('fetchMembersById', clusterId)
 	var strategy = this
 	async.waterfall([
 		function(next) {			
+			log(strategy)
 			strategy.sql.all(clusterId, next)
 		},
 		function(members, next) {
@@ -163,7 +162,7 @@ var sqlWithTfidf =
 
 
 
-exports.init 			= init
-exports.chooseItems = getRandomItems
-exports.getRandomItems = getRandomItems
-exports.getBestItems = getBestItems
+// exports.init 			= init
+// exports.chooseItems = getRandomItems
+// exports.getRandomItems = getRandomItems
+// exports.getBestItems = getBestItems

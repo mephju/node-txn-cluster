@@ -5,6 +5,7 @@ var ClusterModel	= require('./model').Model
 
 
 
+
 exports.buildClustersFromDb = function(dataset, done) {
 	new ClusterModel(dataset).buildClustersFromDb(done)
 }
@@ -14,9 +15,11 @@ exports.buildClusters = function(dataset, done) {
 	var clusterModel 	= new ClusterModel(dataset)
 	var txnModel 		= new TxnModel(dataset)
 	var clusters 		= null
+	
+
 	async.waterfall([
 		function(next) {
-			txnModel.getTxnsForTraining(next)
+			txnModel.txnsForTraining(next)
 		},
 		function(rows, next) {
 			console.log('clustering %d txns', rows.length)
@@ -58,13 +61,3 @@ var _buildClusterTables = function(clusterModel, done) {
 	], done)
 }
 
-
-var file 	= process.argv[1]
-var method 	= process.argv[2]
-// was this file was started from the command line?
-// if so, call entry level method
-if(file === __filename) { 
-	if(method) {
-		exports[method]()
-	}
-}
