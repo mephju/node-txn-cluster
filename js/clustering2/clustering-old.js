@@ -31,7 +31,7 @@ var clusterIterate = function(txnRows, clusters) {
 		console.log('clusterIterate ', txnRows.length)
 		
 		txnRows.forEach(function(txnRow, i) {
-
+			process.stdout.write(i + ' ')
 			var c = clusters.findBestMatch(txnRow)
 			if(c) { 	
 				c.addMember(txnRow) 

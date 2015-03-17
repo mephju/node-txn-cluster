@@ -2,7 +2,12 @@ var fs 		= require('fs')
 var async 	= require('async')
 
 
+<<<<<<< HEAD
+var baseDatasetPath = '/home/kokirchn/thesis/'
+//var baseDatasetPath = '/stuff/datamining/'
+=======
 //var baseDatasetPath = '/home/kokirchn/thesis/'
+>>>>>>> origin/master
 
 function Dataset(filepath, name) {
 	this.basePath = '/stuff/datamining/'
@@ -120,6 +125,7 @@ TestDataset.prototype = Object.create(Dataset.prototype, {
 // Gowalla.prototype.constructor 		= Gowalla
 
 
+
 var datasetInstance = null
 var gowalla 		= new Gowalla('gowalla/checkins.txt', 					'gowalla');
 var gowallaSmall  	= new Gowalla('gowalla/checkins_small.txt', 			'gowalla_small'); 
@@ -155,6 +161,7 @@ exports.init = function(datasetName) {
 			break;
 		default: throw 'invalid dataset name given'
 	}
+
 }
 
 

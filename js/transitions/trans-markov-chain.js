@@ -49,7 +49,9 @@ var buildMarkovChain = function(done) {
 		},
 		function(nGramCounts, next) {
 			var name = dataset.dataDir() + dataset.dbTable + '.markov-chain.json'
-			fs.writeFile(name, JSON.stringify(nGramCounts), next)
+			var string = JSON.stringify(nGramCounts)
+			console.log(string)
+			fs.writeFile(name, string, next)
 		}
 
 	], done)
@@ -60,6 +62,7 @@ var onTransitions = function(transitions, done) {
 	//console.log(transitions)
 	var nGramCounts = {}
 	transitions.forEach(function(tsnSeq, idx) {
+		//console.log('onTransitions', tsnSeq)
 		var nGrams = makeNGrams(tsnSeq)
 		nGrams.forEach(function(nGram) {
 			countNGram(nGram, nGramCounts)

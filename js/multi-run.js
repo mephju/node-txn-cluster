@@ -1,9 +1,7 @@
 var spawn = require('child_process').spawn;
 var async = require('async')
-var config = require('./config')
 
-// USE childProcess fork
-// 
+ 
 var datasetNames = [
 	//'gowalla',
 	// 'movielens_1m',
@@ -29,7 +27,7 @@ var main = function(recommenderType, done) {
 		datasetNames,
 		function(datasetName, next) {
 			console.log('multiRun', datasetName)
-			var node = spawn('/usr/bin/node',['./index.js', datasetName, recommenderType])
+			var node = spawn('node',['./index.js', datasetName, recommenderType])
 			handleNode(datasetName, node, next)
 		}, 
 		function(err) {
@@ -44,17 +42,30 @@ var main = function(recommenderType, done) {
 
 
 var handleNode = function(datasetName, node, done) {
+	var output = []
 	node.stdout.setEncoding('utf8');
 	node.stdout.on('data', function(data) {
-		console.log('\x1b[32m', datasetName, data.toString())
+		output.push(data)
+		if(output.length > 100) {
+			console.log('\x1b[32m', datasetName, output.toString())	
+			output = []
+		}
+		
 		//process.stdout.write('datasetName', data.toString())
 	})
 
 	node.stderr.on('data', function(data) {
-		console.log('\x1b[31m', datasetName,'ERROR', data.toString().toUpperCase())
+		output.push(data)
+		if(output.length > 100) {
+			output = []	
+			console.log('\x1b[31m', datasetName,'ERROR', output.toString().toUpperCase())
+
+		}
+		
 	})
 
 	node.on('close', function(code, signal) {
+		console.log('\x1b[31m', datasetName, output.toString())
 		console.log(datasetName, 'close', code, signal)
 		done(null)
 	})
@@ -65,7 +76,6 @@ var handleNode = function(datasetName, node, done) {
 async.eachSeries(
 	recommenders,
 	function(recommenderType, next) {
-		config.RECOMMENDER = recommenderType
 		main(recommenderType, next)
 	},
 	function(err) {

@@ -1,10 +1,12 @@
 
 
+
 exports.MIN_SUPPORT					= 50
 exports.TRAINING_SET_SIZE 			= 0.8
 exports.VALIDATION_SET_SIZE 		= 1 - exports.TRAINING_SET_SIZE
 exports.TXN_ID_BATCH_SIZE 			= 900
 exports.MIN_CLUSTER_SIZE 			= 4
+
 
 //easy sequence size refers to sequences with sizes that are 
 //easy/fast to compare to other sequences
@@ -15,11 +17,13 @@ exports.MAX_CONTRIBUTION = 0.6
 exports.BASELINE_ON = true
 exports.MARKOV_ORDER = 2
 
+
 exports.ITEM_CHOICE_STRATEGY = 'bestItemsOfCluster'
 // exports.ITEM_CHOICE_STRATEGY = 'tfTfidf'
 // exports.ITEM_CHOICE_STRATEGY = 'tfidf'
 // exports.ITEM_CHOICE_STRATEGY = 'bestItemsOverall'
 // exports.ITEM_CHOICE_STRATEGY = 'withRatings'
+
 
 const REC_REAL = 1
 const REC_APRIORI = 0
@@ -27,6 +31,7 @@ const REC_APRIORI = 0
 exports.RECOMMENDER = 'own-method'
 //exports.RECOMMENDER = 'apriori-baseline'
 //exports.RECOMMENDER = 'most-popular-baseline'
+
 
 exports.reconfigure = function(trainingsetSize) {
 	exports.NUM_CENTROIDS = Math.max(2, parseInt(

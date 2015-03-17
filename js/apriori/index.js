@@ -71,6 +71,7 @@ var algorithm = function(txns) {
 
 
 var initApriori = function(txns) {
+	console.log('initApriori')
 	var store = [{}, {}]
 	txns.forEach(function(txn) {
 		txn.forEach(function(itemId) {
@@ -91,7 +92,9 @@ var increment = function(obj, key) {
 
 
 var iteration = function(store, txns, k) {
+
 	console.log('apriori.iteration', k)
+
 	store.push({})
 
 	var candidates = genCandidates(store, k)
@@ -121,6 +124,7 @@ var iteration = function(store, txns, k) {
 var genCandidates = function(store, k) {
 
 	console.log('apriori.genCandidates', k)
+
 
 	var candidates = []
 	var keys = Object.keys(store[k-1])
@@ -208,6 +212,7 @@ var makeSubsets = function(itemset, size) {
 
 
 var prune = function(counts) {
+	console.log('prune')
 	for(var key in counts) {
 		if(counts[key] < config.MIN_SUPPORT) {
 			delete counts[key]
