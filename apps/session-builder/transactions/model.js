@@ -227,22 +227,21 @@ Model.prototype.getClusteredTxns = function(done) {
 // Returns all txnRows for either training set or validation set
 // 
 Model.prototype._getAllTxns = function(validation, done) {
-	var _this = this
-	async.waterfall([
+	async.wfall([
 		function(next) {
-			_this.tableSize('txns', next)
+			this.tableSize('txns', next)
 		},
 		function(tableSize, next) {
-			var trainingSize = Math.floor(tableSize * config.TRAINING_SET_SIZE)
+			var trainingSize = Math.floor(tableSize * this.dataset.config.TRAINING_SET_SIZE)
 			
-			log('TRAINING SET SIZE', config.TRAINING_SET_SIZE, trainingSize)
+			log('TRAINING SET SIZE', this.dataset.config.TRAINING_SET_SIZE, trainingSize)
 			var sql = 'SELECT DISTINCT txn_id, item_ids FROM txn_item_groups LIMIT ' + trainingSize
 			if(validation) {
 				sql = 'SELECT DISTINCT txn_id, item_ids FROM txn_item_groups LIMIT 999999999 OFFSET ' + trainingSize		
 			} 
-			_this._txns(sql, done, validation);
+			this._txns(sql, done, validation);
 		},  
-	], done)
+	], this, done)
 }
 
 Model.prototype.txnsForValidation = function(done) {

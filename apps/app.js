@@ -1,58 +1,121 @@
 require('./init')
 
-var datasets 			= require('./datasets').all
-var configs 			= require('./config').all
 
 var trainer 			= require('./trainer')
 var evaluator 			= require('./evaluator')
 var recommenders 		= require('./recommenders')
 
 
-// var left = [0,1,0,2,3,4], right = [0,1,2]
-// var intersection = help.intersectNum(left, right)
-// return console.log(intersection, left, right)
-var a = []
-for(var i=1; i<70000; i++) {
-	a.push(i/70000)
-}
-return console.log(a)
-
 
 log.magenta('session based recommender start' )
 
-async.eachSeries(
-	datasets,
-	function(dataset, next) {
-		processDataset(dataset, next)
-	},
-	function(err) {
-		log.yellow('finished session based recommender exec')
-		if(err) log.red(err)
-	}
-);
+
+var datasetsRaw = [{ 
+	dataset: app.datasets.movielensCustom, 
+	txnCount: 1500 
+}]
+// var datasetsRaw = [{ 
+// 	dataset: app.datasets.movielensSmall, 
+// 	txnCount: 200 
+// }]
+
+var markovOrders = [1, 2, 3]
+var xValidationRuns = [0, 1, 2, 3]
+var itemChoiceStrategies = ['tfidf', 'bestItemsOfCluster', 'bestItemsOverall', 'tfTfidf', 'random', 'withRatings']
+var distanceMeasures = ['levenshtein']
 
 
-function processDataset(dataset, done) {
-	log('processDataset', dataset)
-
+var startTraining = function() {
 	var bag = {}
-	
-	async.waterfall([
-		function(next) {
+
+	var trainingRuns = []
+
+	help.comboCall(
+		datasetsRaw,
+		distanceMeasures,
+		markovOrders,
+		xValidationRuns,
+		function(datasetRaw, measure, order, run) {
+			
+			var original = datasetRaw.dataset 
+			var dataset = new original.constructor(original.filepath, original.name)
+			
+			var configOptions = {
+				distanceMeasure: measure,
+				markovOrder: order,
+				crossValidationRun: run,
+				txnCount: datasetRaw.txnCount,
+			}
+
+			dataset.config = new app.Config(configOptions)		
+			trainingRuns.push(dataset)
+		}
+	);
+
+	async.eachChain(
+		trainingRuns,
+		function(dataset, next) {
+			bag.dataset = dataset
 			trainer.trainRecommender(dataset, next)
 		},
+		// function(next) {
+		// 	log('recommenders.create')
+		// 	recommenders.create(bag.dataset, next)
+		// },
+		// function(recommenders, next) {
+		// 	log('evaluator.run')
+		// 	bag.recommenders = recommenders
+
+		// 	evaluator.run(bag.dataset, bag.recommenders.sessionBased, next)
+		// },
+		// function(precision, next) {
+		// 	log.green('iteration complete, precision is', precision, bag.dataset.name)
+		// 	next()
+		// },
 		function(next) {
-			recommenders.create(dataset, next)
+			log.green('finished training session based recommender')
+			next()
+		},
+		function(err) {
+			log.yellow('finished training all recommenders?')
+			if(err) return log.red(err)
+
+			startEvaluation()
+		}
+	);
+
+}
+
+
+
+	
+
+var startEvaluation = function() {
+	var bag = {}
+
+	async.eachChain([
+		datasetConfigs,
+		function(dataset, next) {
+			bag.dataset = dataset
+			recommenders.create(bag.dataset, next)
 		},
 		function(recommenders, next) {
 			bag.recommenders = recommenders
-
-			evaluator.run(dataset, bag.recommenders.sessionBased, next)
+			evaluator.run(bag.dataset, bag.recommenders.sessionBased, next)
 		},
 		function(precision, next) {
-			log.green('iteration complete, precision is', precision, dataset)
+			log.green('iteration complete, precision is', precision, bag.dataset.name)
 			next()
-		}
+		},
+		function(err) {
 
-	], done)
-} 
+		}
+	])
+}
+
+
+startTraining()
+//startEvaluation()
+
+	
+	

@@ -25,6 +25,8 @@ function Distance(dataset) {
 }
 
 Distance.prototype.distance = function(left, right) {
+    //log.yellow('distance', left, right)
+    //return this.distanceAlgo(left, right)
     return this.distanceStore.distance(left, right)
 }
 

@@ -6,9 +6,10 @@ var Cluster 	= require('./cluster').Cluster
  * ClusterGroup represents all clusters within a dataset
  * @param {[type]} clusterArray [description]
  */
-var ClusterGroup = function(clusterArray) {
+var ClusterGroup = function(clusterArray, dataset) {
 	this.clusters = clusterArray
 	this.isIterationNeeded = true
+	this.dataset = dataset
 }
 
 
@@ -75,10 +76,10 @@ ClusterGroup.prototype.clear = function() {
 ClusterGroup.prototype.cleanUp = function() {
 	var cleaned = []
 	this.clusters.forEach(function(cluster) {
-		if(cluster.members.length > config.MIN_CLUSTER_SIZE) {
+		if(cluster.members.length > this.dataset.config.MIN_CLUSTER_SIZE) {
 			cleaned.push(cluster)
 		}
-	})
+	}.bind(this))
 	this.clusters = cleaned
 }
 

@@ -29,10 +29,21 @@ exports.eachChain = function() {
 	
 	var args = Array.prototype.slice.call(arguments)
 	var len = args.length
+
 	var array = args[0]
 	var eachFun = args[1]
+	var _this = typeof args[len-1] !== 'function' ? args[--len] : null
 	var done = args[len-1]
+
 	var waterfall = args.slice(2,len-1)
+	
+	if(_this) {
+		log.green('found this')
+		eachFun = eachFun.bind(_this)
+		waterfall = waterfall.map(function(fn) {
+			return fn.bind(_this)
+		})
+	}
 
 	async.eachSeries(
 		array,

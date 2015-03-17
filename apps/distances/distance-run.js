@@ -44,16 +44,19 @@ DistanceRun.prototype._computeDistances = function(txnRows, done) {
 		txnRows, //
 		function(txnRow, next) {
 			
+			var txn = txnRow['item_ids']
+			
 			//reduce length of txn if really long
-			if(txnRow['item_ids'].length > this.dataset.config.EASY_SEQUENCE_SIZE)  {
-				txnRow['item_ids'].splice(
-					this.dataset.config.EASY_SEQUENCE_SIZE, 
-					Number.MAX_VALUE
+			if(txn.length > this.dataset.config.EASY_SEQUENCE_SIZE)  {
+				txnRow['item_ids'] = txn.slice(
+					0,
+					this.dataset.config.EASY_SEQUENCE_SIZE
 				);
 			}
 
 			log('next txn', txnRow.txn_id)
 			var distances = this._getDistances(txnRow, txnRows)
+			
 			this.distanceModel.insert(txnRow, distances, next)
 		}.bind(this),
 		done
@@ -62,23 +65,19 @@ DistanceRun.prototype._computeDistances = function(txnRows, done) {
 
 
 DistanceRun.prototype._getDistances = function(txnRow, txnRows) {
-	log('_getDistances')
 	var distances = []
 
+	var txn = txnRow['item_ids']
 
-
+	// log.yellow('_getDistances', txn.length)
+	// log.yellow(txn)
+	
 	for(var i=0, len=txnRows.length; i<len; i++) {
 		var compareTxn = txnRows[i]['item_ids'] //.slice(0, 10)
-		// log(txnRow.item_ids, compareTxn, this.distanceMeasure.distance(
-		// 	txnRow['item_ids'], 
-		// 	compareTxn
-		// ))
 		distances.push(parseFloat(this.distanceMeasure.distance(
-			txnRow['item_ids'], 
+			txn, 
 			compareTxn
 		)).toFixed(5));
-
-		//log(distances[i])
 	}
 
 	return distances

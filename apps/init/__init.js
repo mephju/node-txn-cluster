@@ -10,16 +10,14 @@ global.async.eachChain 	= require('./asy').eachChain
 global.async.forloop 	= require('./asy').forloop
 global.async.wfall 		= require('./asy').wfall
 
-global.datasets 		= require('./datasets')
 
 
 global.app = {
+	datasets: require('./datasets'),
 	Config: require('./config'),
 	Model: require('./super-model').Model
 	
 }
-
-log.cyan(app)
 
 
 

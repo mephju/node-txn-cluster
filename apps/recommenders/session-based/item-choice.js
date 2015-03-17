@@ -4,17 +4,19 @@ var sqlite3		= require('sqlite3').verbose()
 
 function ItemChoice(dataset) {
 	this.dataset = dataset
+	this.config = dataset.config
+
 	this.db = new sqlite3.Database(dataset.dbPath)
 	this.memberStore = {}
 	this.sql = null
 	
 	switch(dataset.config.ITEM_CHOICE_STRATEGY) {
-		case 'tfTfidf':					this.sql = this.db.prepare(sqlWithTfTfidf);			break;
-		case 'tfidf':					this.sql = this.db.prepare(sqlWithTfidf);			break;
-		case 'bestItemsOfCluster':		this.sql = this.db.prepare(sqlBestItemsOfCluster);	break;
-		case 'bestItemsOverall':		this.sql = this.db.prepare(sqlBestItemsOverall);		break
+		case 'tfTfidf':					this.sql = this.db.prepare(this.sqlWithTfTfidf);			break;
+		case 'tfidf':					this.sql = this.db.prepare(this.sqlWithTfidf);			break;
+		case 'bestItemsOfCluster':		this.sql = this.db.prepare(this.sqlBestItemsOfCluster);	break;
+		case 'bestItemsOverall':		this.sql = this.db.prepare(this.sqlBestItemsOverall);		break
 		case 'withRatings': 			
-			this.sql = this.db.prepare(sqlWithRatings); 
+			this.sql = this.db.prepare(this.sqlWithRatings); 
 			if(typeof dataset.indices.rating === 'undefined') {
 				throw 	'ITEM_CHOICE_STRATEGY.withRatings cannot be applied to dataset without ratings'
 			} 
@@ -37,17 +39,27 @@ ItemChoice.prototype.init = function(done) {
 	], done)
 }
 
-ItemChoice.prototype.fetchMembers = function(clusterIds, done) {
+ItemChoice.prototype.fetchMembers = function(clusters, done) {
 	console.log('fetchMembers')
+	
 	var _this = this
-	async.eachSeries(
-		clusterIds,
-		function(clusterId, next) {
-			_this.fetchMembersById(clusterId['cluster_id'], next)
+	var clusterId = null
+
+	async.eachChain(
+		clusters,
+		function(cluster, next) {
+			clusterId = cluster['cluster_id']			
+			_this.sql.all(clusterId, next)
 		},
-		function(err) {
-			done(err)
-		}
+		function(members, next) {
+			members.forEach(function(member, i) {
+				members[i] = member['item_id']
+			})
+			_this.memberStore[clusterId] = members
+			console.log('members', members)
+			done(null)
+		},
+		done
 	);
 }
 
@@ -64,18 +76,7 @@ ItemChoice.prototype.fetchMembersById = function(clusterId, done) {
 	console.log('fetchMembersById', clusterId)
 	var strategy = this
 	async.waterfall([
-		function(next) {			
-			log(strategy)
-			strategy.sql.all(clusterId, next)
-		},
-		function(members, next) {
-			members.forEach(function(member, i) {
-				members[i] = member['item_id']
-			})
-			strategy.memberStore[clusterId] = members
-			console.log('members', members)
-			done(null)
-		}
+		
 	], done)
 }
 
@@ -108,50 +109,54 @@ var getRandomItems = function(n, array) {
 // 	group by 	cm.cluster_id, ti.item_id 	\
 // 	order by 	cluster_id ASC, count DESC  \
 // 	limit ' 	+ config.N
-
-var sqlBestItemsOverall = 
-	'select distinct 					\
-				ic.item_id, ic.count 	\
-	from 		cluster_members as cm, 	\
-				txn_items as ti,  		\
-				item_counts as ic 		\
-	where 		cm.txn_id=ti.txn_id 	\
-	and 		ti.item_id=ic.item_id 	\
-	and 		cm.cluster_id=$1 		\
-	order by 	ic.count desc 			\
-	limit ' 	+ config.N 			
-
-
-var sqlWithRatings = 
-	'select 	item_id, count, \
-				avg(rating) as avg 	\
-	from 		cluster_item_ratings 		\
-	where 		cluster_id=$1				\
-	group by 	item_id 				\
-	order by 	count desc, avg desc 	\
-	limit ' + config.N 
-
-var sqlBestItemsOfCluster = 'select * \
-			from 		cluster_item_counts \
-			where 		cluster_id=$1 \
-			order by 	count DESC \
-			limit ' 	+ config.N
+// 	
+ItemChoice.prototype.sql = function() {
+	this.sqlBestItemsOverall = 
+		'select distinct 					\
+					ic.item_id, ic.count 	\
+		from 		cluster_members as cm, 	\
+					txn_items as ti,  		\
+					item_counts as ic 		\
+		where 		cm.txn_id=ti.txn_id 	\
+		and 		ti.item_id=ic.item_id 	\
+		and 		cm.cluster_id=$1 		\
+		order by 	ic.count desc 			\
+		limit ' 	+ this.config.N 			
 
 
-var sqlWithTfTfidf = 
-	'select item_id,tfidf	\
-	from cluster_item_tfidf	\
-	where cluster_id=$1		\
-	order by tf desc, tfidf desc 	\
-	limit ' + config.N
+	this.sqlWithRatings = 
+		'select 	item_id, count, \
+					avg(rating) as avg 	\
+		from 		cluster_item_ratings 		\
+		where 		cluster_id=$1				\
+		group by 	item_id 				\
+		order by 	count desc, avg desc 	\
+		limit ' + this.config.N 
 
-var sqlWithTfidf = 
-	'select item_id,tfidf	\
-	from cluster_item_tfidf	\
-	where cluster_id=$1		\
-	order by tfidf desc 	\
-	limit ' + config.N
+	this.sqlBestItemsOfCluster = 'select * \
+				from 		cluster_item_counts \
+				where 		cluster_id=$1 \
+				order by 	count DESC \
+				limit ' 	+ this.config.N
 
+
+	this.sqlWithTfTfidf = 
+		'select item_id,tfidf	\
+		from cluster_item_tfidf	\
+		where cluster_id=$1		\
+		order by tf desc, tfidf desc 	\
+		limit ' + this.config.N
+
+	this.sqlWithTfidf = 
+		'select item_id,tfidf	\
+		from cluster_item_tfidf	\
+		where cluster_id=$1		\
+		order by tfidf desc 	\
+		limit ' + this.config.N
+
+}
+
+	
 
 
 

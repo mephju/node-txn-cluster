@@ -1,8 +1,14 @@
 
 var deepEqual = require('deep-equal')
-var _ = require('lodash')
 
 
+exports.comboCall = require('./combo-call').comboCall
+
+exports.times = function(x, fn) {
+	for(var i=0; i<x; i++) {
+		fn(i)
+	}
+}
 
 
 var toItemset = function(array) {

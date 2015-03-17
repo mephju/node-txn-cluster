@@ -4,26 +4,47 @@ var async 	= require('async')
 
 //var baseDatasetPath = '/home/kokirchn/thesis/'
 
-function Dataset(filepath, name, config) {
+function Dataset(filepath, name, _config) {
 	log('BASE_PATH', process.env.BASE_PATH)
 
+	this.config = _config
 	var basePath = process.env.BASE_PATH ? process.env.BASE_PATH : '/stuff/datamining/'
 	this.basePath = basePath
 	this.name = name
+	this.resultPath = basePath + 'results/'
 	this.filepath 	= basePath + 'datasets/' + filepath 
-	this.dbPath 	= basePath + 'results/' + name + '.sqlite'
+	this.dbPath 	= this.resultPath + name + '.sqlite'
 	this.datasetSize = 0
 	this.trainingSize = 0
 	this.separator = null
 	this.timeDistance = 0
 	this.indices = null
-	this.config = config
 }
 
 
 Dataset.prototype.resultDbPath = function() {
 	return this.basePath + 'results/evaluation-results.sqlite'
 }
+
+
+Dataset.prototype.prefixTableNameFull = function(tableName) {
+	log.red('prefixTableNameFull', tableName)
+
+	return this.config.DISTANCE_MEASURE.replace(/-/g, '_') + '_x_validation_run_' + 
+		this.config.CROSS_VALIDATION_RUN + '_markov_order_' + 
+		tableName
+}
+
+Dataset.prototype.prefixTableName = function(tableName) {
+	log.red('prefixTableName', tableName)
+
+	return this.config.DISTANCE_MEASURE.replace(/-/g, '_') 
+		+ '_x_validation_run_'
+		+ this.config.CROSS_VALIDATION_RUN 
+		+ '_' + tableName
+}
+
+
 
 
 

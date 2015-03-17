@@ -2,7 +2,7 @@
 var Cluster 		= require('./cluster')
 var ClusterGroup 	= require('./cluster-group')
 var Distance 		= require('../similarity').Distance
-
+var DistanceModel = require('../../distances/distance-model') 
 
 
 /**
@@ -78,10 +78,7 @@ var clusterIterate = function(txnRows, clusters, done) {
  */
 var init = function(dataset, txnRows) {
 	
-	const K = Math.max(
-		parseInt(txnRows.length / 750), 
-		4
-	);
+	const K = dataset.config.CLUSTERS
 
 	console.log('clustering.init centroids', K, 'txnRows count', txnRows.length)
 
@@ -92,19 +89,27 @@ var init = function(dataset, txnRows) {
 	process.stdout.write('-' + K)
 
 	var distanceMeasure = new Distance(dataset)
+	var distanceModel 	= new DistanceModel(dataset)
 	
 	while(centroids.length < K) {
 		process.stdout.write('.')
 		var randomIdx = Math.floor(Math.random() * max)
 		var centroid = txnRows[randomIdx]
 
+		// log.cyan('centroid', centroid['item_ids'])
+		// var centroidLength = centroid['item_ids'].length
+		
+		// if(centroidLength < dataset.config.MIN_CENTROID_LENGTH) {
+		// 	continue;
+		// }
+
 		if(centroids.indexOf(centroid) === -1) {
 			centroids.push(centroid)
-			clusters.push(new Cluster(centroid, distanceMeasure))
+			clusters.push(new Cluster(centroid, distanceMeasure, distanceModel))
 		}
 	}
 
-	var clusters = new ClusterGroup(clusters)
+	var clusters = new ClusterGroup(clusters, dataset)
 	return clusters
 }
 

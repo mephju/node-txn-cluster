@@ -1,15 +1,17 @@
-var mysql      = require('mysql')
+var mysql      	= require('mysql')
+var mysqlConfig = require('./mysql-config')
 
 
 function DistanceModel(dataset) {
 	app.Model.call(this, dataset)
 	
 	this.insertCount = 0
-	this.tableName = this.dataset.name + '-' + this.dataset.config.DISTANCE_MEASURE
+	this.tableName = this.dataset.name + '_' + this.dataset.config.DISTANCE_MEASURE.replace(/-/g, '_')
+	
 	this.db = mysql.createConnection({
 		host: 'localhost',
-		user: 'root',
-		password: 'love5lin6',
+		user: mysqlConfig.user,
+		password: mysqlConfig.pass,
 		database: 'distances'
 	});
 }
@@ -21,11 +23,12 @@ DistanceModel.prototype = Object.create(app.Model.prototype, {
 
 DistanceModel.prototype.getDistances = function(txnRow, done) {
 	this.db.query(
-		'select distances from distances.distances where txn_id = ?', 
+		'select distances from ' + this.tableName + ' where txn_id = ?', 
 		txnRow['txn_id'], 
 		function(err, results, fields) {
+			//log('getDistances got results', results)
 			if(err) return done(err)
-			done(null, help.textToNumArray(results[0].distances.toString('utf8')))
+			done(null, help.textToNumArray(results[0].distances))
 		}
 	);
 }
@@ -34,17 +37,17 @@ DistanceModel.prototype.getDistances = function(txnRow, done) {
 DistanceModel.prototype.prepare = function(done) {
 	log('prepare')
 	
-	var distanceMeasureName = this.dataset.config.DISTANCE_MEASURE.replace(/-/g, '_')
-	var tableName = 'distances.distances_' + this.dataset.name + '_' + distanceMeasureName
+	//var distanceMeasureName = this.dataset.config.DISTANCE_MEASURE.replace(/-/g, '_')
+	//var tableName = 'distances.distances_' + this.dataset.name + '_' + distanceMeasureName
 
 	async.wfall([
 		function(next) {
-			this.db.query('DROP TABLE IF EXISTS ' + tableName, next)
+			this.db.query('DROP TABLE IF EXISTS ' + this.tableName, next)
 		},
 		function(info, fields, next) {
 			this.db.query(
-				'CREATE TABLE IF NOT EXISTS ' + tableName + 
-				'(txn_id MEDIUMINT UNSIGNED NOT NULL, distances MEDIUMTEXT NOT NULL);', next)
+				'CREATE TABLE IF NOT EXISTS ' + this.tableName + 
+				'(txn_id MEDIUMINT UNSIGNED NOT NULL PRIMARY KEY, distances MEDIUMTEXT NOT NULL);', next)
 		},
 		function(info, fields, next) {
 			this.db.query('SET autocommit=0', next)
@@ -57,12 +60,15 @@ DistanceModel.prototype.prepare = function(done) {
 
 DistanceModel.prototype.finish = function(done) {
 	log('finish')
-	this.db.query('COMMIT', function(err, info, fields) {
-		done(err)
-	})
-	// return this.getDistances({txn_id:24906}, function(err, distances) {
-	// 	log(distances)
-	// })
+
+	async.wfall([
+		function(next) {
+			this.db.query('COMMIT', next)
+		},
+		// function(info, fields, next) {
+		// 	this.db.query('ALTER TABLE distances.distances ADD INDEX index_on_txn_id(txn_id)')
+		// }
+	], this, done)
 }
 
 
@@ -76,7 +82,7 @@ DistanceModel.prototype.insert = function(txnRow, distances, done) {
 
 	
 	this.db.query(
-		'INSERT INTO distances.distances VALUES(?, ?)', 
+		'INSERT INTO ' + this.tableName + ' VALUES(?, ?)', 
 		[txnRow['txn_id'], distances.toString()], 
 		function(err, result, fields) {
 			log('inserted')

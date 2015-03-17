@@ -6,6 +6,8 @@ lib-cov
 *.out
 *.pid
 *.gz
+
+mysql-config.js
  
 pids
 logs

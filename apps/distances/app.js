@@ -12,9 +12,8 @@ require('../init')
 
 
 var Config = app.Config
-log(app.Config)
 
-var dataset = datasets.movielensCustom
+var dataset = app.datasets.movielens
 
 dataset.config = new Config('levenshtein')
 
