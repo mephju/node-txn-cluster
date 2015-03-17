@@ -73,6 +73,13 @@ var start = function(callback) {
 }
 
 
+/**
+ * We can only use sessions that are longer than N because we 
+ * compute precision@N.
+ * 
+ * @param  {[type]} txnRows [description]
+ * @return {[type]}         [description]
+ */
 var filterValidTxns = function(txnRows) {
 	var validTxnRows = []
 	txnRows.forEach(function(txnRow) {

@@ -28,9 +28,7 @@ var storeResult = function(precision, done) {
 		function(next) {
 
 			db.run(
-				'create table if not exists results(' 
-					+ store.keyString
-					+ ')', 
+				'create table if not exists results(' + store.keyString + ')', 
 				next
 			);
 		},

@@ -1,0 +1,3 @@
+#/home/mephju/apps/redis/src/redis-server &
+#sudo /etc/init.d/postgresql start 9.4 
+BASE_PATH=/stuff/datamining/ node app.js

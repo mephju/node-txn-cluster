@@ -1,8 +1,7 @@
 
 // Prec 	= Retrieved AND Relevant / Retrieved
 // Recall	= Retrieved AND Relevant / Relevant 
-var help = require('../help')
-var config = require('../config')
+
 
 
 //Calculates the number of hits for two recommendations arrays respectively
@@ -26,14 +25,16 @@ var getHitsVs = function(sessionEnd, recommendations) {
 
 
 var precision = function(relevant, retrieved) {
+	// log('precision relevant', relevant)
+	// log('precision retrieved', retrieved)
 	var hits = 0
 
-	sessionEnd.forEach(function(item) {
-		if(recommendations.indexOf(item) !== -1) {
+	relevant.forEach(function(item) {
+		if(retrieved.indexOf(item) !== -1) {
 			hits++
 		}			
 	})
-	return hits / recommendations.length
+	return hits / retrieved.length
 }
 
 exports.precision = precision

@@ -2,17 +2,18 @@ var fs 		= require('fs')
 var async 	= require('async')
 
 
-<<<<<<< HEAD
-var baseDatasetPath = '/home/kokirchn/thesis/'
-//var baseDatasetPath = '/stuff/datamining/'
-=======
 //var baseDatasetPath = '/home/kokirchn/thesis/'
->>>>>>> origin/master
 
-function Dataset(filepath, name) {
-	this.basePath = '/stuff/datamining/'
-	this.filepath = filepath
+function Dataset(filepath, name, _config) {
+	log('BASE_PATH', process.env.BASE_PATH)
+
+	this.config = _config
+	var basePath = process.env.BASE_PATH ? process.env.BASE_PATH : '/stuff/datamining/'
+	this.basePath = basePath
 	this.name = name
+	this.resultPath = basePath + 'results/'
+	this.filepath 	= basePath + 'datasets/' + filepath 
+	this.dbPath 	= this.resultPath + name + '.sqlite'
 	this.datasetSize = 0
 	this.trainingSize = 0
 	this.separator = null
@@ -20,16 +21,30 @@ function Dataset(filepath, name) {
 	this.indices = null
 }
 
-Dataset.prototype.dataDir = function() {
-	return this.basePath + 'datasets/'
-}
-Dataset.prototype.db = function() {
-	return this.basePath + 'results/' + this.dbTable + '.sqlite'
-	//return ':memory:'
-}
+
 Dataset.prototype.resultDbPath = function() {
-	return this.basePath + 'results/evaluation-results' + '.sqlite'
+	return this.basePath + 'results/evaluation-results.sqlite'
 }
+
+
+Dataset.prototype.prefixTableNameFull = function(tableName) {
+	log.red('prefixTableNameFull', tableName)
+
+	return this.config.DISTANCE_MEASURE.replace(/-/g, '_') + '_x_validation_run_' + 
+		this.config.CROSS_VALIDATION_RUN + '_markov_order_' + 
+		tableName
+}
+
+Dataset.prototype.prefixTableName = function(tableName) {
+	log.red('prefixTableName', tableName)
+
+	return this.config.DISTANCE_MEASURE.replace(/-/g, '_') 
+		+ '_x_validation_run_'
+		+ this.config.CROSS_VALIDATION_RUN 
+		+ '_' + tableName
+}
+
+
 
 
 
@@ -81,7 +96,8 @@ function Gowalla(filepath, name) {
 	Dataset.call(this, filepath, name)
 	this.separator = '\t'
 	//this.timeDistance =  31536000
-	this.timeDistance = 259200 //24 hours
+	this.timeDistance = 43200 //24 hours
+	this.timeDistance = 
 	this.indices = {
 		userId:0,
 		itemId:4,
@@ -125,16 +141,22 @@ TestDataset.prototype = Object.create(Dataset.prototype, {
 // Gowalla.prototype.constructor 		= Gowalla
 
 
-
 var datasetInstance = null
 var gowalla 		= new Gowalla('gowalla/checkins.txt', 					'gowalla');
 var gowallaSmall  	= new Gowalla('gowalla/checkins_small.txt', 			'gowalla_small'); 
 var lastFm 			= new LastFm('lastfm-dataset-1K/feedback.tsv', 			'last_fm')
 var lastFmSmall 	= new LastFm('lastfm-dataset-1K/feedback_small.tsv', 	'last_fm_small')
 var movielens 		= new Movielens('movielens/ml-1m/ml-1m/ratings.dat', 	'movielens_1m')
-var movielensSmall 	= new Movielens('movielens/ratings-custom-large.dat',	'movielens_custom_large') 
+var movielensCustom = new Movielens('movielens/ratings-custom-large.dat',	'movielens_custom_large') 
+var movielensSmall 	= new Movielens('movielens/ratings-small.dat',			'movielens_small') 
 var testDataset 	= new TestDataset('test/ratings.dat', 					'test_dataset')
 
+exports.movielens = movielens
+exports.testDataset = testDataset
+exports.movielensSmall = movielensSmall
+exports.movielensCustom = movielensCustom
+exports.gowallaSmall = gowallaSmall
+exports.lastFmSmall = lastFmSmall
 
 exports.init = function(datasetName) {
 	switch(datasetName) {
@@ -154,14 +176,13 @@ exports.init = function(datasetName) {
 			datasetInstance = movielens
 			break;
 		case 'movielens_custom_large': 
-			datasetInstance = movielens
+			datasetInstance = movielensCustom
 			break;
 		case 'test_dataset': 
 			datasetInstance = testDataset
 			break;
 		default: throw 'invalid dataset name given'
 	}
-
 }
 
 
@@ -172,7 +193,7 @@ exports.dataset = function() {
 
 		console.log('CREATING NEW DATASET INSTANCE')
 		//datasetInstance = new Gowalla('gowalla/checkins.txt',			'gowalla')
-		datasetInstance = new Gowalla('gowalla/checkins_small.txt',	'gowalla_small')
+		datasetInstance = gowallaSmall
 
 		//datasetInstance = new LastFm('lastfm-dataset-1K/feedback_small.tsv', 	'last_fm_small')
 		//datasetInstance = new LastFm('lastfm-dataset-1K/feedback.tsv', 		'last_fm')
@@ -191,7 +212,13 @@ exports.dataset = function() {
 	return datasetInstance
 }
 
+exports.all = [gowalla, movielens, lastFm]
 exports.all = [
-	gowalla, movielens, lastFm
+	lastFmSmall,
+	movielensSmall,
+	movielensCustom, 
+	gowallaSmall,
 ]
+
+exports.all = [movielensCustom]
 

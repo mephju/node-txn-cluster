@@ -5,9 +5,11 @@
   "main": "app.js",
   "dependencies": {
     "async": "*",
-    "sqlite3": "*",
     "deep-equal": "*",
-    "eachtick": "*"
+    "eachtick": "*",
+    "nedb": "^1.1.1",
+    "node-mysql": "^0.4.2",
+    "sqlite3": "*"
   },
   "devDependencies": {
     "should": "~4.0.4"

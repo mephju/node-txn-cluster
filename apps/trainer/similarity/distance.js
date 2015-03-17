@@ -1,29 +1,50 @@
-var help = require('../help')
-var simStore = require('./sim-store')
+var DistanceStore = require('./distance-store')
 
+function Distance(dataset) {
+    this.dataset = dataset
+    this.config = dataset.config
+    
+
+    switch(this.config.DISTANCE_MEASURE) {
+        case 'jaccard-levenshtein':
+            this.distanceAlgo = jaccLevDistance
+            break;
+        case 'jaccard':
+            this.distanceAlgo = jaccardDistance
+            break;
+        case 'jaccard-bigram':
+            this.distanceAlgo = jaccardBigramDistance
+            break;
+        case 'levenshtein':
+            this.distanceAlgo = levenshtein
+            break;
+        default: throw 'no distance measure defined'
+    }
+
+    this.distanceStore = new DistanceStore(dataset, this)
+}
+
+Distance.prototype.distance = function(left, right) {
+    //log.yellow('distance', left, right)
+    //return this.distanceAlgo(left, right)
+    return this.distanceStore.distance(left, right)
+}
+
+exports.Distance = Distance
 
     
-    //return 1 - jaccard(txn, frequentSeq)
-    
-    //console.log(sim)
-    //return sim
-	//return (1 - levenshtein(txn, frequentSeq))
-	// var simLevenshtein 	= 1 - levenshtein(txn, frequentSeq)
-	// var simSetSim 		= jaccard(txn, frequentSeq)
-	// return (simLevenshtein * 2 + simSetSim) / 3 
-
-
-//exports.calcSim = simStore.calcSim
 
 
 /**
  * Calculates distance of jaccard and levenshtein
  * @param  {[type]} array1 [description]
  * @param  {[type]} array2 [description]
- * @return {[type]}        [description]
+
+      *       [description]
  */
-var jaccLev = function(array1, array2) {
-    return 1/4 * (1-jaccard(array1, array2)) + 3/4 * levenshtein(array1, array2)
+var jaccLevDistance = function(array1, array2) {
+    //log('jaccLevDistance', array1, array2)
+    return 1/4 * jaccardDistance(array1, array2) + 3/4 * levenshtein(array1, array2)
 }
 
 var jaccLevSim = function(array1, array2) {
@@ -33,11 +54,9 @@ var jaccLevSim = function(array1, array2) {
 }
 
 
-var jaccardBigramDist = function(array1, array2) {
+var jaccardBigramDistance = function(array1, array2) {
     return 1-jaccardBigram(array1, array2)
 }
-
-
 var jaccardBigram = function(array1, array2) {
 
 
@@ -85,10 +104,10 @@ var jaccardBigram = function(array1, array2) {
 
 
 
-var jaccard = function(array1, array2) {
+var jaccardDistance = function(array1, array2) {
    var intersectNum = help.intersectNum(array1, array2)
-   if(intersectNum == 0) return 0
-   return intersectNum/help.unionNum(array1, array2, intersectNum)
+   if(intersectNum == 0) return 1
+   return 1 - intersectNum/help.unionNum(array1, array2, intersectNum)
 }
 
 
@@ -97,7 +116,7 @@ var jaccard = function(array1, array2) {
 
 
 
-var levenshteinDistance = function(s, t) {
+var levenshtein = function(s, t) {
     // degenerate cases
     //if (s == t) return 0;
     if (s.length == 0) return t.length;
@@ -131,7 +150,7 @@ var levenshteinDistance = function(s, t) {
             v0[j] = v1[j];
     }
  
-    return v1[t.length];
+    return v1[t.length] / Math.max(s.length, t.length);
 }
 
 
@@ -139,60 +158,14 @@ var levenshteinDistance = function(s, t) {
 		
 
 
-var levenshtein = function(s1, s2) {
-	return levenshteinDistance(s1, s2) / Math.max(s1.length, s2.length)
-}
 
 
 
-// var d = distance([1,2,4], [1,3,3])
-// console.log('distance', d)
-
-
-
-
-
-
-
-//var sim = exports.sim = function(vectorValues, centroid) {
-// 	return dot(centroid, vectorValues) / len(centroid, vectorValues)
-// }
-
-// var dot = function(centroid, vectorValues) {
-// 	var val = 0
-// 	vectorValues.forEach(function(idxValPair) {
-// 		//console.log('idxValPair', idxValPair)
-// 		for(var idx in idxValPair) {
-// 			val += centroid[idx] * idxValPair[idx]
-// 		}
-// 	})
-// 	//console.log('dot', val)
-// 	return val
-// }
-
-// var len = function(centroid, vectorValues) {
-// 	var centroidLen = 0;
-// 	var vectorLen = 0
-	
-// 	centroid.forEach(function(element) {
-// 		centroidLen += element*element
-// 	})
-
-// 	vectorValues.forEach(function(idxValPair) {
-// 		for(var idx in idxValPair) {
-// 			vectorLen += idxValPair[idx]*idxValPair[idx]
-// 		}
-// 	})
-
-// 	return Math.sqrt(centroidLen) * Math.sqrt(vectorLen)
-// }
-
-exports.calcSim = jaccLev
-exports.levenshteinDistance = levenshteinDistance
-exports.calc = exports.calcSim
+//exports.levenshteinDistance = levenshteinDistance
+//exports.calc = exports.calcSim
 exports.test = {
     jaccardBigram: jaccardBigram,
     levenshtein:levenshtein,
-    jaccard: jaccard,
-    jaccLev: jaccLev
+    jaccardDistance: jaccardDistance,
+    jaccLev: jaccLevDistance
 }

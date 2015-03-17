@@ -1,0 +1,4 @@
+{
+	"name":"init-module",
+	"main":"./__init.js"
+}
