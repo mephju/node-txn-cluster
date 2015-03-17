@@ -38,21 +38,6 @@ function Config(options) {
 	const REC_APRIORI = 0
 
 	this.RECOMMENDER = 'own-method'
-
-	if(process.env.BASE_PATH.indexOf('mephju') !== -1) {
-		//development
-		this.mysql = {
-			user: 'root',
-			pass: 'love5lin6'
-		}
-	}
-	else {
-		//production
-		this.mysql = {
-			user: 'kolja',
-			pass: '567thesiswork567'
-		}
-	}
 		
 }
 
