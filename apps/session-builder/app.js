@@ -15,6 +15,7 @@ var buildSessions = function(dataset, done) {
 			importApp.makeImport(dataset, next)
 		},
 		function(next) {
+			log.green('feedback improted')
 			//at this point the dataset has been inserted 
 			//into a datasetName_feedback table
 			log('build txns')
@@ -27,14 +28,21 @@ var buildSessions = function(dataset, done) {
 			log('sessions built!', dataset.name)
 			done()
 		}
-	], function(err) {
+	], 
+	function(err) {
 		log.red('session-builder error: ', err)
 	})
 }
 
+
+var evalConfig = new app.EvalConfig()
+var datasets = evalConfig.datasets.map(function(set) {
+	return set.dataset
+})
 async.eachSeries(
-	datasets.all,
+	datasets,
 	function(dataset, next) {
+		dataset.config = new app.Config({})
 		buildSessions(dataset, next)
 	},
 	function(err) {

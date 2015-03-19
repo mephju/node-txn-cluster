@@ -1,1 +1,1 @@
-BASE_PATH=/stuff/datamining/ node app.js
+BASE_PATH=/stuff/datamining/ node /home/mephju/maproject/daport/apps/session-builder/app.js

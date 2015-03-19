@@ -6,7 +6,12 @@ var fs			= require('fs')
 function MarkovChain(dataset, transModel) {
 	this.dataset = dataset
 	this.transModel = transModel
-	this.filepath = dataset.basePath + 'results/' + dataset.name + '-markov-chain.json'
+	this.filepath = dataset.resultPath 
+		+ dataset.name  
+		+ '-distance-' + dataset.config.DISTANCE_MEASURE
+		+ '-x-validation-run-' + dataset.config.CROSS_VALIDATION_RUN
+		+ '-markov-order-' + dataset.config.MARKOV_ORDER
+		+ '-markov-chain.json'
 	this.N_GRAM_SIZE = dataset.config.MARKOV_ORDER + 1
 }
 
@@ -24,7 +29,7 @@ MarkovChain.getMarkovChain = function(dataset, done) {
 
 	async.waterfall([
 		function(next) {
-			fs.readFile(dataset.basePath + 'results/' + dataset.name + '-markov-chain.json', 'utf8', next)
+			fs.readFile(this.filepath, 'utf8', next)
 		},
 		function(markovChain, next) {
 			markovChain = JSON.parse(markovChain)

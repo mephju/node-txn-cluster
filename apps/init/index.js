@@ -13,9 +13,10 @@ global.async.wfall 		= require('./asy').wfall
 
 
 global.app = {
-	datasets: require('./datasets'),
-	Config: require('./config'),
-	Model: require('./super-model').Model
+	datasets: 	require('./datasets'),
+	Config: 	require('./Config'),
+	Model: 		require('./Model'),
+	EvalConfig: require('./EvalConfig')
 	
 }
 

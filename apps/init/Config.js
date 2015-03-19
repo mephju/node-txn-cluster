@@ -4,7 +4,7 @@
 function Config(options) {
 
 	
-	this.CROSS_VALIDATION_RUN 		= options.crossValidations ? options.crossValidationRun : 0
+	this.CROSS_VALIDATION_RUN 		= options.crossValidationRun ? options.crossValidationRun : 0
 	this.MIN_SUPPORT				= 50
 	this.TRAINING_SET_SIZE 			= 0.75
 	this.VALIDATION_SET_SIZE 		= 1 - this.TRAINING_SET_SIZE

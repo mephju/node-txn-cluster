@@ -1,37 +1,40 @@
-var sqlite3		= require('sqlite3').verbose()
 
 
+function TransitionModel(dataset) {
+	app.Model.call(this, dataset)
 
-function Model(dataset) {
 	this.dataset = dataset
 	log(dataset)
-	this.db = new sqlite3.Database(dataset.dbPath)
 	this.table = {
-		transitioins: this.dataset.prefixTableName('transitions')
+		transitions: this.dataset.prefixTableName('transitions')
 	}
 }
-exports.Model = Model
+
+TransitionModel.prototype = Object.create(app.Model.prototype, {
+	constructor: TransitionModel
+})
+module.exports = exports = TransitionModel
 
 
 
 
-Model.prototype.init = function(done) {
+TransitionModel.prototype.init = function(done) {
 
-	var model = this
-	async.waterfall([
+	async.wfall([
 		function(next) {
-			model.db.run('drop table if exists ' + model.table.transitions, next)
+			this.db.run('drop table if exists ' + this.table.transitions, next)
 		},
 		function(next) {
-			model.db.run('create table ' + model.table.transitions + '(txn_id integer, sequence text)', next)
+			this.db.run('create table ' + this.table.transitions + '(txn_id integer, sequence text)', next)
 			
 		}
-	], done);
+	], this, done);
 }
 
-Model.prototype.insertTransitions = function(manyTransitions, done) {
+TransitionModel.prototype.insertTransitions = function(manyTransitions, done) {
 	var model = this
 	console.log('insertTransitions', manyTransitions.length)
+	
 	async.waterfall([
 		function(next) {
 			model.db.run('begin transaction', next)
@@ -61,7 +64,7 @@ Model.prototype.insertTransitions = function(manyTransitions, done) {
 
 
 
-Model.prototype.getTransitions = function(done) {
+TransitionModel.prototype.getTransitions = function(done) {
 	var model = this
 	console.log('getTransitions')
 	async.waterfall([
@@ -105,13 +108,13 @@ Model.prototype.getTransitions = function(done) {
 
 
 
-// Model.prototype.insertTransMatrix = function(transMatrix, callback) {
+// TransitionModel.prototype.insertTransMatrix = function(transMatrix, callback) {
 
 // 	console.log('insertTransMatrix', transMatrix.length)
 // 	this.insertMatrix('trans_matrix', transMatrix, callback)
 // }
 
-// Model.prototype.getTransMatrix = function(callback) {
+// TransitionModel.prototype.getTransMatrix = function(callback) {
 // 	var model = this
 // 	console.log('getTransMatrix')
 // 	async.waterfall([
@@ -131,7 +134,7 @@ Model.prototype.getTransitions = function(done) {
 
 
 
-// Model.prototype.insertMatrix = function(tableName, matrix, callback) {
+// TransitionModel.prototype.insertMatrix = function(tableName, matrix, callback) {
 // 	var model = this
 // 	console.log('insertMatrix', matrix.length)
 // 	async.series([

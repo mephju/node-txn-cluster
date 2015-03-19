@@ -1,5 +1,5 @@
 var TxnModel			= require('../../session-builder/transactions/model').Model
-var TransitionModel		= require('./model').Model
+var TransitionModel		= require('./TransitionModel')
 
 var MarkovChain = require('./markov-chain').MarkovChain
 var transitions = require('./transitions')
@@ -7,7 +7,7 @@ var transitions = require('./transitions')
 
 exports.buildTransitions = function(dataset, clusters, done) {
 	
-	log('buildTransitions', dataset)
+	log('buildTransitions', dataset.name)
 	var transModel 	= new TransitionModel(dataset)
 	var txnModel 	= new TxnModel(dataset)
 

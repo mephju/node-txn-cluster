@@ -4,19 +4,22 @@
 
 var util 	= require('util')
 var sql 	= require('./sql')
-
+var TxnTableBuilder = require('./txn-table-builder')
 
 
 
 function TxnBuilder(dataset) {
+	this.dataset = dataset
 	 var TxnModel = require('./model').Model
 	this.model = new TxnModel(dataset)
+	this.txnTableBuilder = new TxnTableBuilder(this.model)
 }
 exports.TxnBuilder = TxnBuilder
 
-TxnBuilder.prototype.buildTxns = function(next) {
+TxnBuilder.prototype.buildTxns = function(done) {
 	
 	var builder = this
+	var bag = {}
 
 	async.waterfall([
 		function(next) {
@@ -37,9 +40,17 @@ TxnBuilder.prototype.buildTxns = function(next) {
 			builder.model.db.run('drop table if exists item_counts', next)
 		},
 		function(next) {
-			help.getTrainingSetSize(builder.model.db, next)
+			builder.model.tableSize('txns', next)
+		},
+		function(txnTableSize, next) {
+			bag.txnTableSize = txnTableSize
+
+			builder.model.trainingSetSize(next)
+			//help.getTrainingSetSize(builder.model.db, next)
 		},
 		function(trainingSetSize, next) {
+			bag.trainingSetSize = trainingSetSize
+
 			console.log('creating table item_counts')
 			builder.model.db.run(
 				'create table 	item_counts		\
@@ -59,29 +70,11 @@ TxnBuilder.prototype.buildTxns = function(next) {
 			);
 		},
 		function(next) {
-			console.log('creating table txns_random')
-			builder.model.db.run(
-				'drop table if exists txns_random',
-				next
-
-			);
+			builder.model.db.run('DROP TABLE IF EXISTS txn_item_groups_original', next)
 		},
 		function(next) {
 			builder.model.db.run(
-				'create table txns_random as 	\
-					select 	* 				\
-					from 		txns 			\
-					order by random()',
-				next
-
-			);
-		}, 
-		function(next) {
-			builder.model.db.run('DROP TABLE IF EXISTS txn_item_groups', next)
-		},
-		function(next) {
-			builder.model.db.run(
-				'CREATE TABLE IF NOT EXISTS	txn_item_groups AS \
+				'CREATE TABLE IF NOT EXISTS	txn_item_groups_original AS \
 					SELECT 			txn_id, group_concat(item_id) as item_ids \
 					FROM 			txn_items \
 					GROUP BY 		txn_id \
@@ -90,10 +83,25 @@ TxnBuilder.prototype.buildTxns = function(next) {
 			);
 
 		},
+		function(next) {
+			var config = builder.model.dataset.config
+			var validationRun = config.CROSS_VALIDATION_RUN
+
+			var quarter = bag.txnTableSize * (1 - builder.dataset.config.TRAINING_SET_SIZE)
+			quarter = Math.floor(quarter)
+
+			log.yellow(bag.txnTableSize, builder.dataset.config.TRAINING_SET_SIZE)
+
+			builder.txnTableBuilder.txnItemGroups(quarter, next)
+		},
+		function(next) {
+			log.green('txnItemGroups built')
+			done()
+		}
 	], 
 	function(err) {
 		err && console.log('error building txns for set', err)
-		next(err)
+		done(err)
 	})
 }
 

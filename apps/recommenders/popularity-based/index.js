@@ -11,7 +11,7 @@ var create = function(dataset, done) {
 	
 	async.waterfall([
 		function(next) {
-			help.getTrainingSetSize(db, next)
+			app.Model.getTrainingSetSize(next)
 		},
 		function(size, next) {
 			var sql = getPopularItemsSql(size)

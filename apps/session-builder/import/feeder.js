@@ -69,6 +69,10 @@ Feeder.prototype.import = function(done) {
 	var onEnd = function() {
 		console.log('onEnd ')
 		feeder.finished = true
+		if(!readable.isPaused()) {
+			done()	
+		}
+		
 	}
 
 

@@ -7,6 +7,9 @@ var Cluster = function(centroidRow, distanceMeasure, distanceModel) {
 	this.distanceModel 	= distanceModel
 }
 
+// Cluster.prototype.id = function() {
+// 	return this.centroidRow['txn_id']
+// }
 
 Cluster.prototype.addMember = function(txnRow) {
 	this.members.push(txnRow)

@@ -96,13 +96,6 @@ var init = function(dataset, txnRows) {
 		var randomIdx = Math.floor(Math.random() * max)
 		var centroid = txnRows[randomIdx]
 
-		// log.cyan('centroid', centroid['item_ids'])
-		// var centroidLength = centroid['item_ids'].length
-		
-		// if(centroidLength < dataset.config.MIN_CENTROID_LENGTH) {
-		// 	continue;
-		// }
-
 		if(centroids.indexOf(centroid) === -1) {
 			centroids.push(centroid)
 			clusters.push(new Cluster(centroid, distanceMeasure, distanceModel))

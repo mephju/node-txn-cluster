@@ -1,6 +1,3 @@
-var sqlite3		= require('sqlite3').verbose()
-
-
 
 
 function Model(dataset) {
@@ -17,12 +14,22 @@ function Model(dataset) {
 		clusterItemTfidf: 	this.dataset.prefixTableName('cluster_item_tfidf'),
 	}
 
-	log.yellow('clusermodel', this.table)
+	this.stmt = {
+		insertCluster: 			this.db.prepare('INSERT INTO ' + this.table.clusters + ' VALUES($1, $2, $3)'),
+		insertClusterMembers: 	this.db.prepare('INSERT INTO ' + this.table.clusterMembers + ' VALUES($1, $2, $3)'),
+	}
+
+	log.yellow('clustermodel', this.table)
 }
 Model.prototype = Object.create(app.Model.prototype, {
 	constructor: { value: Model	}
 })
 exports.Model = Model
+
+
+
+
+
 
 
 Model.prototype.buildClustersFromDb = function(done) {
@@ -279,27 +286,12 @@ Model.prototype.insertClusters = function(clusters, done) {
 
 
 
+
 Model.prototype.insClusters = function(clusters, done) {
-	var stmt = null
-	var model = this
-
 	
-	async.wfall([
-		function(next) {
-			stmt = model.db.prepare('INSERT INTO ' + this.table.clusters + ' VALUES($1, $2, $3)', next)
-		},
-		function(next) {
-			model.insClustersEach(stmt, clusters, next)
-		}
-	], this, done)
-}
-
-
-Model.prototype.insClustersEach = function(stmt, clusters, done) {
-	var clusterId = 0
 	var model = this
-
 	var cluster = null
+	var clusterId = 0
 
 	async.eachChain(
 		clusters.clusters,
@@ -308,19 +300,24 @@ Model.prototype.insClustersEach = function(stmt, clusters, done) {
 			console.log('inserting cluster', clusterId)
 			var row = cluster.centroidRow
 			
-			stmt.run( 
+			model.stmt.insertCluster.run( 
 				[clusterId, row['txn_id'], row['item_ids'].toString()], 
 				next
 			);
 		},
 		function(next) {
-			stmt = model.db.prepare('INSERT INTO ' + model.table.clusterMembers + ' VALUES($1, $2, $3)');
-			model.insClusterMembersEach(stmt, cluster.members, clusterId, next)
-			clusterId++	
+			model.insClusterMembersEach(cluster.members, clusterId, next)
+		},
+		function(next) {
+			log('cluster', clusterId, 'inserted')
+			clusterId++
+			next()
 		},
 		done
 	);
 }
+
+
 
 
 // Model.prototype.insClusterMembers = function(cluster, clusterId, done) {
@@ -333,12 +330,15 @@ Model.prototype.insClustersEach = function(stmt, clusters, done) {
 // }
 
 
-Model.prototype.insClusterMembersEach = function(stmt, members, clusterId, done) {
+Model.prototype.insClusterMembersEach = function(members, clusterId, done) {
 	var model = this
 	async.eachSeries(
 		members,
 		function(member, next) {
-			stmt.run([clusterId, member['txn_id'], member['item_ids'].toString()], next)
+			model.stmt.insertClusterMembers.run(
+				[clusterId, member['txn_id'], member['item_ids'].toString()], 
+				next
+			);
 		},
 		done
 	);

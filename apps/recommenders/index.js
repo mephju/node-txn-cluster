@@ -15,7 +15,7 @@ var sessionBased 		= require('./session-based')
  * @return {[type]}           [description]
  */
 exports.create = function(dataset, done) {
-	console.log('init recommender')
+	log('recommenders.create', dataset.name)
 
 	var recommenders = {}
 	

@@ -3,12 +3,21 @@ var sql 		= require('./sql')
 
 function Model(dataset) {
 	app.Model.call(this, dataset)
+
+
+	this.table = {}
+	this.table.txnItemGroups = this.prefixTableName(dataset.config.CROSS_VALIDATION_RUN, 'txn_item_groups')
 }
+
 Model.prototype = Object.create(app.Model.prototype, {
 	constructor: Model
 })
 
 exports.Model = Model
+
+Model.prototype.prefixTableName = function(run, name) {
+	return 'cross_validation_run_' + run + '_' + name
+}
 
 
 Model.prototype.prepareDb = function(callback) {
@@ -155,49 +164,6 @@ Model.prototype.getTxn = function(txnId, callback) {
 
 
 
-
-Model.prototype.getTxnIdsHelper = function(sql, callback) {
-	this.db.all(
-		sql,
-		function(e, rows) {
-			if(e) { callback(e) }
-			else { 
-				var txnIds = rows.map(function(row) {
-					return row['txn_id']
-				})
-				callback(null, txnIds)
-			}			
-		}
-	);
-}
-
-
-
-Model.prototype.getManyTxns = function(txnIds, callback) {
-	console.log('get many txns', txnIds.length)
-	var txns = []
-	var sqlstmt = 'SELECT item_ids FROM txn_item_groups WHERE txn_id IN' + 
-		'(' + txnIds.toString() + ')'
-
-	this.db.all(sqlstmt, function(err, rows) {
-		if(err) {
-			console.log(err)
-			callback(err)
-		} else {
-			console.log('got txns', rows.length)
-			callback(null, rows.map(function(row) {
-				return row['item_ids'].split(',').map(function(itemIdString) {
-					return parseInt(itemIdString)
-				})
-			}))
-		}
-
-	})
-}
-
-
-
-
 /**
  * Clustered txns are those txns of the training set which could be assigned
  * to a cluster. 
@@ -235,9 +201,9 @@ Model.prototype._getAllTxns = function(validation, done) {
 			var trainingSize = Math.floor(tableSize * this.dataset.config.TRAINING_SET_SIZE)
 			
 			log('TRAINING SET SIZE', this.dataset.config.TRAINING_SET_SIZE, trainingSize)
-			var sql = 'SELECT DISTINCT txn_id, item_ids FROM txn_item_groups LIMIT ' + trainingSize
+			var sql = 'SELECT DISTINCT txn_id, item_ids FROM ' + this.table.txnItemGroups + ' LIMIT ' + trainingSize
 			if(validation) {
-				sql = 'SELECT DISTINCT txn_id, item_ids FROM txn_item_groups LIMIT 999999999 OFFSET ' + trainingSize		
+				sql = 'SELECT DISTINCT txn_id, item_ids FROM ' + this.table.txnItemGroups + ' txn_item_groups LIMIT 999999999 OFFSET ' + trainingSize		
 			} 
 			this._txns(sql, done, validation);
 		},  

@@ -15,10 +15,11 @@ var makeImport = function(dataset, done) {
 			new Feeder(dataset).import(next)
 		},
 		function(next) {
+
 			db.createFeedbackIdx(next)
 		},
 		function(next) {
-			log('import app is finished')
+			log.green('import app is finished')
 			done()
 		}
 	], done);

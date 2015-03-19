@@ -96,3 +96,28 @@ var makeWaterfallWrapper = function(waterfall, onWaterfallFinished) {
 // 		console.log('finished', err)
 // 	}
 // );
+
+
+/*
+	PROTOTYPE SYNTAX
+ 
+async
+.each(array)
+.exec(function(item, next) {
+	this.getCentroidRows(next) 
+})
+.each(function(centroid, next) {
+
+})
+.exec(function(rows, next) {
+	createArray(next)
+})
+.each(function(arrayItem, next) {
+
+})
+.done(function(err, done) {
+
+})
+
+
+*/
