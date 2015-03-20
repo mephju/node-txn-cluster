@@ -12,10 +12,22 @@ require('../init')
 
 
 var Config = app.Config
+var evalConfig = new app.EvalConfig()
 
-var dataset = app.datasets.movielensCustom
+var datasets = []
 
-dataset.config = new Config('levenshtein')
+comboCall(
+	evalConfig.datasets,
+	evalConfig.distanceMeasures
+	function(datasetRaw, measure) {
+		var configOptions = {
+			distanceMeasure: measure,
+		}
+		var config = new Config(configOptions)
+		datasetRaw.dataset.config = config
+		datasets.push(datasetRaw.dataset)
+	}
+);
 
 var DistanceRun = require('./distance-run').DistanceRun
 

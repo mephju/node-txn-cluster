@@ -12,7 +12,7 @@ function DistanceModel(dataset) {
 		host: 'localhost',
 		user: mysqlConfig.user,
 		password: mysqlConfig.pass,
-		database: 'distances'
+		database: mysqlConfig.db
 	});
 }
 

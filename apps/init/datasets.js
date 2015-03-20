@@ -151,6 +151,8 @@ var movielensCustom = new Movielens('movielens/ratings-custom-large.dat',	'movie
 var movielensSmall 	= new Movielens('movielens/ratings-small.dat',			'movielens_small') 
 var testDataset 	= new TestDataset('test/ratings.dat', 					'test_dataset')
 
+exports.gowalla = gowalla
+exports.lastFm = lastFm
 exports.movielens = movielens
 exports.testDataset = testDataset
 exports.movielensSmall = movielensSmall

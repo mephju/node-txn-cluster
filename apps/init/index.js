@@ -9,6 +9,7 @@ global.async 			= require('async')
 global.async.eachChain 	= require('./asy').eachChain
 global.async.forloop 	= require('./asy').forloop
 global.async.wfall 		= require('./asy').wfall
+global.DEV 				= process.env.BASE_PATH.indexOf('/stuff/datamining') !== -1
 
 
 

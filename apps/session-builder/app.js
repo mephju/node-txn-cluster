@@ -42,6 +42,7 @@ var datasets = evalConfig.datasets.map(function(set) {
 async.eachSeries(
 	datasets,
 	function(dataset, next) {
+		log(dataset)
 		dataset.config = new app.Config({})
 		buildSessions(dataset, next)
 	},
