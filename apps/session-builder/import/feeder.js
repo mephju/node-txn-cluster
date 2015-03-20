@@ -14,6 +14,8 @@ Feeder.prototype.import = function(done) {
 		encoding:'utf8',
 		bufferSize:8192
 	})
+
+
 	var feeder = this
 	//readable = fs.createReadStream(dataset.datasetPath,'utf8') 
 	var onData = function(chunk) {
@@ -74,6 +76,8 @@ Feeder.prototype.import = function(done) {
 		}
 		
 	}
+
+	
 
 
 	readable.on('data', onData)
