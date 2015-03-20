@@ -5,8 +5,10 @@ function Model(dataset) {
 	app.Model.call(this, dataset)
 
 
-	this.table = {}
-	this.table.txnItemGroups = this.prefixTableName(dataset.config.CROSS_VALIDATION_RUN, 'txn_item_groups')
+	this.table = {
+		clusterMembers: this.dataset.prefixTableName('cluster_members'),
+		txnItemGroups: 	this.prefixTableName(dataset.config.CROSS_VALIDATION_RUN, 'txn_item_groups')
+	} 
 }
 
 Model.prototype = Object.create(app.Model.prototype, {
@@ -171,7 +173,7 @@ Model.prototype.getTxn = function(txnId, callback) {
  * @return {[type]}        [description]
  */
 Model.prototype.getClusteredTxns = function(done) {
-	var sql = 'select txn_id, item_ids from cluster_members'
+	var sql = 'select txn_id, item_ids from ' + this.table.clusterMembers
 	
 	var model = this
 

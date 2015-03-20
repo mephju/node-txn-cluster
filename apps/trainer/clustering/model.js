@@ -3,7 +3,7 @@
 function Model(dataset) {
 	app.Model.call(this, dataset)
 
-	log('Model', dataset)
+	log('Model', dataset.name)
 	
 	this.table = {
 		clusters: 			this.dataset.prefixTableName('clusters'),
@@ -14,10 +14,7 @@ function Model(dataset) {
 		clusterItemTfidf: 	this.dataset.prefixTableName('cluster_item_tfidf'),
 	}
 
-	this.stmt = {
-		insertCluster: 			this.db.prepare('INSERT INTO ' + this.table.clusters + ' VALUES($1, $2, $3)'),
-		insertClusterMembers: 	this.db.prepare('INSERT INTO ' + this.table.clusterMembers + ' VALUES($1, $2, $3)'),
-	}
+	this.stmt = {}
 
 	log.yellow('clustermodel', this.table)
 }
@@ -77,6 +74,130 @@ Model.prototype.buildClustersFromDb = function(done) {
 }
 
 
+
+
+
+
+Model.prototype.insertClusters = function(clusters, done) {
+	log('ClusterModel.insertClusters', clusters.clusters.length)
+
+	async.wfall([
+		function(next) {
+			this.db.run('DROP TABLE IF EXISTS ' + this.table.clusters, next)
+		},
+		function(next) {
+			this.db.run('DROP TABLE IF EXISTS ' + this.table.clusterMembers, next)
+		},
+		function(next) {
+			this.db.run(
+				'CREATE TABLE ' + this.table.clusters + '( \
+				cluster_id INTEGER PRIMARY KEY, \
+				centroid_txn_id INTEGER, \
+				centroid_item_ids TEXT)',
+				next
+			);
+		},
+		function(next) {
+			this.db.run(
+				'CREATE TABLE ' + this.table.clusterMembers + '( \
+				cluster_id INTEGER REFERENCES ' + this.table.clusters + ', \
+				txn_id INTEGER, \
+				item_ids TEXT)', 
+				next
+			);
+		},
+		function(next) {
+			this.stmt.insertCluster = 			this.db.prepare('INSERT INTO ' + this.table.clusters + ' VALUES($1, $2, $3)')
+			this.stmt.insertClusterMembers = 	this.db.prepare('INSERT INTO ' + this.table.clusterMembers + ' VALUES($1, $2, $3)', next)
+		},
+		function(next) {
+			this.db.run('BEGIN TRANSACTION', next)
+		},
+		function(next) {
+			this._performInserts(clusters, next)
+		},
+		function(next) {
+			this.db.run('END TRANSACTION', next)
+		}
+	], this, done)
+}
+
+
+
+
+
+Model.prototype._performInserts = function(clusters, done) {
+
+	log('_performInserts')
+	
+	var model = this
+	var cluster = null
+	var clusterId = 0
+
+	async.eachChain(
+		clusters.clusters,
+		function(_cluster, next) {
+			cluster = _cluster
+			log('inserting cluster', clusterId)
+			var row = cluster.centroidRow
+			
+			model.stmt.insertCluster.run( 
+				[clusterId, row['txn_id'], row['item_ids'].toString()], 
+				next
+			);
+		},
+		function(next) {
+			model.insClusterMembersEach(cluster.members, clusterId, next)
+		},
+		function(next) {
+			log('cluster', clusterId, 'inserted')
+			clusterId++
+			next()
+		},
+		done
+	);
+}
+
+
+
+
+// Model.prototype.insClusterMembers = function(cluster, clusterId, done) {
+// 	var stmt = null
+// 	var model = this
+
+// 	async.waterfall([
+		
+// 	], done)
+// }
+
+
+Model.prototype.insClusterMembersEach = function(members, clusterId, done) {
+	var model = this
+	async.eachSeries(
+		members,
+		function(member, next) {
+			model.stmt.insertClusterMembers.run(
+				[clusterId, member['txn_id'], member['item_ids'].toString()], 
+				next
+			);
+		},
+		done
+	);
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 Model.prototype.tableClusterItemCounts = function(done) {
 	
 	console.log('create table cluster_item_counts')
@@ -95,12 +216,12 @@ Model.prototype.tableClusterItemCounts = function(done) {
 				from 			txn_items as ti, 					\
 								(select 		cluster_id, 		\
 												txn_id 				\
-								from 			cluster_members		\
+								from 	' + this.table.clusterMembers + ' \
 								union 								\
 								select  		centroid_txn_id  	\
 								as 				txn_id, 			\
 												cluster_id 	 		\
-								from 			clusters) as uni 	\
+								from 	' + this.table.clusters + ' ) as uni 	\
 				where 			ti.txn_id=uni.txn_id 				\
 				group by 		cluster_id, item_id 				\
 				order by 		cluster_id, count desc' 			
@@ -243,106 +364,6 @@ Model.prototype.tableClusterItemTfidf = function(done) {
 
 
 
-Model.prototype.insertClusters = function(clusters, done) {
-	log('ClusterModel.insertClusters', clusters.clusters.length)
-
-	async.wfall([
-		function(next) {
-			this.db.run('DROP TABLE IF EXISTS ' + this.table.clusters, next)
-		},
-		function(next) {
-			this.db.run('DROP TABLE IF EXISTS ' + this.table.clusterMembers, next)
-		},
-		function(next) {
-			this.db.run(
-				'CREATE TABLE ' + this.table.clusters + '( \
-				cluster_id INTEGER PRIMARY KEY, \
-				centroid_txn_id INTEGER, \
-				centroid_item_ids TEXT)',
-				next
-			);
-		},
-		function(next) {
-			this.db.run(
-				'CREATE TABLE ' + this.table.clusterMembers + '( \
-				cluster_id INTEGER REFERENCES ' + this.table.clusters + ', \
-				txn_id INTEGER, \
-				item_ids TEXT)', 
-				next
-			);
-		},
-		function(next) {
-			this.db.run('BEGIN TRANSACTION', next)
-		},
-		function(next) {
-			this.insClusters(clusters, next)
-		},
-		function(next) {
-			this.db.run('END TRANSACTION', next)
-		}
-	], this, done)
-}
-
-
-
-
-
-Model.prototype.insClusters = function(clusters, done) {
-	
-	var model = this
-	var cluster = null
-	var clusterId = 0
-
-	async.eachChain(
-		clusters.clusters,
-		function(_cluster, next) {
-			cluster = _cluster
-			console.log('inserting cluster', clusterId)
-			var row = cluster.centroidRow
-			
-			model.stmt.insertCluster.run( 
-				[clusterId, row['txn_id'], row['item_ids'].toString()], 
-				next
-			);
-		},
-		function(next) {
-			model.insClusterMembersEach(cluster.members, clusterId, next)
-		},
-		function(next) {
-			log('cluster', clusterId, 'inserted')
-			clusterId++
-			next()
-		},
-		done
-	);
-}
-
-
-
-
-// Model.prototype.insClusterMembers = function(cluster, clusterId, done) {
-// 	var stmt = null
-// 	var model = this
-
-// 	async.waterfall([
-		
-// 	], done)
-// }
-
-
-Model.prototype.insClusterMembersEach = function(members, clusterId, done) {
-	var model = this
-	async.eachSeries(
-		members,
-		function(member, next) {
-			model.stmt.insertClusterMembers.run(
-				[clusterId, member['txn_id'], member['item_ids'].toString()], 
-				next
-			);
-		},
-		done
-	);
-}
 
 
 

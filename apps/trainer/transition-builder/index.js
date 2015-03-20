@@ -8,6 +8,7 @@ var transitions = require('./transitions')
 exports.buildTransitions = function(dataset, clusters, done) {
 	
 	log('buildTransitions', dataset.name)
+	
 	var transModel 	= new TransitionModel(dataset)
 	var txnModel 	= new TxnModel(dataset)
 
@@ -33,20 +34,4 @@ exports.buildTransitions = function(dataset, clusters, done) {
 		log.yellow('finished building transitions', err || '')
 		done(err)
 	})
-}
-
-
-
-
-
-
-
-var file 	= process.argv[1]
-var method 	= process.argv[2]
-// was this file was started from the command line?
-// if so, call entry level method
-if(file === __filename) { 
-	if(method) {
-		exports[method]()
-	}
 }

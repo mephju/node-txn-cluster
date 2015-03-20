@@ -11,6 +11,7 @@ exports.buildClustersFromDb = function(dataset, done) {
 }
 
 exports.buildClusters = function(dataset, done) {
+	log('buildClusters')
 	var txnRows 		= null
 	var clusterModel 	= new ClusterModel(dataset)
 	var txnModel 		= new TxnModel(dataset)

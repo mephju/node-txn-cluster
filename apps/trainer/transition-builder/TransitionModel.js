@@ -3,8 +3,6 @@
 function TransitionModel(dataset) {
 	app.Model.call(this, dataset)
 
-	this.dataset = dataset
-	log(dataset)
 	this.table = {
 		transitions: this.dataset.prefixTableName('transitions')
 	}

@@ -42,7 +42,7 @@ MarkovChain.getMarkovChain = function(dataset, done) {
 
 MarkovChain.prototype.build = function(done) {
 	var mc = this
-	console.log('transMarkovChain.buildMarkovChain')
+	log('transMarkovChain.buildMarkovChain')
 	async.waterfall([
 		function(next) {
 			mc.transModel.getTransitions(next)
