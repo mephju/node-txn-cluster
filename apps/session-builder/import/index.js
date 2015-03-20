@@ -1,4 +1,4 @@
-var Feeder 		= require('./feeder').Feeder
+var Feeder 		= require('./Feeder')
 var db 			= require('./db')
 
 
