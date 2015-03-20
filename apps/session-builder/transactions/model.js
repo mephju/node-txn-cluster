@@ -203,7 +203,7 @@ Model.prototype._getAllTxns = function(validation, done) {
 			log('TRAINING SET SIZE', this.dataset.config.TRAINING_SET_SIZE, trainingSize)
 			var sql = 'SELECT DISTINCT txn_id, item_ids FROM ' + this.table.txnItemGroups + ' LIMIT ' + trainingSize
 			if(validation) {
-				sql = 'SELECT DISTINCT txn_id, item_ids FROM ' + this.table.txnItemGroups + ' txn_item_groups LIMIT 999999999 OFFSET ' + trainingSize		
+				sql = 'SELECT DISTINCT txn_id, item_ids FROM ' + this.table.txnItemGroups + ' LIMIT 999999999 OFFSET ' + trainingSize		
 			} 
 			this._txns(sql, done, validation);
 		},  
@@ -218,7 +218,7 @@ Model.prototype.txnsForTraining = function(done) {
 	this._getAllTxns(false, done)
 }
 Model.prototype.txns = function(done) {
-	this._txns('select * from txn_item_groups', done)
+	this._txns('select * from txn_item_groups_original', done)
 }
 
 Model.prototype._txns = function(sql, done, validation) {

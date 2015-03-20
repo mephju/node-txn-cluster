@@ -26,7 +26,7 @@ function EvalConfigProd() {
 function EvalConfigDev() {
 	this.markovOrders = [1]
 	this.xValidationRuns = [0]
-	this.distanceMeasures = ['levenshtein']
+	this.distanceMeasures = ['levenshtein', 'jaccard']
 	this.itemChoiceStrategies = ['tfidf']
 	
 	this.datasets = [{ 
@@ -34,16 +34,20 @@ function EvalConfigDev() {
 		txnCount: 1500 
 	}]
 	
-	this.datasets = [{ 
-		dataset: app.datasets.movielensSmall, 
-		txnCount: 200 
-	},{ 
-		dataset: app.datasets.lastFmSmall, 
-		txnCount: 200 
-	},{ 
-		dataset: app.datasets.gowallaSmall, 
-		txnCount: 200 
-	}]
+	this.datasets = [
+		// { 
+		// 	dataset: app.datasets.movielensSmall, 
+		// 	txnCount: 200 
+		// },
+		// { 
+		// 	dataset: app.datasets.lastFmSmall, 
+		// 	txnCount: 200 
+		// },
+		{ 
+			dataset: app.datasets.gowallaSmall, 
+			txnCount: 200 
+		}
+	];
 }
 
 if(DEV) {

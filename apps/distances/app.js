@@ -13,38 +13,44 @@ require('../init')
 
 var Config = app.Config
 var evalConfig = new app.EvalConfig()
+var DistanceRun = require('./distance-run').DistanceRun
 
 var datasets = []
 
-comboCall(
+app.comboCall(
 	evalConfig.datasets,
-	evalConfig.distanceMeasures
+	evalConfig.distanceMeasures,
 	function(datasetRaw, measure) {
+
+		var original = datasetRaw.dataset 
+		var dataset = new original.constructor(original.filepath, original.name)
+
+		log.red(datasetRaw.dataset.name, measure)
 		var configOptions = {
 			distanceMeasure: measure,
 		}
 		var config = new Config(configOptions)
-		datasetRaw.dataset.config = config
-		datasets.push(datasetRaw.dataset)
+		dataset.config = config
+		datasets.push(dataset)
 	}
 );
 
-var DistanceRun = require('./distance-run').DistanceRun
 
-async.waterfall([
-	function(next) {
-		new DistanceRun(dataset).run(next)
-	},
-	function(next) {
-		log('done computing distances for', dataset.name, dataset.config.DISTANCE_MEASURE)
-	}
-], 
-function(err) {
-	log.red('error received', err)
+datasets.forEach(function(item, i) {
+	log(item.name, item.config.DISTANCE_MEASURE)
 })
 
 
-
-
-
+async.eachChain(
+	datasets,
+	function(dataset, next) {
+		new DistanceRun(dataset).run(function(err) {
+			log.yellow('done computing distances for', dataset.name, dataset.config.DISTANCE_MEASURE, err)
+			next(err)	
+		})
+	},
+	function(err) {
+		log.yellow('finished with all datasets and distance measures', err)
+	}
+);
 

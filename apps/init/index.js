@@ -17,8 +17,8 @@ global.app = {
 	datasets: 	require('./datasets'),
 	Config: 	require('./Config'),
 	Model: 		require('./Model'),
-	EvalConfig: require('./EvalConfig')
-	
+	EvalConfig: require('./EvalConfig'),
+	comboCall: 	require('./combo-call').comboCall
 }
 
 
