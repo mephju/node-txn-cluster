@@ -45,7 +45,6 @@ function EvalConfigDev() {
 		txnCount: 200 
 	}]
 }
-DEV = false
 
 if(DEV) {
 	module.exports = exports.EvalConfig = EvalConfigDev
