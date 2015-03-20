@@ -18,7 +18,7 @@ Feeder.prototype.insertLines = function(lines, done) {
 	var onLine = function(line, next) {
 		//process.stdout.write('.')
 		records.push(line.split(this.dataset.separator))
-		if(records.length < 1000) {
+		if(records.length < 500) {
 			return next()
 		}
 		log.yellow('inserting lots of lines')
