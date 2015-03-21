@@ -1,7 +1,7 @@
 function EvalConfigProd() {
 	this.markovOrders = [1,2,3]
 	this.xValidationRuns = [0,1,2]
-	this.distanceMeasures = ['levenshtein']
+	this.distanceMeasures = ['jaccard', 'jaccard-bigram', 'jaccard-levenshtein']
 	this.itemChoiceStrategies = ['tfidf', 'bestItemsOfCluster', 'bestItemsOverall', 'tfTfidf', 'random', 'withRatings']
 	this.datasets = [{ 
 		dataset: app.datasets.movielensCustom, 
@@ -28,8 +28,8 @@ function EvalConfigProd() {
 }
 
 function EvalConfigDev() {
-	this.markovOrders = [1]
-	this.xValidationRuns = [0]
+	this.markovOrders = [1,2,3]
+	this.xValidationRuns = [0,1,2]
 	this.distanceMeasures = ['levenshtein', 'jaccard']
 	this.itemChoiceStrategies = ['tfidf']
 	
@@ -39,17 +39,17 @@ function EvalConfigDev() {
 	}]
 	
 	this.datasets = [
-		// { 
-		// 	dataset: app.datasets.movielensSmall, 
-		// 	txnCount: 200 
-		// },
-		// { 
-		// 	dataset: app.datasets.lastFmSmall, 
-		// 	txnCount: 200 
-		// },
+		{ 
+			dataset: app.datasets.movielensSmall, 
+			txnCount: 15,
+		},
+		{ 
+			dataset: app.datasets.lastFmSmall, 
+			txnCount: 1870,
+		},
 		{ 
 			dataset: app.datasets.gowallaSmall, 
-			txnCount: 200 
+			txnCount: 5329,
 		}
 	];
 }

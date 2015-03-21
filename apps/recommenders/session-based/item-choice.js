@@ -9,12 +9,14 @@ function ItemChoice(dataset) {
 	this.db = new sqlite3.Database(dataset.dbPath)
 	this.memberStore = {}
 	this.sql = null
+	this.strategy = dataset.config.ITEM_CHOICE_STRATEGY
 	
-	switch(dataset.config.ITEM_CHOICE_STRATEGY) {
+	switch(strategy) {
 		case 'tfTfidf':					this.sql = this.db.prepare(this.sqlWithTfTfidf);			break;
 		case 'tfidf':					this.sql = this.db.prepare(this.sqlWithTfidf);			break;
 		case 'bestItemsOfCluster':		this.sql = this.db.prepare(this.sqlBestItemsOfCluster);	break;
 		case 'bestItemsOverall':		this.sql = this.db.prepare(this.sqlBestItemsOverall);		break
+		case 'random': 					this.sql = this.db.prepare(this.sqlRandomItem);			break;
 		case 'withRatings': 			
 			this.sql = this.db.prepare(this.sqlWithRatings); 
 			if(typeof dataset.indices.rating === 'undefined') {
@@ -28,15 +30,15 @@ function ItemChoice(dataset) {
 module.exports = ItemChoice
 
 ItemChoice.prototype.init = function(done) {
-	var strategy = this
-	async.waterfall([
+
+	async.wfall([
 		function(next) {
-			strategy.db.all('select distinct cluster_id from clusters order by cluster_id asc', next)
+			this.db.all('select distinct cluster_id from ' + this.dataset.prefixTableName('clusters') + ' order by cluster_id asc', next)
 		},
 		function(rows, next) {
-			strategy.fetchMembers(rows, next)
+			this.fetchMembers(rows, next)
 		},
-	], done)
+	], this, done)
 }
 
 ItemChoice.prototype.fetchMembers = function(clusters, done) {
@@ -56,7 +58,7 @@ ItemChoice.prototype.fetchMembers = function(clusters, done) {
 				members[i] = member['item_id']
 			})
 			_this.memberStore[clusterId] = members
-			console.log('members', members)
+			log('members', members)
 			done(null)
 		},
 		done
@@ -65,11 +67,23 @@ ItemChoice.prototype.fetchMembers = function(clusters, done) {
 
 
 
-//first get all centroid ids
-//then get all best 5 items of each cluster and save them.
-//so no db access is needed during evaluation.
-ItemChoice.prototype.getBestItems = function(n, clusterId) {
-	return this.memberStore[clusterId].slice(0,n)
+/**
+ * Return the best items of cluster with clusterId.
+ * Best as defined by the strategy this ItemChoice object is pursuing.
+ *
+ * TODO: Find out whether .slice() is needed.
+ * It's not needed if returned array is not manipulated anyway.
+ * 
+ * @param  {[type]} n         [description]
+ * @param  {[type]} clusterId [description]
+ * @return {[type]}           [description]
+ */
+
+ItemChoice.prototype.getBestItems = function(numRecomms, clusterId) {
+	if(this.strategy === 'random') {
+		return this.getRandomItems(numRecomms, clusterId)
+	}
+	return this.memberStore[clusterId].slice(0, numRecomms)
 }
 
 ItemChoice.prototype.fetchMembersById = function(clusterId, done) {
@@ -87,13 +101,10 @@ ItemChoice.prototype.fetchMembersById = function(clusterId, done) {
  * @param  {[type]} array [description]
  * @return {[type]}       [description]
  */
-var getRandomItems = function(n, array) {
-	
-	return help.arrayRandomItems(n, array).map(function(item, i) {
-		var txn = item['item_ids']
-		var index = Math.floor(Math.random() * txn.length)
-		return txn[index]
-	})
+ItemChoice.prototype.getRandomItems = function(numRecomms, clusterId) {
+	var members = this.memberStore[clusterId]
+
+	return help.arrayRandomItems(numRecomms, members)
 }
 
 
@@ -111,10 +122,20 @@ var getRandomItems = function(n, array) {
 // 	limit ' 	+ config.N
 // 	
 ItemChoice.prototype.sql = function() {
+
+	var table = {
+		clusters: 			this.dataset.prefixTableName('clusters'),
+		clusterMembers: 	this.dataset.prefixTableName('cluster_members'),
+		clusterItemCounts: 	this.dataset.prefixTableName('cluster_item_counts'),
+		clusterItemRatings: this.dataset.prefixTableName('cluster_item_ratings'),
+		itemClusterConts: 	this.dataset.prefixTableName('item_cluster_counts'),
+		clusterItemTfidf: 	this.dataset.prefixTableName('cluster_item_tfidf'),
+	}
+
 	this.sqlBestItemsOverall = 
 		'select distinct 					\
 					ic.item_id, ic.count 	\
-		from 		cluster_members as cm, 	\
+		from 	' + table.clusterMembers + ' as cm, 	\
 					txn_items as ti,  		\
 					item_counts as ic 		\
 		where 		cm.txn_id=ti.txn_id 	\
@@ -127,47 +148,40 @@ ItemChoice.prototype.sql = function() {
 	this.sqlWithRatings = 
 		'select 	item_id, count, \
 					avg(rating) as avg 	\
-		from 		cluster_item_ratings 		\
+		from 	' + table.clusterItemRatings + ' \
 		where 		cluster_id=$1				\
 		group by 	item_id 				\
 		order by 	count desc, avg desc 	\
 		limit ' + this.config.N 
 
-	this.sqlBestItemsOfCluster = 'select * \
-				from 		cluster_item_counts \
-				where 		cluster_id=$1 \
-				order by 	count DESC \
-				limit ' 	+ this.config.N
+	this.sqlBestItemsOfCluster = 
+		'select * \
+		from 	' + table.clusterItemCounts + ' \
+		where 		cluster_id=$1 \
+		order by 	count DESC \
+		limit ' 	+ this.config.N
 
 
 	this.sqlWithTfTfidf = 
-		'select item_id,tfidf	\
-		from cluster_item_tfidf	\
-		where cluster_id=$1		\
-		order by tf desc, tfidf desc 	\
+		'select 	item_id,tfidf	\
+		from 	' + table.clusterItemTfidf + ' \
+		where 		cluster_id=$1		\
+		order 		by tf desc, tfidf desc 	\
 		limit ' + this.config.N
 
 	this.sqlWithTfidf = 
-		'select item_id,tfidf	\
-		from cluster_item_tfidf	\
-		where cluster_id=$1		\
-		order by tfidf desc 	\
+		'select 	item_id,tfidf	\
+		from 	' + table.clusterItemTfidf + ' \
+		where 		cluster_id=$1		\
+		order by 	tfidf desc 	\
 		limit ' + this.config.N
+
+	this.sqlRandomItem = 
+		'select distinct item_id \
+		from 	' + table.clusterItemCounts + ' \
+		where 		cluster_id=$1 \
+		order by 	random()';
 
 }
 
 	
-
-
-
-
-
-
-
-
-
-
-// exports.init 			= init
-// exports.chooseItems = getRandomItems
-// exports.getRandomItems = getRandomItems
-// exports.getBestItems = getBestItems
