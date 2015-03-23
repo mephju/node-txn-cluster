@@ -42,15 +42,15 @@ exports.cluster = function(dataset, txnRows, done) {
  * @return {[type]}          [description]
  */
 var clusterIterate = function(txnRows, clusters, done) {
-	console.log('clusterIterate ', txnRows.length)
-
+	log('clusterIterate ', txnRows.length)
+	log.green('clusterIterate isIterationNeeded', clusters.isIterationNeeded)
 	if(!clusters.isIterationNeeded) {
 		clusters.cleanUp()
 		return done(null, clusters)
 	}
 
 
-	clusters.clear()
+	clusters.clearMembers()
 	
 	for(var i=0, len=txnRows.length; i<len; i++) {
 		var c = clusters.findBestMatch(txnRows[i])

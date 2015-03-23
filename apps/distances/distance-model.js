@@ -1,5 +1,6 @@
 var mysql      	= require('mysql')
 var mysqlConfig = require('./mysql-config')
+var util 		= require('util')
 
 
 function DistanceModel(dataset) {
@@ -29,6 +30,35 @@ DistanceModel.prototype.getDistances = function(txnRow, done) {
 			//log('getDistances got results', results)
 			if(err) return done(err)
 			done(null, help.textToNumArray(results[0].distances))
+		}
+	);
+}
+
+/**
+ * Retrieves the huge pre calculated distances for more txns than one, e.g. 20.
+ * 
+ * @param  {[type]}   txnRows [description]
+ * @param  {Function} done    [description]
+ * @return {[type]}           [description]
+ */
+DistanceModel.prototype.getDistancesForMany = function(txnRows, done) {
+	// log('DistanceModel.getDistancesForMany')
+	var txnIds = txnRows.map(function(txnRow) { return txnRow['txn_id']}).toString()
+	var sql = util.format(
+		'select distances from ' + this.tableName + ' where txn_id in (%s) ORDER BY FIND_IN_SET(txn_id, %s)',
+		txnIds,
+		"'" + txnIds + "'"
+	);
+
+	this.db.query(
+		sql,
+		function(err, results, fields) {
+			if(err) return done(err)
+			results.forEach(function(row, i) {
+				results[i] = help.textToNumArray(row.distances)
+			})
+			//log(results)
+			done(null, results)
 		}
 	);
 }

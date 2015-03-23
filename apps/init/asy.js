@@ -38,7 +38,6 @@ exports.eachChain = function() {
 	var waterfall = args.slice(2,len-1)
 	
 	if(_this) {
-		log.green('found this')
 		eachFun = eachFun.bind(_this)
 		waterfall = waterfall.map(function(fn) {
 			return fn.bind(_this)

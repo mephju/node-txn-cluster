@@ -63,8 +63,13 @@ ClusterGroup.prototype.findBestMatchSeq = function(txn) {
 
 
 
-
-ClusterGroup.prototype.clear = function() {
+/**
+ * Resets all clusters to clusters without any members so 
+ * a new iteration of assignments can begin.
+ * 
+ * @return {[type]} [description]
+ */
+ClusterGroup.prototype.clearMembers = function() {
 	this.clusters.forEach(function(cluster) {
 		cluster.members = []
 	}) 

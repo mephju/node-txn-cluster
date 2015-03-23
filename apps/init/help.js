@@ -48,7 +48,7 @@ var clearArray = function(arr) {
 
 var textToNumArray = function(text) {
 	 return text.split(',').map(function(textNum) {
-			return parseInt(textNum)
+			return Number(textNum)
 	 })
 }
 var arrayContains = function(array, target) {
