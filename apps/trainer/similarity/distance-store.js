@@ -13,10 +13,12 @@ module.exports = DistanceStore
 
 DistanceStore.prototype.distance = function(seq1, seq2) {
 
-	if(
-		seq1.length < this.EASY_SEQUENCE_SIZE || 
-		seq2.length < this.EASY_SEQUENCE_SIZE || 
-		this.keyCount > 5000) {
+	if(seq1.length > this.EASY_SEQUENCE_SIZE || seq2.length > this.EASY_SEQUENCE_SIZE) {
+		return this.distanceMeasure.distanceAlgo(
+			seq1.splice(this.EASY_SEQUENCE_SIZE), 
+			seq2.splice(this.EASY_SEQUENCE_SIZE)
+		);
+	} else {
 		return this.distanceMeasure.distanceAlgo(seq1, seq2)
 	}
 
@@ -42,7 +44,7 @@ DistanceStore.prototype.distance = function(seq1, seq2) {
 	var similarity = substore1[key2]
 	
 	if(typeof(similarity) === 'undefined') {
-		log.yellow('saving into distanceStore')
+		log.write('.')
 		//console.log('calculate similarity')
 		similarity = this.distanceMeasure.distanceAlgo(seq1, seq2)
 		substore1[key2] = similarity

@@ -39,7 +39,7 @@ DistanceRun.prototype._computeDistances = function(txnRows, done) {
 	// 	include = include || row.txn_id === 7490
 	// 	return include
 	// }).slice(1)
-
+	log.yellow('_computeDistances')
 	async.eachSeries(
 		txnRows, //
 		function(txnRow, next) {
@@ -48,13 +48,10 @@ DistanceRun.prototype._computeDistances = function(txnRows, done) {
 			
 			//reduce length of txn if really long
 			if(txn.length > this.dataset.config.EASY_SEQUENCE_SIZE)  {
-				txnRow['item_ids'] = txn.slice(
-					0,
-					this.dataset.config.EASY_SEQUENCE_SIZE
-				);
+				txnRow['item_ids'].splice(this.dataset.config.EASY_SEQUENCE_SIZE)
 			}
 
-			log('next txn', txnRow.txn_id)
+			log.write(this.dataset.name + ' ' + this.dataset.config.DISTANCE_MEASURE + ' ')
 			var distances = this._getDistances(txnRow, txnRows)
 			
 			this.distanceModel.insert(txnRow, distances, next)

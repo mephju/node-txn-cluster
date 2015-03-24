@@ -6,10 +6,11 @@ var Cluster 	= require('./cluster').Cluster
  * ClusterGroup represents all clusters within a dataset
  * @param {[type]} clusterArray [description]
  */
-var ClusterGroup = function(clusterArray, dataset) {
-	this.clusters = clusterArray
+var ClusterGroup = function(dataset) {
+	this.clusters = []
 	this.isIterationNeeded = true
 	this.dataset = dataset
+	this.mostRecentConstellations = []
 }
 
 
@@ -22,8 +23,7 @@ ClusterGroup.prototype.findBestMatch = function(txnRow) {
 	var matchIdx = this.findBestMatchSeq(txnRow['item_ids'])
 	if(matchIdx === -1) return null
 	//console.log('findBestMatch', matchIdx)
-	var c = this.clusters[matchIdx]
-	return c
+	return this.clusters[matchIdx]
 }
 
 
@@ -51,7 +51,6 @@ ClusterGroup.prototype.findBestMatchSeq = function(txn) {
 			bestMatch.cluster 	= c
 			bestMatch.id 		= c.centroidRow['txn_id']
 			bestMatch.idx 		= i
-			continue;
 		}	
 	};
 
@@ -94,6 +93,8 @@ ClusterGroup.prototype.recomputeCentroids = function(done) {
 	this.isIterationNeeded = false
 
 	var _this = this
+
+	
 
 	async.eachChain(
 		this.clusters,

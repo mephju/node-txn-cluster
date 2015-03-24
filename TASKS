@@ -1,0 +1,29 @@
+TASKS
+
+LOCAL
+
+1. Run clustering for 3 cross validation runs locally
+2. Run clustering for 4 distance measures locally
+4. Separate transition building from clustering
+	- 	Create trainer/clustering/app.js 
+		12 runs per dataset. one for each distance measure, cross validation run, dataset.
+		36 runs overall.
+	- 	Create trainer/transitions/app.js
+		108 runs altogether.
+6. Create EvalStore
+5. Run evaluations for all small datasets
+7. Find a way to store number of clusters
+8. Find a way to store initial centroids
+9. Store number of iterations needed
+
+
+REMOTE
+- Run distance app for movielens
+- Run trainer/clustering for movielens (4x3 = 12)
+- Run trainer/transitions for movielens (4x3x3 = 36)
+- Run evaluations for movielens (4x3x3x6 = 216)
+
+
+RUNS
+datasets x distanceMeasure x crossValidationsRuns x markovOrders x itemChoiceStrategy 
+3 x 4 x 3 x 3 x 6 = 648

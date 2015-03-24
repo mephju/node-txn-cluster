@@ -62,40 +62,37 @@ var jaccardBigram = function(array1, array2) {
 
     var len1    = array1.length
     var len2    = array2.length
+    var len     = Math.max(len1, len2)
 
     if(Math.min(len1, len2) < 2) { return 0 }
-
-    var len     = Math.max(len1, len2)
 
     var array1Bigrams = []
     var array2Bigrams = []
 
-    var candidate = new Array(2)
+    
 
     for(var i=1; i<len; i++) {
+
         if(i < len1) {
-            candidate[0] = array1[i-1]
-            candidate[1] = array1[i]
+            var candidate = array1.slice(i-1, i+1) //[array1[i-1], array1[i]]
             if(!help.contains(array1Bigrams, candidate)) {
-                array1Bigrams.push(candidate.slice(0))    
+                array1Bigrams.push(candidate)    
             }
-            
         }
         if(i < len2) {
-            candidate[0] = array2[i-1]
-            candidate[1] = array2[i]
+            var candidate = array2.slice(i-1, i+1) //[array2[i-1], array2[i]]
             if(!help.contains(array2Bigrams, candidate)) {
-                array2Bigrams.push(candidate.slice(0))    
+                array2Bigrams.push(candidate)    
             }
         }
     }
 
 
-    var intersectNum = help.intersectNumDes(
+    var intersectNum = help.intersectNum(
         array1Bigrams, 
         array2Bigrams
     );
-
+    //log(array1Bigrams, array2Bigrams, intersectNum)
     return intersectNum/(array1Bigrams.length + array2Bigrams.length - intersectNum)
 
 

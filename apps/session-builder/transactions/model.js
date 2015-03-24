@@ -220,7 +220,7 @@ Model.prototype.txnsForTraining = function(done) {
 	this._getAllTxns(false, done)
 }
 Model.prototype.txns = function(done) {
-	this._txns('select * from txn_item_groups_original', done)
+	this._txns('select * from txn_item_groups_original order by txn_id asc', done)
 }
 
 Model.prototype._txns = function(sql, done, validation) {

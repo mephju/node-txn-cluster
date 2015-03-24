@@ -1,7 +1,7 @@
 function EvalConfigProd() {
 	this.markovOrders = [1,2,3]
 	this.xValidationRuns = [0,1,2]
-	this.distanceMeasures = ['jaccard-bigram', 'jaccard-levenshtein']
+	this.distanceMeasures = ['levenshtein', 'jaccard', 'jaccard-bigram', 'jaccard-levenshtein']
 	this.itemChoiceStrategies = ['tfidf', 'bestItemsOfCluster', 'bestItemsOverall', 'tfTfidf', 'random', 'withRatings']
 	this.datasets = [{ 
 		dataset: app.datasets.movielensCustom, 
@@ -30,7 +30,8 @@ function EvalConfigProd() {
 function EvalConfigDev() {
 	this.markovOrders = [1]
 	this.xValidationRuns = [0]
-	this.distanceMeasures = ['levenshtein']
+	this.distanceMeasures = ['levenshtein', 'jaccard', 'jaccard-bigram', 'jaccard-levenshtein']
+	this.distanceMeasures = ['jaccard-bigram']
 	this.itemChoiceStrategies = ['tfidf']
 	
 	this.datasets = [{ 
@@ -41,7 +42,7 @@ function EvalConfigDev() {
 	this.datasets = [
 		{ 
 			dataset: app.datasets.movielensCustom, 
-			txnCount: 1000,
+			txnCount: 2000,
 		},
 		// { 
 		// 	dataset: app.datasets.lastFmSmall, 

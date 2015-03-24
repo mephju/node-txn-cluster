@@ -1,3 +1,7 @@
+if(!process.env.BASE_PATH) {
+	process.env.BASE_PATH = '/stuff/datamining/'
+}
+
 global.log 				= require('./log')
 
 

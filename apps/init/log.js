@@ -6,6 +6,9 @@
 var log = function(){
 	console.log.apply(this, arguments)
 }
+log.write = function(arg) {
+	process.stdout.write(arg)
+}
 log.colored = function(color, args) {
 	var array = [];
 	for(var i=0; i<args.length; i++) {

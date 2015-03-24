@@ -8,7 +8,7 @@ function DistanceModel(dataset) {
 	
 	this.insertCount = 0
 	this.tableName = this.dataset.name + '_' + this.dataset.config.DISTANCE_MEASURE.replace(/-/g, '_')
-	
+	log.cyan('DistanceModel', 'going to get distances from', this.tableName)
 	this.db = mysql.createConnection({
 		host: 'localhost',
 		user: mysqlConfig.user,
