@@ -9,12 +9,22 @@ function DistanceModel(dataset) {
 	this.insertCount = 0
 	this.tableName = this.dataset.name + '_' + this.dataset.config.DISTANCE_MEASURE.replace(/-/g, '_')
 	log.cyan('DistanceModel', 'going to get distances from', this.tableName)
-	this.db = mysql.createConnection({
+	this.dbConfig = {
 		host: 'localhost',
 		user: mysqlConfig.user,
 		password: mysqlConfig.pass,
 		database: mysqlConfig.db
-	});
+	}
+	this.db = mysql.createPool(dbConfig);
+
+	db.on('error', function(err) {
+		log.red('distancemodel mysql error', err)
+		if(err.code === 'PROTOCOL_CONNECTION_LOST') { 
+			this.db.createPool(this.dbConfig)                         
+		} else {                                      
+			throw err;                                  
+		}
+	}.bind(this))
 }
 
 DistanceModel.prototype = Object.create(app.Model.prototype, {
