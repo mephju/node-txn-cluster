@@ -15,7 +15,7 @@ function DistanceModel(dataset) {
 		password: mysqlConfig.pass,
 		database: mysqlConfig.db
 	}
-	this.db = mysql.createPool(dbConfig);
+	this.db = mysql.createPool(this.dbConfig);
 
 	db.on('error', function(err) {
 		log.red('distancemodel mysql error', err)
