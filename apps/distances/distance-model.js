@@ -17,7 +17,7 @@ function DistanceModel(dataset) {
 	}
 	this.db = mysql.createPool(this.dbConfig);
 
-	db.on('error', function(err) {
+	this.db.on('error', function(err) {
 		log.red('distancemodel mysql error', err)
 		if(err.code === 'PROTOCOL_CONNECTION_LOST') { 
 			this.db.createPool(this.dbConfig)                         
