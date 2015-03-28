@@ -1,7 +1,5 @@
 require('../init')
-
-
-var trainer 			= require('./trainer')
+var clustering = require('./clustering')
 
 
 var buildTrainingConfigs = function() {
@@ -13,17 +11,16 @@ var buildTrainingConfigs = function() {
 
 		evalConfig.datasets,
 		evalConfig.distanceMeasures,
-		evalConfig.markovOrders,
 		evalConfig.xValidationRuns,
 
-		function(datasetRaw, measure, order, run) {
+		function(datasetRaw, measure, run) {
 			
 			var original = datasetRaw.dataset 
 			var dataset = new original.constructor(original.filepath, original.name)
 			
 			var configOptions = {
 				distanceMeasure: measure,
-				markovOrder: order,
+				markovOrder: 1, //irrelevant here because we are just clustering, not building markov chains
 				crossValidationRun: run,
 				txnCount: datasetRaw.txnCount,
 			}
@@ -58,7 +55,7 @@ var startTraining = function() {
 	async.eachChain(
 		trainingRuns,
 		function(dataset, next) {
-			trainer.trainRecommender(dataset, next)
+			cluster(dataset, next)
 		},
 		function(next) {
 			log.green('finished training session based recommender')
@@ -70,6 +67,26 @@ var startTraining = function() {
 		}
 	);
 
+}
+
+
+var cluster = function(dataset, done) {
+	log('trainer.cluster')
+	async.waterfall([
+		function(next) {
+			clustering.buildClusters(dataset, next)
+		},
+		function(clusters, next) {
+			log.green('clusters have been built')
+			// read clusters from db again so we can remove 
+			// the previous step if we want to skip it
+			clustering.buildClustersFromDb(dataset, next)
+		},
+		function(clusters, next) {
+			log.green('finished training the recommender')
+			done()
+		}
+	], done)
 }
 
 

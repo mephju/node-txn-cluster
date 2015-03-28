@@ -1,3 +1,7 @@
+var Cluster = require('./cluster')
+var ClusterGroup = require('./cluster-group')
+var Distance  = require('../similarity').Distance
+var DistanceModel = require('../../distances/DistanceModel')
 
 
 function Model(dataset) {
@@ -32,45 +36,45 @@ exports.Model = Model
 Model.prototype.buildClustersFromDb = function(done) {
 	log('buildClustersFromDb')
 
-	var Cluster = require('./cluster')
-	var ClusterGroup = require('./cluster-group')
-	var Distance  = require('../similarity').Distance
-
-	var distanceMeasure = new Distance(this.dataset)
-
-	var clusters = null
-
 	var model = this
 
 	async.wfall([
-
 		function(next) {
 			this.getCentroidRows(next) 
 		},
-		function(centroidRows) {
-			console.log('buildClustersFromDb', centroidRows.length)			
-			
-			var clusters = centroidRows.map(function(centroidRow) {
-				return new Cluster(centroidRow, distanceMeasure)
-			})
-			
-			async.eachSeries(
-				clusters,
-				function(cluster, next) {
-					var clusterId = cluster.centroidRow['cluster_id']
-					model.getClusterMembers(clusterId, function(err, members) {
-						cluster.members = members
-						next(err, null)
-					})	
-				},
-				function(err) {
-					clusters = new ClusterGroup(clusters)		
-					done(err, clusters)	
-				}
-			);
-		
+		function(centroidRows, next) {
+			console.log('buildClustersFromDb', centroidRows.length)							
+			model.createClusterGroup(centroidRows, done)
 		}
 	], this, done) 
+}
+
+Model.prototype.createClusterGroup = function(centroidRows, done) {
+	var distanceMeasure = new Distance(this.dataset)
+	var distanceModel = new DistanceModel(this.dataset)
+	var clusters = new ClusterGroup(this.dataset)	
+
+	var model = this
+
+	async.eachChain(
+		centroidRows,
+		function(centroidRow, next) {
+			var clusterId = centroidRow['cluster_id']
+			this.centroidRow = centroidRow
+			model.getClusterMembers(clusterId, next)
+		},
+		function(members, next) {
+			var cluster = new Cluster(this.centroidRow, distanceMeasure, distanceModel) 
+			cluster.members = members
+			clusters.addCluster(cluster)
+			cluster.init(next)
+			
+		},
+		function(next) {
+			done(null, clusters)
+		},
+		done
+	);
 }
 
 

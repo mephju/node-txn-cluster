@@ -7,6 +7,7 @@ var ClusterModel	= require('./model').Model
 
 
 exports.buildClustersFromDb = function(dataset, done) {
+	log('buildClustersFromDb', dataset.name)
 	new ClusterModel(dataset).buildClustersFromDb(done)
 }
 

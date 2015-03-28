@@ -10,7 +10,6 @@ var ClusterGroup = function(dataset) {
 	this.clusters = []
 	this.isIterationNeeded = true
 	this.dataset = dataset
-	this.mostRecentConstellations = []
 }
 
 
@@ -20,10 +19,28 @@ var ClusterGroup = function(dataset) {
  * @return {[type]}        [description]
  */
 ClusterGroup.prototype.findBestMatch = function(txnRow) {
-	var matchIdx = this.findBestMatchSeq(txnRow['item_ids'])
-	if(matchIdx === -1) return null
+	var bestMatch = {
+		distance: 1,
+		idx: -1
+	}
+
+	for (var i=0; i<this.clusters.length; i++) {
+		var c = this.clusters[i]
+		
+		var distance 	= c.distanceFast(txnRow)		
+
+		if(distance < bestMatch.distance) {
+			bestMatch.distance	= distance
+			bestMatch.cluster 	= c
+			bestMatch.id 		= c.centroidRow['txn_id']
+			bestMatch.idx 		= i
+		}	
+	}
+
+
+	if(bestMatch.idx === -1) return null
 	//console.log('findBestMatch', matchIdx)
-	return this.clusters[matchIdx]
+	return this.clusters[bestMatch.idx]
 }
 
 
@@ -36,6 +53,7 @@ ClusterGroup.prototype.findBestMatch = function(txnRow) {
  */
 ClusterGroup.prototype.findBestMatchSeq = function(txn) {
 
+	//log('findBestMatchSeq', txn.slice(0,10).toString(), this.clusters.length)
 	var bestMatch = {
 		distance: 1,
 		idx: -1
@@ -45,7 +63,7 @@ ClusterGroup.prototype.findBestMatchSeq = function(txn) {
 		var c = this.clusters[i]
 		
 		var distance 	= c.distance(txn)		
-
+		//log('findBestMatchSeq', distance)
 		if(distance < bestMatch.distance) {
 			bestMatch.distance	= distance
 			bestMatch.cluster 	= c

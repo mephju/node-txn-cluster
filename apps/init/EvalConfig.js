@@ -14,14 +14,14 @@ function EvalConfigProd() {
 	// 	txnCount: 200 
 	// }]
 	this.datasets = [
-		{
-			dataset: app.datasets.movielens,
-			txnCount:0
-		}, 
 		// {
-		// 	dataset: app.datasets.lastFm,
+		// 	dataset: app.datasets.movielens,
 		// 	txnCount:0
-		// },
+		// }, 
+		{
+			dataset: app.datasets.lastFm,
+			txnCount:0
+		},
 		// {
 		// 	dataset: app.datasets.gowalla,
 		// 	txnCount:0
@@ -30,7 +30,7 @@ function EvalConfigProd() {
 }
 
 function EvalConfigDev() {
-	this.markovOrders = [1]
+	this.markovOrders = [1,2,3]
 	this.xValidationRuns = [0]
 	this.distanceMeasures = ['levenshtein', 'jaccard', 'jaccard-bigram', 'jaccard-levenshtein']
 	this.distanceMeasures = ['jaccard-bigram']

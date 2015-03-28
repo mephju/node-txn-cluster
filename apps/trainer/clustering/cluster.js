@@ -5,7 +5,24 @@ var Cluster = function(centroidRow, distanceMeasure, distanceModel) {
 	this.members 		= [centroidRow]
 	this.distanceMeasure = distanceMeasure
 	this.distanceModel 	= distanceModel
+
 }
+
+
+
+Cluster.prototype.init = function(done) {
+	async.wfall([
+		function(next) {
+			this.distanceModel.getDistances(this.centroidRow, next)
+		},
+		function(distances, next) {
+			this.distancesOfCentroid = distances
+			done()
+		}
+	], this, done)
+}
+
+
 
 // Cluster.prototype.id = function() {
 // 	return this.centroidRow['txn_id']
@@ -16,6 +33,9 @@ Cluster.prototype.addMember = function(txnRow) {
 }
 
 
+Cluster.prototype.distanceFast = function(txnRow) {
+	return this.distancesOfCentroid[txnRow['txn_id']-1]
+}
 
 Cluster.prototype.distance = function(txn) {
 	return this.distanceMeasure.distance(
@@ -54,7 +74,7 @@ Cluster.prototype.recomputeCentroid = function(done) {
 				changed = true
 			}
 
-			console.log('recomputed Centroid with length', this.members.length, 'found minIdx', minIdx, 'changed', changed, nextCentroid['txn_id'])
+			console.log('recomputed Centroid with num members', this.members.length, 'found minIdx', minIdx, 'changed', changed, nextCentroid['txn_id'])
 			
 			done(null, changed)		
 		}

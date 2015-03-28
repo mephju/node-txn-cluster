@@ -2,7 +2,7 @@
 var Cluster 		= require('./cluster')
 var ClusterGroup 	= require('./cluster-group')
 var Distance 		= require('../similarity').Distance
-var DistanceModel = require('../../distances/distance-model') 
+var DistanceModel = require('../../distances/DistanceModel') 
 
 
 
@@ -51,7 +51,7 @@ Clustering.prototype.cluster = function(done) {
  * @return {[type]}          [description]
  */
 Clustering.prototype.clusterIterate = function(done) {
-	log('clusterIterate ', this.txnRows.length)
+	log('clusterIterate with num txns', this.txnRows.length)
 	log.green('clusterIterate isIterationNeeded', this.clusters.isIterationNeeded)
 	if(!this.clusters.isIterationNeeded) {
 		this.clusters.cleanUp()
@@ -62,25 +62,47 @@ Clustering.prototype.clusterIterate = function(done) {
 	this.clusters.clearMembers()
 	var txnRows = this.txnRows
 
-	for(var i=0, len=txnRows.length; i<len; i++) {
+	// for(var i=0, len=txnRows.length; i<len; i++) {
+	// 	process.stdout.write('-')
+	// 	var txnRow = txnRows[i]
+	// 	var c = this.clusters.findBestMatch(txnRow)
 		
-		var txnRow = txnRows[i]
-		var c = this.clusters.findBestMatch(txnRow)
-		
-		if(c) { 	
-			c.addMember(txnRow) 
-		} 
-		else {
-			this.clusters.addCluster(new Cluster(
-				txnRow, 
-				this.distanceMeasure, 
-				this.distanceModel
-			));
-		}
-	}
+	// 	if(c) { 	
+	// 		c.addMember(txnRow) 
+	// 	} 
+	// 	else {
+	// 		this.clusters.addCluster(new Cluster(
+	// 			txnRow, 
+	// 			this.distanceMeasure, 
+	// 			this.distanceModel
+	// 		));
+	// 	}
+	// }
 	
 	async.wfall([
-		function(next) {		
+		function(next) {
+			async.eachSeries(
+				txnRows,
+				function(txnRow, next) {
+					process.stdout.write('-')
+					var c = this.clusters.findBestMatch(txnRow)
+					if(c) { 	
+						c.addMember(txnRow) 
+						return next()
+					} 
+					var c = new Cluster(
+						txnRow, 
+						this.distanceMeasure, 
+						this.distanceModel
+					);
+					this.clusters.addCluster(c)
+					c.init(next)
+				}.bind(this),
+				next
+			);
+		},
+		function(next) {
+			this.clusters.cleanUp()		
 			this.clusters.recomputeCentroids(next)
 		},
 		function() {
