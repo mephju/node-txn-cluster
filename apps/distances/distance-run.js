@@ -1,6 +1,6 @@
 var TxnModel 		= require('../session-builder/transactions/model').Model
 var Distance 		= require('../trainer/similarity').Distance
-var DistanceModel 	= require('./distance-model')
+var DistanceModel 	= require('./DistanceModel')
 
 
 function DistanceRun(dataset) {
