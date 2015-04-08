@@ -1,4 +1,4 @@
-var numRecomm 	= require('./num-recomm')
+var NumRec 	= require('./num-recomm').NumRec
 var Recommender = require('../recommender')
 
 
@@ -10,6 +10,9 @@ function SessionBasedRecommender(params) {
 	this.clusters = params.clusters
 	this.itemChoice = params.itemChoice
 	this.fallbackItems = params.fallbackItems
+	this.numRec = new NumRec(params.dataset)
+
+
 	/**
 	 * Important for finding cluster transitions when markov chain order > 1
 	 * In that case the new contributing clusters are chosen depending on which clusters were chosen last
@@ -26,7 +29,6 @@ SessionBasedRecommender.prototype = Object.create(Recommender.prototype, {
 
 
 SessionBasedRecommender.prototype.recommend = function(session) {
-	//log('recommend', session)
 	var config = this.dataset.config
 	var centroidId = this.clusters.findBestMatchSeq(session, true)	
 
@@ -34,10 +36,13 @@ SessionBasedRecommender.prototype.recommend = function(session) {
 
 	var topClusters = this.markovInfo.getTopClusters(config.N, this.lastClusters)
 	if(topClusters.length === 0) {
+		log.write('f')
 		return this.fallbackItems
 	}
+
+	log.write('r')
 	
-	var topClusters = numRecomm.computeNumRecomms(topClusters)
+	var topClusters = this.numRec.computeNumRecomms(topClusters)
 
 	topClusters.sort(help.objCmp)
 	
@@ -53,7 +58,7 @@ SessionBasedRecommender.prototype.recommend = function(session) {
 			recommendations.push(this.fallbackItems[i])
 		}
 	}
-	//console.log('recommendations', recommendations.length)
+
 	return recommendations
 }
 
@@ -80,14 +85,15 @@ SessionBasedRecommender.prototype._updateLastClusters = function(centroidId, las
 
 
 SessionBasedRecommender.prototype._getRecommendations = function(topClusters) {
-	//console.log('getRecommendations', topClusters)
+
 	var recomms = []
+	var _this = this
 	topClusters.forEach(function(topCluster) {
-		//console.log(topCluster)
+
 		if(topCluster.idx === '-1') { return }
-		var cluster 	= this.clusters.clusters[topCluster.idx]
+		var cluster 	= _this.clusters.clusters[topCluster.idx]
 		var centroidId 	= cluster.centroidRow['cluster_id']
-		var items 		= this.itemChoice.getBestItems(topCluster.numRecomms, centroidId)
+		var items 		= _this.itemChoice.getBestItems(topCluster.numRecomms, centroidId)
 			
 		items.forEach(function(item) {
 			recomms.push(item)

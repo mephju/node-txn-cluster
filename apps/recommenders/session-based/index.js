@@ -27,6 +27,7 @@ exports.create = function(dataset, fallbackItems, done) {
 			new MarkovChain(dataset).getMarkovChain(next)
 		},
 		function(markovChain, next) {
+			log.blue('create markovInfo')
 			params.markovInfo = new MarkovInfo(markovChain)
 			var sessionRecommender = new SessionBasedRecommender(params)
 			done(null, sessionRecommender)

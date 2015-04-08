@@ -1,4 +1,4 @@
-
+	
 var sqlite3		= require('sqlite3').verbose()
 
 
@@ -60,8 +60,8 @@ ItemChoice.prototype.fetchMembers = function(clusters, done) {
 				members[i] = member['item_id']
 			})
 			_this.memberStore[clusterId] = members
-			log('members', members)
-			done(null)
+			//log('members', members)
+			next()
 		},
 		done
 	);
@@ -82,19 +82,16 @@ ItemChoice.prototype.fetchMembers = function(clusters, done) {
  */
 
 ItemChoice.prototype.getBestItems = function(numRecomms, clusterId) {
-	if(this.strategy === 'random') {
-		return this.getRandomItems(numRecomms, clusterId)
-	}
 	return this.memberStore[clusterId].slice(0, numRecomms)
 }
 
-ItemChoice.prototype.fetchMembersById = function(clusterId, done) {
-	console.log('fetchMembersById', clusterId)
-	var strategy = this
-	async.waterfall([
+// ItemChoice.prototype.fetchMembersById = function(clusterId, done) {
+// 	console.log('fetchMembersById', clusterId)
+// 	var strategy = this
+// 	async.waterfall([
 		
-	], done)
-}
+// 	], done)
+// }
 
 
 /**

@@ -1,19 +1,13 @@
+function NumRec(dataset) {
+	this.dataset = dataset
+	this.config = this.dataset.config
+}
 
 
-
-
-
-
-
-
-var computeNumRecomms = function(topClusters) {
-	//console.log('computeNumRecomms', topClusters.length, topClusters)
-	//topClusters.sort(help.objCmp)
-	// console.log('computeNumRecomms')
-	// console.log(topClusters)
+NumRec.prototype.computeNumRecomms = function(topClusters) {
 
 	if(topClusters.length === 1) {
-		topClusters[0].numRecomms = config.N
+		topClusters[0].numRecomms = this.config.N
 		return topClusters
 	}
 
@@ -22,11 +16,10 @@ var computeNumRecomms = function(topClusters) {
 	}).sum
 
 
-	topClusters = reduceToMax(topClusters, totalSum)
+	topClusters = this.reduceToMax(topClusters, totalSum)
 	topClusters.forEach(function(item) {
-		//console.log(item.sum, totalSum, item)
-		item.numRecomms 	= Math.round(item.sum / totalSum * config.N)
-	})
+		item.numRecomms 	= Math.round(item.sum / totalSum * this.config.N)
+	}.bind(this))
 	
 	return topClusters
 }
@@ -36,10 +29,8 @@ var computeNumRecomms = function(topClusters) {
 
 
 
-var reduceToMax = function(topClusters, totalSum) {
-	// console.log('reduceToMax')
-	// console.log(topClusters)
-	// console.log('')
+NumRec.prototype.reduceToMax = function(topClusters, totalSum) {
+
 	var reduced = false;
 
 	for(var i=0; i<topClusters.length; i++) {
@@ -47,9 +38,9 @@ var reduceToMax = function(topClusters, totalSum) {
 		var item = topClusters[i]
 
 		// +0.1 is needed due to Javascript's faulty floating point calculations.
-		if((item.sum / totalSum) > config.MAX_CONTRIBUTION + 0.1) {
-			//console.log('need to reduce')
-			topClusters = reduceOne(topClusters, totalSum, i)
+		if((item.sum / totalSum) > this.config.MAX_CONTRIBUTION + 0.1) {
+	
+			topClusters = this.reduceOne(topClusters, totalSum, i)
 			
 			totalSum = topClusters.reduce(function(left, right) {
 				return { sum: left.sum+right.sum }
@@ -60,7 +51,7 @@ var reduceToMax = function(topClusters, totalSum) {
 	}
 
 	if(reduced) {
-		return reduceToMax(topClusters, totalSum)
+		return this.reduceToMax(topClusters, totalSum)
 	}
 	return topClusters
 }
@@ -68,9 +59,9 @@ var reduceToMax = function(topClusters, totalSum) {
 
 
 
-var reduceOne = function(topClusters, totalSum, i) {
-	var max = Math.round(totalSum * config.MAX_CONTRIBUTION)
-	//console.log(totalSum, config.MAX_CONTRIBUTION, max)
+NumRec.prototype.reduceOne = function(topClusters, totalSum, i) {
+	var max = Math.round(totalSum * this.config.MAX_CONTRIBUTION)
+
 	var item = topClusters[i]
 	var diff = item.sum - max
 	item.sum = max
@@ -88,9 +79,10 @@ var reduceOne = function(topClusters, totalSum, i) {
 	return topClusters
 }
 
-exports.computeNumRecomms = computeNumRecomms
-exports.test = {
-	computeNumRecomms : computeNumRecomms,
-	reduceToMax : reduceToMax,
-	reduceOne : reduceOne
-}
+exports.NumRec = NumRec
+//exports.computeNumRecomms = computeNumRecomms
+// exports.test = {
+// 	computeNumRecomms : computeNumRecomms,
+// 	reduceToMax : reduceToMax,
+// 	reduceOne : reduceOne
+// }

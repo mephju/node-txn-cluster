@@ -23,8 +23,10 @@
  * @param {[type]} markovChain [description]
  */
 function MarkovInfo(markovChain) {
-	this.markovChain = computeMcSums(markovChain)
 	
+	this.markovChain = markovChain
+	computeMcSums(markovChain)
+	// log.blue('MarkovInfo', this.markovChain)
 }
 
 
@@ -54,11 +56,12 @@ MarkovInfo.prototype.getTopClusters = function(N, lastClusters) {
 				idx:key,
 				sum: isNaN(value) ? value.sum : value
 			}
-			_addTopCluster(candidate, this.markovChain.dataset.config.N, topClusters)
+			// _addTopCluster(candidate, this.markovChain.dataset.config.N, topClusters)
+			_addTopCluster(candidate, N, topClusters)
 		}
 			
 	}
-
+	//log(topClusters)
 	return topClusters
 }
 
@@ -131,6 +134,7 @@ var getMinIdx = function(topClusters) {
  */
 var computeMcSums = function(value) {
 
+	log.write('c')
 	var sum = 0
 	for(var key in value) {
 		var subvalue = value[key]
@@ -141,6 +145,7 @@ var computeMcSums = function(value) {
 		}
 	}
 	value.sum = sum
+
 
 	return sum
 }

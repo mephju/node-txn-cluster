@@ -13,6 +13,8 @@ function MarkovChain(dataset) {
 		+ '-markov-order-' + dataset.config.MARKOV_ORDER
 		+ '-markov-chain.json'
 	this.N_GRAM_SIZE = dataset.config.MARKOV_ORDER + 1
+
+	log.cyan('MarkovChain', 'order', this.dataset.config.MARKOV_ORDER)
 }
 
 exports.MarkovChain = MarkovChain
