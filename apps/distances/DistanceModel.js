@@ -116,7 +116,7 @@ DistanceModel.prototype.insert = function(txnRow, distances, done) {
 	process.stdout.write('insert all distances of ' + txnRow['txn_id'])
 	this.insertCount++
 	
-	if((this.insertCount % 10) === 0) {
+	if((this.insertCount % 5) === 0) {
 		this.db.query('COMMIT', function(err) {
 			if(err) log.red(err)
 		})
