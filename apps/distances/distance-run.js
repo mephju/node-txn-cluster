@@ -1,4 +1,4 @@
-var TxnModel 		= require('../session-builder/transactions/model').Model
+var TxnModel 		= app.models.TxnModel
 var Distance 		= require('../trainer/similarity').Distance
 var DistanceModel 	= require('./DistanceModel')
 

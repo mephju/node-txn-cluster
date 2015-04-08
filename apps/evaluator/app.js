@@ -1,8 +1,9 @@
+require('../init')
 var run = require('./run')
-var TxnModel = require('../session-builder/transactions/model').Model
-var EvalModel = require('./EvalModel')
+var TxnModel = app.models.TxnModel
+var EvalModel = app.models.EvalModel
 
-var recommenders 		= require('./recommenders')
+var recommenders 		= require('../recommenders')
 
 
 var evaluate = function(dataset, recommender, done) {
@@ -14,9 +15,11 @@ var evaluate = function(dataset, recommender, done) {
 			new TxnModel(dataset).txnsForValidation(next)					
 		},
 		function(txnRows, next) {
+			log.blue('got txnrows')
 			var evalRun = new run.Run(dataset, recommender, txnRows)
 			var precision = evalRun.start()
 			bag.precision = precision
+			log.blue('got precision', precision, dataset.name)
 			new EvalModel(dataset).insert(precision, next)
 			
 		},
@@ -41,9 +44,9 @@ var configureRuns = function() {
 		evalConfig.xValidationRuns,
 
 		function(datasetRaw, measure, order, strategy, run) {
-			
+			log.yellow('configuring', datasetRaw.name, measure, order, strategy, run)
 			var original = datasetRaw.dataset 
-			var dataset = new original.constructor(original.filepath, original.name)
+			
 			
 			var configOptions = {
 				distanceMeasure: measure,
@@ -52,7 +55,14 @@ var configureRuns = function() {
 				txnCount: datasetRaw.txnCount,
 			}
 
-			dataset.config = new app.Config(configOptions)		
+			var dataset = new original.constructor(
+				original.filepath, 
+				original.name				
+			);
+
+			dataset.config = new app.Config(configOptions)
+			
+
 			evaluationRuns.push(dataset)
 		}
 	);
@@ -64,6 +74,8 @@ var configureRuns = function() {
 
 
 var start = function() {
+
+	log('evaluator app start')
 	
 	var evaluationRuns = configureRuns()
 	var bag = {}

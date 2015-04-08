@@ -1,7 +1,7 @@
 
 var TxnModel 		= require('../../session-builder/transactions/model').Model
 var Clustering		= require('./Clustering')
-var ClusterModel	= require('./model').Model
+var ClusterModel	= require('./model')
 
 
 
@@ -15,7 +15,7 @@ exports.buildClusters = function(dataset, done) {
 	log('buildClusters')
 	var txnRows 		= null
 	var clusterModel 	= new ClusterModel(dataset)
-	var txnModel 		= new TxnModel(dataset)
+	var txnModel 		= new app.models.TxnModel(dataset)
 	var clusters 		= null
 	
 

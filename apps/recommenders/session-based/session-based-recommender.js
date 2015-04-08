@@ -27,9 +27,10 @@ SessionBasedRecommender.prototype = Object.create(Recommender.prototype, {
 
 SessionBasedRecommender.prototype.recommend = function(session) {
 	//log('recommend', session)
+	var config = this.dataset.config
 	var centroidId = this.clusters.findBestMatchSeq(session, true)	
 
-	this.lastClusters = _updateLastClusters(centroidId, this.lastClusters)
+	this.lastClusters = this._updateLastClusters(centroidId, this.lastClusters)
 
 	var topClusters = this.markovInfo.getTopClusters(config.N, this.lastClusters)
 	if(topClusters.length === 0) {
@@ -65,10 +66,10 @@ SessionBasedRecommender.prototype.recommend = function(session) {
  * @param  {[type]} lastClusters [description]
  * @return {[type]}              [description]
  */
-var _updateLastClusters = function(centroidId, lastClusters) {
+SessionBasedRecommender.prototype._updateLastClusters = function(centroidId, lastClusters) {
 	
 	lastClusters.push(centroidId)
-
+	var config = this.dataset.config
 	var len = lastClusters.length
 	if(len > config.MARKOV_ORDER) {
 		return lastClusters.slice(len - config.MARKOV_ORDER)

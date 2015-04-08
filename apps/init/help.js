@@ -449,7 +449,7 @@ Array.prototype.push = function(item) {
 	 }
 }
 
-var getTrainingSetSize = function(db, done) {
+var getTrainingSetSize = function(dataset, db, done) {
 	async.waterfall([
 		function(next) {
 			db.get('SELECT count(*) as count FROM txns', next)
@@ -459,6 +459,7 @@ var getTrainingSetSize = function(db, done) {
 			next(null, row.count)
 		},
 		function(size, next) {
+			var config = dataset.config
 			var trainingSetSize = Math.floor(size*config.TRAINING_SET_SIZE)
 			log('getTrainingSetSize', size, '*', config.TRAINING_SET_SIZE, trainingSetSize)
 			done(null, trainingSetSize)

@@ -15,7 +15,7 @@ Model.prototype = Object.create(app.Model.prototype, {
 	constructor: Model
 })
 
-exports.Model = Model
+module.exports = Model
 
 Model.prototype.prefixTableName = function(run, name) {
 	return 'cross_validation_run_' + run + '_' + name
@@ -203,6 +203,7 @@ Model.prototype._getAllTxns = function(validation, done) {
 			var trainingSize = Math.floor(tableSize * this.dataset.config.TRAINING_SET_SIZE)
 			
 			log('TRAINING SET SIZE', this.dataset.config.TRAINING_SET_SIZE, trainingSize)
+			
 			var sql = 'SELECT DISTINCT txn_id, item_ids FROM ' + this.table.txnItemGroups + ' LIMIT ' + trainingSize
 			if(validation) {
 				sql = 'SELECT DISTINCT txn_id, item_ids FROM ' + this.table.txnItemGroups + ' LIMIT 999999999 OFFSET ' + trainingSize		
@@ -217,6 +218,7 @@ Model.prototype.txnsForValidation = function(done) {
 }
 
 Model.prototype.txnsForTraining = function(done) {
+	log('txnsForTraining')
 	this._getAllTxns(false, done)
 }
 Model.prototype.txns = function(done) {
@@ -224,6 +226,8 @@ Model.prototype.txns = function(done) {
 }
 
 Model.prototype._txns = function(sql, done, validation) {
+	
+	var config = this.dataset.config
 
 	async.waterfall([
 		function(next) {

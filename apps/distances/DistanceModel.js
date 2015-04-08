@@ -37,7 +37,7 @@ DistanceModel.prototype.getDistances = function(txnRow, done) {
 		'select distances from ' + this.tableName + ' where txn_id = ?', 
 		txnRow['txn_id'], 
 		function(err, results, fields) {
-			//log('getDistances got results', results)
+			log('getDistances got results',txnRow['txn_id'])
 			if(err) return done(err)
 			done(null, help.textToNumArray(results[0].distances))
 		}
@@ -116,8 +116,10 @@ DistanceModel.prototype.insert = function(txnRow, distances, done) {
 	process.stdout.write('insert all distances of ' + txnRow['txn_id'])
 	this.insertCount++
 	
-	if((this.insertCount % 20) === 0) {
-		this.db.query('COMMIT')
+	if((this.insertCount % 10) === 0) {
+		this.db.query('COMMIT', function(err) {
+			if(err) log.red(err)
+		})
 	}
 
 	
@@ -125,7 +127,7 @@ DistanceModel.prototype.insert = function(txnRow, distances, done) {
 		'INSERT INTO ' + this.tableName + ' VALUES(?, ?)', 
 		[txnRow['txn_id'], distances.toString()], 
 		function(err, result, fields) {
-			log('inserted')
+			log(' ... inserted')
 			
 			return done(err)
 		}

@@ -33,7 +33,7 @@ function EvalConfigDev() {
 	this.markovOrders = [1,2,3]
 	this.xValidationRuns = [0]
 	this.distanceMeasures = ['levenshtein', 'jaccard', 'jaccard-bigram', 'jaccard-levenshtein']
-	this.distanceMeasures = ['jaccard-bigram']
+	this.distanceMeasures = ['jaccard']
 	this.itemChoiceStrategies = ['tfidf']
 	
 	this.datasets = [{ 

@@ -1,0 +1,1 @@
+BASE_PATH=/home/kokirchn/thesis/ node /home/kokirchn/thesis/node-txn-cluster/apps/markov-chain-builder/app.js

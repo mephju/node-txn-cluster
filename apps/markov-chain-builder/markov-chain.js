@@ -3,9 +3,9 @@ var fs			= require('fs')
 
 
 
-function MarkovChain(dataset, transModel) {
+function MarkovChain(dataset) {
 	this.dataset = dataset
-	this.transModel = transModel
+	this.transModel = new app.models.TransitionModel(dataset)
 	this.filepath = dataset.resultPath 
 		+ dataset.name  
 		+ '-distance-' + dataset.config.DISTANCE_MEASURE
@@ -25,36 +25,38 @@ exports.MarkovChain = MarkovChain
  * @param  {Function} done    [description]
  * @return {[type]}           [description]
  */
-MarkovChain.getMarkovChain = function(dataset, done) {
+MarkovChain.prototype.getMarkovChain = function(done) {
 
-	async.waterfall([
+	async.wfall([
 		function(next) {
+			log.blue('getMarkovChain', this.filepath)
 			fs.readFile(this.filepath, 'utf8', next)
 		},
-		function(markovChain, next) {
-			markovChain = JSON.parse(markovChain)
+		function(markovChainString, next) {
+			markovChain = JSON.parse(markovChainString)
 			console.log('done reading markov chain')
 			done(null, markovChain)
 		}
-	], done)
+	], this, done)
 }
 
 
 MarkovChain.prototype.build = function(done) {
 	var mc = this
-	log('transMarkovChain.buildMarkovChain')
+	log('transMarkovChain.buildMarkovChain order', this.dataset.config.MARKOV_ORDER)
 	async.waterfall([
 		function(next) {
 			mc.transModel.getTransitions(next)
 		},
 		function(transitions, next) {
-			log.green(transitions.length)
+			log.green('num transitions', transitions.length)
 			mc.buildFromTransitions(transitions, next)
 		},
 		function(nGramCounts, next) {
 			fs.writeFile(mc.filepath, JSON.stringify(nGramCounts), next)
 		},
 		function(next) {
+			log.green('markov chain built', 'order', mc.dataset.config.MARKOV_ORDER)
 			done()
 		}
 

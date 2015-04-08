@@ -11,11 +11,13 @@ var create = function(dataset, done) {
 	
 	async.waterfall([
 		function(next) {
-			app.Model.getTrainingSetSize(next)
+			new app.models.TxnModel(dataset).txnsForTraining(next)
 		},
-		function(size, next) {
-			var sql = getPopularItemsSql(size)
-			db.all(sql, next)
+		function(txns, next) {
+			db.all(
+				getPopularItemsSql(txns.length, dataset), 
+				next
+			);
 		},
 		function(rows, next) {
 			var items = rows.map(function(row) {
@@ -34,9 +36,9 @@ exports.create = create
 //
 // get most popular items from the training set
 //
-var getPopularItemsSql = function(trainingSize) {
-	return 'select 	item_id, 	\
-				count(item_id) 	\
+var getPopularItemsSql = function(trainingSize, dataset) {
+	log('getPopularItemsSql')
+	return 'select 	item_id, count(item_id) 	\
 				as count 		\
 	from 		txn_items 		\
 	where 		txn_id  		\
@@ -47,5 +49,5 @@ var getPopularItemsSql = function(trainingSize) {
 	limit ' + 	trainingSize +')\
 	group by 	item_id			\
 	order by 	count desc  	\
-	limit ' 	+ config.N
+	limit ' 	+ dataset.config.N
 }

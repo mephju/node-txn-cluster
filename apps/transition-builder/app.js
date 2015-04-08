@@ -1,9 +1,5 @@
 require('../init')
 
-var TxnModel			= require('../session-builder/transactions/model').Model
-var TransitionModel		= require('./TransitionModel')
-
-var MarkovChain = require('./markov-chain').MarkovChain
 var transitions = require('./transitions')
 var clustering = require('../trainer/clustering')
 
@@ -15,10 +11,8 @@ var buildTrainingConfigs = function() {
 	var trainingRuns = []
 
 	help.comboCall(
-
 		evalConfig.datasets,
 		evalConfig.distanceMeasures,
-		evalConfig.markovOrders,
 		evalConfig.xValidationRuns,
 
 		function(datasetRaw, measure, order, run) {
@@ -57,12 +51,12 @@ var buildTransitions = function() {
 		trainingRuns,
 		function(dataset, next) {		
 			bag.dataset = dataset
-			bag.transModel 	= new TransitionModel(dataset)
+			bag.transModel 	= new app.models.TransitionModel(dataset)
 			bag.transModel.init(next)
 		},
 		function(next) {
 			log('buildTransitions', 'init done')
-			new TxnModel(bag.dataset).getClusteredTxns(next)
+			new app.models.TxnModel(bag.dataset).getClusteredTxns(next)
 		},
 		function(txnRows, next) {
 			log('buildTransitions', 'getClusteredTxns done')
@@ -70,18 +64,17 @@ var buildTransitions = function() {
 			clustering.buildClustersFromDb(bag.dataset, next)
 		},
 		function(clusters, next) {
-			log.green(clusters)
-			log('buildTransitions', 'buildClustersFromDb done, clusters.length', clusters.length)
+			log('buildTransitions', 'buildClustersFromDb done, clusters.length', clusters.clusters.length)
 			transitions.findTransitions(bag.transModel, clusters, bag.txnRows, next)
-		},
-		function(next) {
-			new MarkovChain(bag.dataset, bag.transModel).build(next)
 		},
 		function(err) {
 			log.yellow('finished building transitions', err || '')
 		}
 	);
 }
+
+
+
 
 
 buildTransitions()

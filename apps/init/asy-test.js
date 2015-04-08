@@ -21,4 +21,31 @@ describe('eachChain()', function() {
 			}
 		);
 	})
+
+	it('is called 3 times', function(done) {
+		var count = 0
+		asy.eachChain(
+			[1,2,3],
+			function(num, next){
+				count++
+				next(null, num, num)
+			},
+			function(num, num, next){
+				count++
+				next(null, num, num)
+			},
+			function(num, num, next){
+				count++
+				next(null, num, num)
+			},
+			function(num, num, next){
+				count++
+				next(null, num, num)
+			},
+			function(num, num, next) {
+				next()
+			},
+			done
+		);
+	})
 })

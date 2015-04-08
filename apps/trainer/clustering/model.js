@@ -25,7 +25,7 @@ function Model(dataset) {
 Model.prototype = Object.create(app.Model.prototype, {
 	constructor: { value: Model	}
 })
-exports.Model = Model
+module.exports =  Model
 
 
 
@@ -43,22 +43,26 @@ Model.prototype.buildClustersFromDb = function(done) {
 			this.getCentroidRows(next) 
 		},
 		function(centroidRows, next) {
-			console.log('buildClustersFromDb', centroidRows.length)							
-			model.createClusterGroup(centroidRows, done)
+			console.log('buildClustersFromDb centroidRows', centroidRows.length)							
+			model._createClusterGroup(centroidRows, done)
 		}
 	], this, done) 
 }
 
-Model.prototype.createClusterGroup = function(centroidRows, done) {
-	var distanceMeasure = new Distance(this.dataset)
-	var distanceModel = new DistanceModel(this.dataset)
-	var clusters = new ClusterGroup(this.dataset)	
+Model.prototype._createClusterGroup = function(centroidRows, done) {
+
+	log('_createClusterGroup', centroidRows.length)
+	
+	var distanceMeasure 	= new Distance(this.dataset)
+	var distanceModel 		= new DistanceModel(this.dataset)
+	var clusters 			= new ClusterGroup(this.dataset)	
 
 	var model = this
 
 	async.eachChain(
 		centroidRows,
 		function(centroidRow, next) {
+			log.write('c')
 			var clusterId = centroidRow['cluster_id']
 			this.centroidRow = centroidRow
 			model.getClusterMembers(clusterId, next)
@@ -68,12 +72,14 @@ Model.prototype.createClusterGroup = function(centroidRows, done) {
 			cluster.members = members
 			clusters.addCluster(cluster)
 			cluster.init(next)
-			
 		},
 		function(next) {
-			done(null, clusters)
+			next(null)
 		},
-		done
+		function(err) {
+			log(clusters.clusters.length)
+			done(err, clusters)
+		}
 	);
 }
 

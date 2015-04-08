@@ -1,13 +1,13 @@
 var ClusterGroup		= require('../../trainer/clustering/cluster-group')
-var MarkovChain 		= require('../../trainer/transition-builder/markov-chain').MarkovChain
-var MarkovInfo 			= require('../../trainer/transition-builder/markov-info').MarkovInfo
+var MarkovChain 		= require('../../markov-chain-builder/markov-chain').MarkovChain
+var MarkovInfo 			= require('../../markov-chain-builder/markov-info').MarkovInfo
 var ItemChoice 			= require('./item-choice')
 var clustering 			= require('../../trainer/clustering')
 var SessionBasedRecommender = require('./session-based-recommender')
 
 
 exports.create = function(dataset, fallbackItems, done) {
-	console.log('init recommender')
+	log('init session based recommender')
 
 	var params = {
 		dataset: dataset,
@@ -24,7 +24,7 @@ exports.create = function(dataset, fallbackItems, done) {
 			params.itemChoice.init(next)
 		},
 		function(next) {
-			MarkovChain.getMarkovChain(dataset, next)
+			new MarkovChain(dataset).getMarkovChain(next)
 		},
 		function(markovChain, next) {
 			params.markovInfo = new MarkovInfo(markovChain)

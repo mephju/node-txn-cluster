@@ -19,6 +19,8 @@ function Dataset(filepath, name, _config) {
 	this.separator = null
 	this.timeDistance = 0
 	this.indices = null
+	
+
 }
 
 

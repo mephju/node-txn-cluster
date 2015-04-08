@@ -18,12 +18,30 @@ global.DEV 				= process.env.BASE_PATH.indexOf('/stuff/datamining') !== -1
 
 
 global.app = {
-	datasets: 	require('./datasets'),
 	Config: 	require('./Config'),
 	Model: 		require('./Model'),
 	EvalConfig: require('./EvalConfig'),
-	comboCall: 	require('./combo-call').comboCall
+	comboCall: 	require('./combo-call').comboCall,
 }
+
+app.datasets = require('./datasets')
+
+app.models = {
+	TxnModel: 			require('../session-builder/transactions/model'),
+	ClusterModel: 		require('../trainer/clustering/model'),		
+	EvalModel: 			require('../evaluator/EvalModel'),
+	TransitionModel:  	require('../transition-builder/TransitionModel'),
+}
+
+
+
+
+
+log('app init done')
+
+
+
+
 
 
 

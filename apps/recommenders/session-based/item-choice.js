@@ -10,8 +10,10 @@ function ItemChoice(dataset) {
 	this.memberStore = {}
 	this.sql = null
 	this.strategy = dataset.config.ITEM_CHOICE_STRATEGY
+
+	this.makeSql()
 	
-	switch(strategy) {
+	switch(this.strategy) {
 		case 'tfTfidf':					this.sql = this.db.prepare(this.sqlWithTfTfidf);			break;
 		case 'tfidf':					this.sql = this.db.prepare(this.sqlWithTfidf);			break;
 		case 'bestItemsOfCluster':		this.sql = this.db.prepare(this.sqlBestItemsOfCluster);	break;
@@ -121,7 +123,7 @@ ItemChoice.prototype.getRandomItems = function(numRecomms, clusterId) {
 // 	order by 	cluster_id ASC, count DESC  \
 // 	limit ' 	+ config.N
 // 	
-ItemChoice.prototype.sql = function() {
+ItemChoice.prototype.makeSql = function() {
 
 	var table = {
 		clusters: 			this.dataset.prefixTableName('clusters'),

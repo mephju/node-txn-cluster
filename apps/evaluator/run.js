@@ -19,11 +19,14 @@ exports.Run = Run
  */
 
 Run.prototype.start = function() {
+	log.blue('Run.start')
 	var precisionSum = 0
 
 	for(var i=0; i<this.txnRows.length; i++) {
 		precisionSum += this._evalTxn(this.txnRows[i]['item_ids'])
 	}
+
+	log.blue('run finished')
 
 	return precisionSum / this.txnRows.length
 }
@@ -37,7 +40,7 @@ Run.prototype.start = function() {
  * @return {[type]}     [description]
  */
 Run.prototype._evalTxn = function(txn) {
-
+	var config = this.dataset.config
 	var precisionSum = 0
 	var runCount = txn.length - config.N
 
@@ -57,7 +60,7 @@ Run.prototype._evalTxn = function(txn) {
 	this.recommender.reset()
 
 	var precisionAvg = precisionSum / runCount
-	process.stdout.write('.')
+	log.write('.')
 	//log(precisionSum, runCount, precisionAvg, txn.length)
 	//console.log('avg precision for session', prec)
 	return precisionAvg
