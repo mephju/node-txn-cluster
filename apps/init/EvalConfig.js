@@ -9,19 +9,15 @@ function EvalConfigProd() {
 		dataset: app.datasets.movielensCustom, 
 		txnCount: 1500 
 	}]
-	// this.datasets = [{ 
-	// 	dataset: app.datasets.movielensSmall, 
-	// 	txnCount: 200 
-	// }]
 	this.datasets = [
-		// {
-		// 	dataset: app.datasets.movielens,
-		// 	txnCount:0
-		// }, 
 		{
-			dataset: app.datasets.lastFm,
+			dataset: app.datasets.movielens,
 			txnCount:0
-		},
+		}, 
+		// {
+		// 	dataset: app.datasets.lastFm,
+		// 	txnCount:0
+		// },
 		// {
 		// 	dataset: app.datasets.gowalla,
 		// 	txnCount:0
