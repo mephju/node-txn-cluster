@@ -26,7 +26,7 @@ Clustering.prototype.init = function(done) {
 
 	const K = parseInt(Math.pow(
 		this.txnRows.length, 
-		0.5959
+		0.6195
 	));
 	var txnRows = this.txnRows
 
