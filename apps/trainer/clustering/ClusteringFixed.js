@@ -24,7 +24,10 @@ module.exports = ClusteringFixed
 Clustering.prototype.init = function(done) {
 	
 
-	const K = parseInt(Math.pow(this.txnRows.length, 0.594))
+	const K = parseInt(Math.pow(
+		this.txnRows.length, 
+		0.5959
+	));
 	var txnRows = this.txnRows
 
 	console.log('clustering.init centroids', K, 'txnRows count', txnRows.length)
