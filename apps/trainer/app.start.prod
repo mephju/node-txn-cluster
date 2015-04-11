@@ -1,1 +1,1 @@
-BASE_PATH=/thesis/ node app.js
+BASE_PATH=/home/kokirchn/thesis/ node /home/kokirchn/thesis/node-txn-cluster/apps/trainer/app.js
