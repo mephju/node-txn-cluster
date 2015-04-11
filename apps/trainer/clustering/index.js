@@ -1,6 +1,6 @@
 
 var TxnModel 		= require('../../session-builder/transactions/model').Model
-var Clustering		= require('./Clustering')
+var Clustering		= require('./ClusteringFixed')
 var ClusterModel	= require('./model')
 
 
