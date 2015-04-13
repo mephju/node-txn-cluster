@@ -27,7 +27,7 @@ ClusterGroup.prototype.findBestMatch = function(txnRow) {
 	for (var i=0; i<this.clusters.length; i++) {
 		var c = this.clusters[i]
 		
-		var distance 	= c.distance(txnRow)	
+		var distance 	= c.distance(txnRow['item_ids'])	
 
 
 

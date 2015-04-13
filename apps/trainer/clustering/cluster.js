@@ -11,6 +11,7 @@ var Cluster = function(centroidRow, distanceMeasure, distanceModel) {
 
 
 Cluster.prototype.init = function(done) {
+	log('Cluster.init', this.centroidRow['txn_id'])
 	return done()
 	// async.wfall([
 	// 	function(next) {
