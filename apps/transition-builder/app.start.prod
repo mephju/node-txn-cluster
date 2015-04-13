@@ -1,1 +1,1 @@
-BASE_PATH=/home/kokirchn/thesis/ node /home/kokirchn/thesis/node-txn-cluster/apps/transition-builder/app.js
+BASE_PATH=/home/kokirchn/thesis/ node --max-old-space-size=8192 /home/kokirchn/thesis/node-txn-cluster/apps/transition-builder/app.js
