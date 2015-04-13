@@ -11,15 +11,16 @@ var Cluster = function(centroidRow, distanceMeasure, distanceModel) {
 
 
 Cluster.prototype.init = function(done) {
-	async.wfall([
-		function(next) {
-			this.distanceModel.getDistances(this.centroidRow, next)
-		},
-		function(distances, next) {
-			this.distancesOfCentroid = distances
-			done()
-		}
-	], this, done)
+	return done()
+	// async.wfall([
+	// 	function(next) {
+	// 		this.distanceModel.getDistances(this.centroidRow, next)
+	// 	},
+	// 	function(distances, next) {
+	// 		this.distancesOfCentroid = distances
+	// 		done()
+	// 	}
+	// ], this, done)
 }
 
 
@@ -193,31 +194,3 @@ Cluster.prototype._buildMemberGroups = function() {
 
 module.exports = Cluster
 
-
-
-
-
-
-// Cluster.prototype.getDistanceSums = function(done) {
-// 	var members = this.members
-// 	var similarities	= []
-// 	var len 			= members.length
-
-// 	for (var i=0; i<len; i++) {
-// 		var similarity = 0
-// 		var memberA = members[i]
-
-// 		for (var j=0; j<len; j++) {
-// 			if(j != i) {
-// 				var memberB = members[j]
-// 				similarity += this.distanceMeasure.distance(
-// 					memberA['item_ids'], 
-// 					memberB['item_ids']
-// 				);	
-// 			}
-// 		}
-
-// 		similarities[i] = similarity
-// 	};
-// 	done(null, similarities)
-// }
