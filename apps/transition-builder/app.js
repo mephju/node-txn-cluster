@@ -15,14 +15,14 @@ var buildTrainingConfigs = function() {
 		evalConfig.distanceMeasures,
 		evalConfig.xValidationRuns,
 
-		function(datasetRaw, measure, order, run) {
+		function(datasetRaw, measure, run) {
 			
 			var original = datasetRaw.dataset 
 			var dataset = new original.constructor(original.filepath, original.name)
 			
 			var configOptions = {
 				distanceMeasure: measure,
-				markovOrder: order,
+				markovOrder: 0, //not important here
 				crossValidationRun: run,
 				txnCount: datasetRaw.txnCount,
 			}
@@ -51,6 +51,10 @@ var buildTransitions = function() {
 		trainingRuns,
 		function(dataset, next) {		
 			bag.dataset = dataset
+
+			// console.log(dataset.name, dataset.config.DISTANCE_MEASURE, dataset.config.CROSS_VALIDATION_RUN)
+			// return next()
+
 			bag.transModel 	= new app.models.TransitionModel(dataset)
 			bag.transModel.init(next)
 		},

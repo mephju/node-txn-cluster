@@ -1,6 +1,6 @@
 function EvalConfigProd() {
 	this.markovOrders = [1,2,3]
-	this.xValidationRuns = [0,1,2]
+	this.xValidationRuns = [1,2]
 	this.distanceMeasures = ['levenshtein', 'jaccard', 'jaccard-bigram', 'jaccard-levenshtein']
 	//this.distanceMeasures = ['levenshtein']
 	
@@ -27,9 +27,9 @@ function EvalConfigProd() {
 
 function EvalConfigDev() {
 	this.markovOrders = [1,2,3]
-	this.xValidationRuns = [0]
+	this.xValidationRuns = [1, 2]
 	this.distanceMeasures = ['levenshtein', 'jaccard', 'jaccard-bigram', 'jaccard-levenshtein']
-	this.distanceMeasures = ['jaccard-levenshtein']
+	//this.distanceMeasures = ['jaccard-levenshtein']
 	this.itemChoiceStrategies = ['tfidf']
 	
 	this.datasets = [{ 
