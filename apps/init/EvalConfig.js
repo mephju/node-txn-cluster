@@ -2,8 +2,6 @@ function EvalConfigProd() {
 	this.markovOrders = [1,2,3]
 	this.xValidationRuns = [0,1,2]
 	this.distanceMeasures = ['levenshtein', 'jaccard', 'jaccard-bigram', 'jaccard-levenshtein']
-	this.distanceMeasures = ['jaccard-bigram']
-	this.distanceMeasures = ['levenshtein', 'jaccard', 'jaccard-bigram', 'jaccard-levenshtein']
 
 	this.itemChoiceStrategies = ['tfidf', 'bestItemsOfCluster', 'bestItemsOverall', 'tfTfidf', 'random', 'withRatings']
 	this.itemChoiceStrategies = ['tfidf', 'bestItemsOverall', 'tfTfidf', 'random', 'withRatings']
