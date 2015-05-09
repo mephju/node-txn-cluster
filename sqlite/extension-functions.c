@@ -1,4 +1,9 @@
 /*
+
+THIS IS WHAT I USED
+gcc -fPIC -lm -shared -I "./" extension-functions.c -o libsqlitefunctions.so
+
+
 This library will provide common mathematical and string functions in
 SQL queries using the operating system libraries or provided
 definitions.  It includes the following functions:

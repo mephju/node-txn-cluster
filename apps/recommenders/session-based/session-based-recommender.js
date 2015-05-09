@@ -72,12 +72,12 @@ SessionBasedRecommender.prototype.recommend = function(session) {
  * @return {[type]}              [description]
  */
 SessionBasedRecommender.prototype._updateLastClusters = function(centroidId, lastClusters) {
-	
+	//log('_updateLastClusters length', lastClusters.length)
 	lastClusters.push(centroidId)
 	var config = this.dataset.config
-	var len = lastClusters.length
-	if(len > config.MARKOV_ORDER) {
-		return lastClusters.slice(len - config.MARKOV_ORDER)
+
+	if(lastClusters.length > config.MARKOV_ORDER) {
+		lastClusters.shift()
 	}
 
 	return lastClusters
@@ -104,7 +104,7 @@ SessionBasedRecommender.prototype._getRecommendations = function(topClusters) {
 }
 
 SessionBasedRecommender.prototype.reset = function() {
-	this.lastClusters = []
+	this.lastClusters.length = 0
 }
 
 

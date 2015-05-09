@@ -66,3 +66,38 @@ Run.prototype._evalTxn = function(txn) {
 	return precisionAvg
 }
 
+
+/**
+ * Calculates the txn's average precision@N
+ * @param  {[type]} txn [description]
+ * @param  {[type]} r   [description]
+ * @return {[type]}     [description]
+ */
+Run.prototype._evalTxn = function(txn) {
+	var config = this.dataset.config
+	var precisionSum = 0
+	var runCount = txn.length - config.N
+	
+	var sessionBegin 	= [] //txn.slice(0, i)
+	
+	for(var i=1; i<=runCount; i++) {
+
+	    sessionBegin.push(txn[i-1])	
+		var sessionEnd 	 	= txn.slice(i, i+config.N)
+		//log('recommender', this.recommender.recommend)
+		var recommendations = this.recommender.recommend(sessionBegin, config.N)
+		
+		precisionSum += measure.precision(
+			sessionEnd, 
+			recommendations
+		);
+	}
+
+	this.recommender.reset()
+
+	var precisionAvg = precisionSum / runCount
+	log.write('.')
+	//log(precisionSum, runCount, precisionAvg, txn.length)
+	//console.log('avg precision for session', prec)
+	return precisionAvg
+}
