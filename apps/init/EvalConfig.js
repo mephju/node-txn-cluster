@@ -3,7 +3,7 @@ function EvalConfigProd() {
 	this.xValidationRuns = [0,1,2]
 	this.distanceMeasures = ['levenshtein', 'jaccard', 'jaccard-bigram', 'jaccard-levenshtein']
 	this.distanceMeasures = ['jaccard-bigram']
-	this.distanceMeasures = ['levenshtein', 'jaccard', 'jaccard-levenshtein']
+	this.distanceMeasures = ['levenshtein', 'jaccard', 'jaccard-bigram', 'jaccard-levenshtein']
 
 	this.itemChoiceStrategies = ['tfidf', 'bestItemsOfCluster', 'bestItemsOverall', 'tfTfidf', 'random', 'withRatings']
 	this.itemChoiceStrategies = ['tfidf', 'bestItemsOverall', 'tfTfidf', 'random', 'withRatings']
@@ -32,7 +32,7 @@ function EvalConfigDev() {
 	this.markovOrders = [1]
 	this.xValidationRuns = [1]
 	this.distanceMeasures = ['levenshtein', 'jaccard', 'jaccard-bigram', 'jaccard-levenshtein']
-	this.distanceMeasures = ['jaccard-levenshtein']
+	//this.distanceMeasures = ['jaccard-bigram']
 	this.itemChoiceStrategies = ['tfidf', 'bestItemsOfCluster', 'bestItemsOverall', 'tfTfidf', 'random']
 	
 	this.datasets = [{ 

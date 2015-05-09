@@ -355,14 +355,16 @@ Model.prototype.tableClusterItemTfidf = function(done) {
 							cic.count 				as tf,	\
 							icc.count 				as df,	\
 							cc.N, 							\
-							cic.count*log10(cc.N/icc.count)	as tfidf 	\
+							cic.count*log10(cc.N/1.0/icc.count)	as tfidf 	\
 				from ' 		+ this.table.clusterItemCounts + ' as cic, '
 							+ this.table.itemClusterCounts + ' as icc,	\
 							item_counts 			as ic,	\
 							(select 	count(*) 	as N 	\
 							from '		+ this.table.clusters + ')   as cc 	\
 				where 	cic.item_id=icc.item_id 			\
-				and 	icc.item_id=ic.item_id;' 	
+				and 	icc.item_id=ic.item_id;' 
+
+			log.magenta(sql)	
 
 			this.db.run(sql, done)
 		}
