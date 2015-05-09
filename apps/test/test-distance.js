@@ -21,7 +21,6 @@ describe('sim module', function() {
 			var array2 = [5,6,8]  //56 68 
 
 			var result = jaccardBigram.distance(array1, array2)
-			log.yellow(result)
 			result.should.be.approximately(2/3, 0.01)
 		})
 
@@ -56,4 +55,26 @@ describe('sim module', function() {
 
 	// 	console.log(1-simJaccard, simLevenshtein, simJaccLev)
 	// })
+})
+
+describe('sim module', function() {
+	var dataset = {
+		config: {
+			DISTANCE_MEASURE: 'levenshtein'
+		}
+	}
+	var levenshtein = new Distance(dataset)
+
+	describe('Levenshtein Similarity', function() {
+		it('computes distance as 2/3', function() {
+			var array1 = [5,6,7,8]  //56 67
+			var array2 = [8,7,6,5]  //56 68
+			var array2 = [1,2,3,4] 
+
+			var result = levenshtein.distance(array1, array2)
+			log.yellow(result)
+			
+		})
+	})
+
 })

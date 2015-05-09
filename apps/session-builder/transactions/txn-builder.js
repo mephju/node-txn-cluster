@@ -10,8 +10,7 @@ var TxnTableBuilder = require('./txn-table-builder')
 
 function TxnBuilder(dataset) {
 	this.dataset = dataset
-	 var TxnModel = require('./model').Model
-	this.model = new TxnModel(dataset)
+	this.model = new app.models.TxnModel(dataset)
 	this.txnTableBuilder = new TxnTableBuilder(this.model)
 }
 exports.TxnBuilder = TxnBuilder
@@ -45,7 +44,7 @@ TxnBuilder.prototype.buildTxns = function(done) {
 		function(txnTableSize, next) {
 			bag.txnTableSize = txnTableSize
 
-			builder.model.trainingSetSize(next)
+			help.getTrainingSetSize(builder.dataset, builder.model.db, next)
 			//help.getTrainingSetSize(builder.model.db, next)
 		},
 		function(trainingSetSize, next) {

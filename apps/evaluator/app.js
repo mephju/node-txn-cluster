@@ -44,7 +44,7 @@ var configureRuns = function() {
 		evalConfig.xValidationRuns,
 
 		function(datasetRaw, measure, order, strategy, run) {
-			log.yellow('configuring', datasetRaw.name, measure, order, strategy, run)
+			log.yellow('configuring', datasetRaw.dataset.name, measure, order, strategy, run)
 			var original = datasetRaw.dataset 
 			
 			
@@ -53,6 +53,7 @@ var configureRuns = function() {
 				markovOrder: order,
 				crossValidationRun: run,
 				txnCount: datasetRaw.txnCount,
+				itemChoiceStrategy: strategy,
 			}
 
 			var dataset = new original.constructor(

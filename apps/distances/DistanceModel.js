@@ -33,11 +33,12 @@ DistanceModel.prototype = Object.create(app.Model.prototype, {
 
 
 DistanceModel.prototype.getDistances = function(txnRow, done) {
+	log.write('getDistances ' + this.tableName + ' ' + txnRow.txn_id + '.')
 	this.db.query(
 		'select distances from ' + this.tableName + ' where txn_id = ?', 
 		txnRow['txn_id'], 
 		function(err, results, fields) {
-			log('getDistances got results',txnRow['txn_id'])
+			log('got results', txnRow['txn_id'])
 			if(err) return done(err)
 			done(null, help.textToNumArray(results[0].distances))
 		}
@@ -90,7 +91,7 @@ DistanceModel.prototype.prepare = function(done) {
 				'(txn_id MEDIUMINT UNSIGNED NOT NULL PRIMARY KEY, distances MEDIUMTEXT NOT NULL);', next)
 		},
 		function(info, fields, next) {
-			this.db.query('SET autocommit=0', next)
+			this.db.query('SET autocommit=1', next)
 		},
 		function(info, fields, next) {
 			done()

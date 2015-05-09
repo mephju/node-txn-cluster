@@ -4,7 +4,7 @@ var txnApp = require('./transactions')
 
 require('../init')
 
-var TxnModel 		= require('./transactions/model').Model
+var TxnModel 		= app.models.TxnModel
 
 
 

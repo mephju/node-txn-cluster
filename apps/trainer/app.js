@@ -63,7 +63,9 @@ var startTraining = function() {
 		},
 		function(err) {
 			log.yellow('finished training all recommenders?')
-			if(err) return log.red(err)
+			if(err) {
+				throw log.red(err)
+			}
 		}
 	);
 

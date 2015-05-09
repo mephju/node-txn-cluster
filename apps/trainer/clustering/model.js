@@ -14,7 +14,7 @@ function Model(dataset) {
 		clusterMembers: 	this.dataset.prefixTableName('cluster_members'),
 		clusterItemCounts: 	this.dataset.prefixTableName('cluster_item_counts'),
 		clusterItemRatings: this.dataset.prefixTableName('cluster_item_ratings'),
-		itemClusterConts: 	this.dataset.prefixTableName('item_cluster_counts'),
+		itemClusterCounts: 	this.dataset.prefixTableName('item_cluster_counts'),
 		clusterItemTfidf: 	this.dataset.prefixTableName('cluster_item_tfidf'),
 	}
 
@@ -43,7 +43,7 @@ Model.prototype.buildClustersFromDb = function(done) {
 			this.getCentroidRows(next) 
 		},
 		function(centroidRows, next) {
-			console.log('buildClustersFromDb centroidRows', centroidRows.length)							
+			log('buildClustersFromDb centroidRows', centroidRows.length)							
 			model._createClusterGroup(centroidRows, done)
 		}
 	], this, done) 
@@ -318,11 +318,11 @@ Model.prototype.tableItemClusterCounts = function(done) {
 		},
 		function(next) {
 			var sql = 
-				'create table ' + this.table.itemClusterCounts + '\
+				'create table ' + this.table.itemClusterCounts + ' \
 				as 										\
 				select   		item_id, 				\
 								count(cluster_id) as count \
-				from ' 			+ this.table.clusterItemCounts + '\
+				from ' 			+ this.table.clusterItemCounts + ' \
 				group by 		item_id 				\
 				order by 		item_id, cluster_id' 	
 
@@ -334,7 +334,7 @@ Model.prototype.tableItemClusterCounts = function(done) {
 
 
 Model.prototype.tableClusterItemTfidf = function(done) {
-	log('tableClusterItemTfidf')
+	log('ClusterModel.tableClusterItemTfidf')
 
 	async.wfall([
 		function(next) {
@@ -342,10 +342,9 @@ Model.prototype.tableClusterItemTfidf = function(done) {
 		},
 		function(next) {
 			this.db.loadExtension(
-				'/home/mephju/Dropbox/uni/seminarproject/project/daport/sqlite/extension-functions',
+				__dirname + '/../../../sqlite/extension-functions',
 				next
 			);
-			next(null)
 		},
 		function(next) {
 			var sql = 
@@ -357,8 +356,8 @@ Model.prototype.tableClusterItemTfidf = function(done) {
 							icc.count 				as df,	\
 							cc.N, 							\
 							cic.count*log10(cc.N/icc.count)	as tfidf 	\
-				from ' 		+ this.table.clusterItemCounts + 'as cic, '
-							+ this.table.itemClusterCounts + 'as icc,	\
+				from ' 		+ this.table.clusterItemCounts + ' as cic, '
+							+ this.table.itemClusterCounts + ' as icc,	\
 							item_counts 			as ic,	\
 							(select 	count(*) 	as N 	\
 							from '		+ this.table.clusters + ')   as cc 	\
@@ -378,7 +377,7 @@ Model.prototype.tableClusterItemTfidf = function(done) {
 
 
 Model.prototype.getCentroidRows = function(done) {
-	console.log('getCentroidRows')
+	console.log('getCentroidRows', this.dataset.name, this.dataset.config.DISTANCE_MEASURE)
 	
 	async.wfall([
 		function(next) {

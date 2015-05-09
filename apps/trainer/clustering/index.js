@@ -20,22 +20,22 @@ exports.buildClusters = function(dataset, done) {
 	
 
 	async.waterfall([
-		function(next) {
-			txnModel.txnsForTraining(next)
-		},
-		function(rows, next) {
-			console.log('clustering %d txns', rows.length)
-			txnRows = rows
-			next(null)
-		},
-		function(next) {
-			new Clustering(dataset, txnRows).cluster(next)
-		},
-		function(_clusters, next) {
-			clusters = _clusters
-			log.yellow(clusters)
-			clusterModel.insertClusters(clusters, next)
-		},
+		// function(next) {
+		// 	txnModel.txnsForTraining(next)
+		// },
+		// function(rows, next) {
+		// 	console.log('clustering %d txns', rows.length)
+		// 	txnRows = rows
+		// 	next(null)
+		// },
+		// function(next) {
+		// 	new Clustering(dataset, txnRows).cluster(next)
+		// },
+		// function(_clusters, next) {
+		// 	clusters = _clusters
+		// 	log.yellow(clusters)
+		// 	clusterModel.insertClusters(clusters, next)
+		// },
 		function(next) {
 			_buildClusterTables(clusterModel, next)
 		} 
@@ -47,6 +47,7 @@ exports.buildClusters = function(dataset, done) {
 
 
 var _buildClusterTables = function(clusterModel, done) {
+	log('_buildClusterTables')
 	async.waterfall([
 		function(next) {
 			clusterModel.tableClusterItemCounts(next)
@@ -58,8 +59,16 @@ var _buildClusterTables = function(clusterModel, done) {
 			clusterModel.tableClusterItemRatings(next)
 		},
 		function(next) {
-			clusterModel.tableItemClusterCounts(done)
+			clusterModel.tableItemClusterCounts(next)
+		},
+		function(next) {
+			clusterModel.tableClusterItemTfidf(next)
+		},
+		function(next) {
+			log.green('all cluster tables built')
+			next()
 		}
+
 	], done)
 }
 

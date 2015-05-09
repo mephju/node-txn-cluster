@@ -47,8 +47,6 @@ MarkovInfo.prototype.getTopClusters = function(N, lastClusters) {
 		Travel to the part within markovChain as denoted by lastClusters
 		and save it in partChain.
 	 */
-	
-
 	for(var key in chain) {
 		if(key !== 'sum') {
 			var value = chain[key]

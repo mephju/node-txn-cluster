@@ -27,7 +27,7 @@ function Config(options) {
 	this.BASELINE_ON = true
 	this.MARKOV_ORDER = options.markovOrder ? options.markovOrder : 2
 
-	this.ITEM_CHOICE_STRATEGY = 'bestItemsOfCluster'
+	this.ITEM_CHOICE_STRATEGY = options.itemChoiceStrategy ? options.itemChoiceStrategy : 'bestItemsOfCluster'
 	//this.DISTANCE_MEASURE = 'jaccard-levenshtein'
 	this.DISTANCE_MEASURE = options.distanceMeasure ? options.distanceMeasure : 'levenshtein'
 	// this.ITEM_CHOICE_STRATEGY = 'tfTfidf'
