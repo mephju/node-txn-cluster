@@ -49,15 +49,15 @@ exports.buildClusters = function(dataset, done) {
 var _buildClusterTables = function(clusterModel, done) {
 	log('_buildClusterTables')
 	async.waterfall([
-		function(next) {
-			clusterModel.tableClusterItemCounts(next)
-		},
-		function(next) { // correct
-			clusterModel.tableTxnItemRatings(next)
-		},
-		function(next) {
-			clusterModel.tableClusterItemRatings(next)
-		},
+		// function(next) {
+		// 	clusterModel.tableClusterItemCounts(next)
+		// },
+		// function(next) { // correct
+		// 	clusterModel.tableTxnItemRatings(next)
+		// },
+		// function(next) {
+		// 	clusterModel.tableClusterItemRatings(next)
+		// },
 		function(next) {
 			clusterModel.tableItemClusterCounts(next)
 		},
