@@ -1,33 +1,92 @@
 
-//var TxnModel 		= app.models.TxnModel
+
 var Clustering		= require('./ClusteringFixed')
 var ClusterModel	= require('./model')
-
+var cp = require('child_process')
 
 exports.buildClustersFromDb = function(dataset, done) {
 	log('buildClustersFromDb', dataset.name)
 	new ClusterModel(dataset).buildClustersFromDb(done)
 }
 
+
+
+var q = async.queue(function(task, done) {
+	var clusterModel = new ClusterModel(task.dataset)
+	async.waterfall([
+		function(next) {
+			clusterModel.insertClusters(task.clusters, next)
+		},
+		function(next) {
+			
+			_buildClusterTables(clusterModel, next)
+		}
+	], 
+	function(err) {
+		done(err)	
+	})
+}, 1)
+
+exports.buildClustersParallel = function(datasets, done) {
+
+	async.eachLimit(
+		datasets,
+		8,
+		function(dataset, next) {
+			startClusterRun(dataset, next)
+		},
+		done
+	);
+}
+
+var startClusterRun = function(dataset, done) {
+	
+	var child = cp.fork(__dirname + '/ClusterRun.js')
+	var clusters = null
+
+	child.send({
+		dataset: dataset,
+	})
+
+	child
+	.on('message', function(clusters) {
+		log.cyan('parent has received message')
+		child.disconnect()
+		q.push({
+			dataset: dataset,
+			clusters:clusters
+		}, done)
+		
+	})
+	.on('exit', function(code, string) {
+		log.cyan('PARENT GOT EXIT EVENT')
+		log('exit', code, string)
+		if(code === null) {
+			return done('child excited unnormally')
+		}	
+	})
+	.on('error', function() {
+		log.red('PARENT GOT ERROR EVENT')
+	})
+	.on('close', function() {
+		log.cyan('PARENT GOT CLOSE EVENT')
+	})
+}
+
+
+
+
+
 exports.buildClusters = function(dataset, done) {
 	log('buildClusters')
-	var txnRows 		= null
 	var clusterModel 	= new ClusterModel(dataset)
-	var txnModel 		= new app.models.TxnModel(dataset)
 	var clusters 		= null
 	
 
 	async.waterfall([
 		function(next) {
-			txnModel.txnsForTraining(next)
-		},
-		function(rows, next) {
-			console.log('clustering %d txns', rows.length)
-			txnRows = rows
-			next(null)
-		},
-		function(next) {
-			new Clustering(dataset, txnRows).cluster(next)
+			console.log('clustering')
+			new Clustering(dataset).cluster(next)
 		},
 		function(_clusters, next) {
 			clusters = _clusters

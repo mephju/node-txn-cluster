@@ -4,10 +4,7 @@ var TxnModel = app.models.TxnModel
 var recommenders 		= require('../recommenders')
 
 process.on('message', function(data) {
-	log('CHILD got message', data)
-
-	
-	
+	log('CHILD got message', data)	
 	launch(data)	
 })
 

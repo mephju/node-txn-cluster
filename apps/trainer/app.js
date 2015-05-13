@@ -25,7 +25,9 @@ var buildTrainingConfigs = function() {
 				txnCount: datasetRaw.txnCount,
 			}
 
-			dataset.config = new app.Config(configOptions)		
+			dataset.config = new app.Config(configOptions)
+			dataset.config.configOptions = configOptions
+
 			trainingRuns.push(dataset)
 		}
 	);
@@ -52,22 +54,31 @@ var startTraining = function() {
 
 	log.magenta('About to start trainingRuns', trainingRuns.length)
 
-	async.eachChain(
-		trainingRuns,
-		function(dataset, next) {
-			cluster(dataset, next)
-		},
-		function(next) {
-			log.green('finished training session based recommender')
-			next()
-		},
-		function(err) {
-			log.yellow('finished training all recommenders?')
-			if(err) {
-				throw log.red(err)
-			}
-		}
-	);
+
+
+	
+
+	clustering.buildClustersParallel(trainingRuns, function(err) {
+		log.red(err)
+	})
+
+
+	// async.eachChain(
+	// 	trainingRuns,
+	// 	function(dataset, next) {
+	// 		cluster(dataset, next)
+	// 	},
+	// 	function(next) {
+	// 		log.green('finished training session based recommender')
+	// 		next()
+	// 	},
+	// 	function(err) {
+	// 		log.yellow('finished training all recommenders?')
+	// 		if(err) {
+	// 			throw log.red(err)
+	// 		}
+	// 	}
+	// );
 }
 
 
@@ -79,12 +90,7 @@ var cluster = function(dataset, done) {
 		},
 		function(clusters, next) {
 			log.green('clusters have been built')
-			// read clusters from db again so we can remove 
-			// the previous step if we want to skip it
-			clustering.buildClustersFromDb(dataset, next)
-		},
-		function(clusters, next) {
-			log.green('finished training the recommender')
+			log.green('finished training a recommender')
 			done()
 		}
 	], done)

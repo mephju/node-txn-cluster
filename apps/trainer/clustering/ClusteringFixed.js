@@ -1,12 +1,10 @@
+
 var Clustering 		= require('./Clustering')
 var Cluster 		= require('./cluster')
 
 
-
-
-
-
 function ClusteringFixed(dataset, txnRows) {
+	log.blue('ClusteringFixed')
 	Clustering.call(this, dataset, txnRows)
 }
 
@@ -23,7 +21,22 @@ module.exports = ClusteringFixed
  */
 Clustering.prototype.init = function(done) {
 	
+	var txnModel = new app.models.TxnModel(this.dataset)
+	async.wfall([
+		function(next) {
+			txnModel.txnsForTraining(next)
+		},
+		function(txnRows, next) {
+			if(txnRows.length === 0) { return done('cannot cluster 0 txn rows')}
 
+			this.txnRows = txnRows
+			this._init(done)
+		},
+		done
+	], this)
+}
+
+Clustering.prototype._init = function(done) {
 	const K = parseInt(Math.pow(
 		this.txnRows.length, 
 		0.6195

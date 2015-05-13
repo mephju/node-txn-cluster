@@ -25,11 +25,16 @@ var evaluate = function(dataset, done) {
 		if(code === null) {
 			return done('child excited unnormally')
 		}
-		new EvalModel(dataset).insert(bag.precision, done)
+		q.push({precision:bag.precision}, done)
 	})
 	
 	
 }
+
+
+var q = async.queue(function(task, done) {
+	new EvalModel(dataset).insert(task.precision, done)
+}, 1)
 
 
 

@@ -5,9 +5,9 @@ var DistanceModel = require('../../distances/DistanceModel')
 
 
 
-function Clustering(dataset, txnRows) {
+function Clustering(dataset) {
 	this.dataset = dataset
-	this.txnRows = txnRows
+	this.txnRows = null
 	this.distanceMeasure 	= new Distance(dataset)
 	this.distanceModel 		= new DistanceModel(dataset)
 	this.clusters 			= new ClusterGroup(dataset)
@@ -22,8 +22,6 @@ module.exports = Clustering
  * @return {[type]}           [description]
  */
 Clustering.prototype.cluster = function(done) {
-
-	if(this.txnRows.length === 0) { return done('cannot cluster 0 txn rows')} 
 
 
 	log('cluster')
