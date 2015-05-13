@@ -225,3 +225,6 @@ exports.all = [
 
 exports.all = [movielensCustom]
 
+exports.LastFm = LastFm
+exports.Movielens = Movielens
+exports.Gowalla = Gowalla

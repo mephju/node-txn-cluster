@@ -28,10 +28,10 @@ function EvalConfigProd() {
 
 function EvalConfigDev() {
 	this.markovOrders = [1]
-	this.xValidationRuns = [1]
+	this.xValidationRuns = [0,1,2]
 	this.distanceMeasures = ['levenshtein', 'jaccard', 'jaccard-bigram', 'jaccard-levenshtein']
-	//this.distanceMeasures = ['jaccard-bigram']
-	this.itemChoiceStrategies = ['tfidf', 'bestItemsOfCluster', 'bestItemsOverall', 'tfTfidf', 'random']
+	this.distanceMeasures = ['jaccard']
+	this.itemChoiceStrategies = ['tfidf']
 	
 	this.datasets = [{ 
 		dataset: app.datasets.movielensCustom, 

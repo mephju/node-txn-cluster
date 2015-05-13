@@ -1,5 +1,6 @@
 
-function TxnTableBuilder(model) {
+function TxnTableBuilder(dataset, model) {
+	this.dataset = dataset
 	this.model = model
 }
 
@@ -7,17 +8,16 @@ module.exports = TxnTableBuilder
 
 
 
-TxnTableBuilder.prototype.txnItemGroups = function(quarter, done) {
-	log.yellow('txnItemGroups, quarter is', quarter)
+TxnTableBuilder.prototype.txnItemGroups = function(numTxns, done) {
+	log.yellow('txnItemGroups, for txns', numTxns)
 
-	var bag = {
-		quarter: quarter,
-	}
+	var bag = { numTxns: numTxns }
 
 	var _this = this
+	var validationRuns = new app.EvalConfig().xValidationRuns
 
 	async.eachChain(
-		[0, 1, 2, 3],
+		[0,1,2], //validationRuns,
 		function(validationRun, next) {
 			bag.validationRun = validationRun
 			bag.tableName = _this.model.prefixTableName(validationRun, 'txn_item_groups')
@@ -45,9 +45,10 @@ TxnTableBuilder.prototype.performSql = function(commands, done) {
 
 TxnTableBuilder.prototype.buildSql = function(params) {
 
-	var quarter 		= params.quarter
+	var numTxns 		= params.numTxns
 	var tableName 		= params.tableName
 	var validationRun 	= params.validationRun
+	var third 			= Math.floor(numTxns / 3)
 	
 	switch(validationRun) {
 		case 0: return [
@@ -62,53 +63,34 @@ TxnTableBuilder.prototype.buildSql = function(params) {
 			'CREATE TABLE IF NOT EXISTS	' + tableName + ' AS \
 			SELECT 			* \
 			FROM 			txn_item_groups_original \
-			LIMIT ' 		+ (2 * quarter),
+			LIMIT ' 		+ (2 * third) + ' \
+			OFFSET ' 		+ third,
 
 			'INSERT INTO ' + tableName + ' \
 			SELECT 			* \
 			FROM 			txn_item_groups_original \
-			LIMIT ' 		+ quarter + ' \
-			OFFSET ' 		+ (3 * quarter),
-
-			'INSERT INTO ' + tableName + ' \
-			SELECT 		* \
-			FROM 			txn_item_groups_original \
-			LIMIT ' 		+ quarter + ' \
-			OFFSET ' 		+ 2 * quarter
+			LIMIT ' 		+ third
 		];
 
 		case 2: return [
 			'CREATE TABLE IF NOT EXISTS	' + tableName + ' AS \
 			SELECT 			* \
 			FROM 			txn_item_groups_original \
-			LIMIT ' 		+ quarter,
+			LIMIT ' 		+ third,
 
 			'INSERT INTO ' + tableName + ' \
 			SELECT 			* \
 			FROM 			txn_item_groups_original \
-			LIMIT ' 		+ 2 * quarter + ' \
-			OFFSET ' 		+ 2 * quarter,
+			LIMIT ' 		+ third + ' \
+			OFFSET ' 		+ 2 * third,
 			
 			'INSERT INTO ' + tableName + ' \
 			SELECT 			* \
 			FROM 			txn_item_groups_original \
-			LIMIT ' 		+ quarter + ' \
-			OFFSET ' 		+ quarter
+			LIMIT ' 		+ third + ' \
+			OFFSET ' 		+ third
 		];
 					
-
-		case 3: return [
-			'CREATE TABLE IF NOT EXISTS	' + tableName + ' AS \
-			SELECT 			* \
-			FROM 			txn_item_groups_original \
-			LIMIT ' 		+ 3 * quarter + ' \
-			OFFSET ' 		+ quarter,
-			
-			'INSERT INTO ' + tableName + '  \
-			SELECT 			* \
-			FROM 			txn_item_groups_original \
-			LIMIT ' 		+ quarter
-		];
 		default: throw new Error('there is something wrong with the validationRun variable ' + validationRun)	
 	}
 		

@@ -36,11 +36,11 @@ SessionBasedRecommender.prototype.recommend = function(session) {
 
 	var topClusters = this.markovInfo.getTopClusters(config.N, this.lastClusters)
 	if(topClusters.length === 0) {
-		log.write('f')
+		//log.write('f')
 		return this.fallbackItems
 	}
 
-	log.write('r')
+	//log.write('r')
 	
 	var topClusters = this.numRec.computeNumRecomms(topClusters)
 

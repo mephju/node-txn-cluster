@@ -11,7 +11,7 @@ var TxnTableBuilder = require('./txn-table-builder')
 function TxnBuilder(dataset) {
 	this.dataset = dataset
 	this.model = new app.models.TxnModel(dataset)
-	this.txnTableBuilder = new TxnTableBuilder(this.model)
+	this.txnTableBuilder = new TxnTableBuilder(this.dataset, this.model)
 }
 exports.TxnBuilder = TxnBuilder
 
@@ -85,13 +85,9 @@ TxnBuilder.prototype.buildTxns = function(done) {
 		function(next) {
 			var config = builder.model.dataset.config
 			var validationRun = config.CROSS_VALIDATION_RUN
-
-			var quarter = bag.txnTableSize * (1 - builder.dataset.config.TRAINING_SET_SIZE)
-			quarter = Math.floor(quarter)
-
 			log.yellow(bag.txnTableSize, builder.dataset.config.TRAINING_SET_SIZE)
 
-			builder.txnTableBuilder.txnItemGroups(quarter, next)
+			builder.txnTableBuilder.txnItemGroups(bag.txnTableSize, next)
 		},
 		function(next) {
 			log.green('txnItemGroups built')
