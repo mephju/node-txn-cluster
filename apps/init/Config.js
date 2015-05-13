@@ -7,6 +7,7 @@ function Config(options) {
 	this.CROSS_VALIDATION_RUN 		= options.crossValidationRun ? options.crossValidationRun : 0
 	this.MIN_SUPPORT				= 50
 	this.TRAINING_SET_SIZE 			= 0.6666667
+	//this.TRAINING_SET_SIZE 			= 0.8
 	this.VALIDATION_SET_SIZE 		= 1 - this.TRAINING_SET_SIZE
 	this.TXN_ID_BATCH_SIZE 			= 900
 	this.MIN_CLUSTER_SIZE 			= 4 // a cluster must at least have 4 members in order to survice clean up.

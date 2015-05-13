@@ -48,6 +48,10 @@ var launch = function(data) {
 			new TxnModel(dataset).txnsForValidation(next)					
 		},
 		function(txnRows, next) {
+			//We are only interested in txns having a length greater than N+1
+			txnRows = txnRows.filter(function(txn) {
+				return txn['item_ids'].length > dataset.config.N
+			})
 			log.blue('got txnrows')
 			var evalRun = new Run(dataset, recommender, txnRows)
 			var precision = evalRun.start()

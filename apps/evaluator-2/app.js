@@ -1,36 +1,34 @@
 require('../init')
+var run = require('./run')
+var TxnModel = app.models.TxnModel
 var EvalModel = app.models.EvalModel
-var cp = require('child_process')
+
+var recommenders 		= require('../recommenders')
 
 
-
-
-var evaluate = function(dataset, done) {
+var evaluate = function(dataset, recommender, done) {
 	
 	var bag = {}
-
-	var child = cp.fork(__dirname + '/runner.js')
 	
-	child.send({
-		dataset: dataset,
-	})
-
-	child.on('message', function(result) {
-		bag.precision = result.precision
-		log.blue('got precision', bag.precision, dataset.name)
-		child.disconnect()	
-	})
-
-	child.on('exit', function(code, string) {
-		if(code === null) {
-			return done('child excited unnormally')
+	async.waterfall([
+		function(next) {
+			new TxnModel(dataset).txnsForValidation(next)					
+		},
+		function(txnRows, next) {
+			log.blue('got txnrows')
+			var evalRun = new run.Run(dataset, recommender, txnRows)
+			var precision = evalRun.start()
+			bag.precision = precision
+			log.blue('got precision', precision, dataset.name)
+			new EvalModel(dataset).insert(precision, next)
+			
+		},
+		function(next) {
+			log.green('finished evaluation run for', dataset.name)
+			done(null, bag.precision)
 		}
-		new EvalModel(dataset).insert(bag.precision, done)
-	})
-	
-	
+	], done)
 }
-
 
 
 var configureRuns = function() {
@@ -64,7 +62,6 @@ var configureRuns = function() {
 			);
 
 			dataset.config = new app.Config(configOptions)
-			dataset.config.configOptions = configOptions
 			
 
 			evaluationRuns.push(dataset)
@@ -80,39 +77,26 @@ var configureRuns = function() {
 var start = function() {
 
 	log('evaluator app start')
-
-	var start = new Date().getTime()
 	
 	var evaluationRuns = configureRuns()
-	
-	log('evaluationRuns', evaluationRuns.length)
+	var bag = {}
 
-	async.eachLimit(
-		evaluationRuns, 
-		8, 
+	async.eachChain(
+		evaluationRuns,
 		function(dataset, next) {
-			evaluate(dataset, next)			
-		}, 
+			bag.dataset = dataset
+			
+			recommenders.create(bag.dataset, next)
+		},
+		function(_recommenders, next) {
+			bag.recommenders = _recommenders
+			evaluate(bag.dataset, bag.recommenders.sessionBased, next)		
+		},
 		function(err) {
-			var end = new Date().getTime()
-			var duration = end - start
-			log.yellow('finished evaluating ', duration)
+			log.yellow('finished evaluating ')
 			if(err) log.red(err)
 		}
 	);
-
-	// async.eachChain(
-	// 	evaluationRuns,
-	// 	function(dataset, next) {
-	// 		evaluate(dataset, next)		
-	// 	},
-	// 	function(err) {
-	// 		var end = new Date().getTime()
-	// 		var duration = end - start
-	// 		log.yellow('finished evaluating ', duration)
-	// 		if(err) log.red(err)
-	// 	}
-	// );
 
 
 }

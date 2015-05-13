@@ -195,21 +195,26 @@ Model.prototype.getClusteredTxns = function(done) {
 // Returns all txnRows for either training set or validation set
 // 
 Model.prototype._getAllTxns = function(validation, done) {
+	
 	async.wfall([
 		function(next) {
-			this.tableSize('txns', next)
+			this.tableSize(this.table.txnItemGroups, next)
 		},
 		function(tableSize, next) {
 			var trainingSize = Math.floor(tableSize * this.dataset.config.TRAINING_SET_SIZE)
 			
 			log('TRAINING SET SIZE', this.dataset.config.TRAINING_SET_SIZE, trainingSize)
 			
-			var sql = 'SELECT DISTINCT txn_id, item_ids FROM ' + this.table.txnItemGroups + ' LIMIT ' + trainingSize
+			var sql = 'SELECT txn_id, item_ids FROM ' + this.table.txnItemGroups + ' LIMIT ' + trainingSize
+	
 			if(validation) {
-				sql = 'SELECT DISTINCT txn_id, item_ids FROM ' + this.table.txnItemGroups + ' LIMIT 999999999 OFFSET ' + trainingSize		
+				sql = 'SELECT txn_id, item_ids FROM ' + this.table.txnItemGroups + ' LIMIT 9999999999 OFFSET ' + trainingSize	
 			} 
-			this._txns(sql, done, validation);
+			this._txns(sql, next, validation);
 		},  
+		function(txns, next) {
+			done(null, txns)
+		}
 	], this, done)
 }
 
@@ -231,7 +236,9 @@ Model.prototype._txns = function(sql, done, validation) {
 
 	async.waterfall([
 		function(next) {
-			this.db.all(sql, next);
+			var statement = this.db.prepare(sql)
+			// this.db.all(sql, next);
+			statement.all(next);
 		}.bind(this),
 		function(rows, next) {
 			rows = rows.filter(function(row, i) {

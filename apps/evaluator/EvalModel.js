@@ -51,7 +51,6 @@ EvalModel.prototype.insert = function(precision, done) {
 
 	var txnModel = new app.models.TxnModel(this.dataset)
 
-
 	var result = {
 		createdAt: new Date(),
 		dataset: dataset,
@@ -80,6 +79,7 @@ EvalModel.prototype.insert = function(precision, done) {
 			txnModel.txnsForValidation(next) 
 		},
 		function(txns, next) {
+
 			log.blue('insert step', 5)
 			result.numTxnsValidation = txns.length
 			txnModel.txns(next)
