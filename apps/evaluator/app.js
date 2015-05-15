@@ -6,9 +6,7 @@ var cp = require('child_process')
 
 
 var evaluate = function(dataset, done) {
-	
-	var bag = {}
-
+		
 	var child = cp.fork(__dirname + '/runner.js')
 	
 	child.send({
@@ -16,25 +14,18 @@ var evaluate = function(dataset, done) {
 	})
 
 	child.on('message', function(result) {
-		bag.precision = result.precision
-		log.blue('got precision', bag.precision, dataset.name)
-		child.disconnect()	
+		log.blue('got precision', result.precision, dataset.name)
+		child.disconnect()
+		q.push({
+			precision:result.precision,
+			dataset: dataset,
+		}, done)	
 	})
 
-	child.on('exit', function(code, string) {
-		if(code === null) {
-			return done('child excited unnormally')
-		}
-		q.push({precision:bag.precision}, done)
-	})
-	
-	
 }
 
 
-var q = async.queue(function(task, done) {
-	new EvalModel(dataset).insert(task.precision, done)
-}, 1)
+	
 
 
 
@@ -79,7 +70,9 @@ var configureRuns = function() {
 	return evaluationRuns
 }
 
-
+var q = async.queue(function(task, done) {
+	new EvalModel(task.dataset).insert(task.precision, done)
+}, 1)
 
 
 var start = function() {

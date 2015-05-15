@@ -23,6 +23,33 @@ function Dataset(filepath, name, _config) {
 
 }
 
+Dataset.rebuild = function(data) {
+	var dataset = null
+	
+	if(data.dataset.name.indexOf('movielens') !== -1) {
+		dataset = new Movielens(
+			data.dataset.filepath,
+			data.dataset.name
+		);
+	} 
+	else if(data.dataset.name.indexOf('last') !== -1) {
+		dataset = new LastFm(
+			data.dataset.filepath,
+			data.dataset.name
+		);
+	} 
+	else if(data.dataset.name.indexOf('gowalla') !== -1) {
+		dataset = new Gowalla(
+			data.dataset.filepath,
+			data.dataset.name
+		);
+	}
+
+	dataset.config = new app.Config(data.dataset.config.configOptions)
+
+	return dataset
+}
+
 
 Dataset.prototype.resultDbPath = function() {
 	return this.basePath + 'results/evaluation-results.sqlite'
@@ -225,6 +252,7 @@ exports.all = [
 
 exports.all = [movielensCustom]
 
+exports.Dataset = Dataset
 exports.LastFm = LastFm
 exports.Movielens = Movielens
 exports.Gowalla = Gowalla

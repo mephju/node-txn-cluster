@@ -37,48 +37,57 @@ var buildTrainingConfigs = function() {
 
 
 
-var buildTransitions = function() {
+var buildTransitions = function(dataset, done) {
 	
 	log('buildTransitions')
-
-	var trainingRuns = buildTrainingConfigs()
-	
-	
-
 	var bag = {}
+	var tsnModel = new app.models.TransitionModel(dataset)
 
-	async.eachChain(
-		trainingRuns,
-		function(dataset, next) {		
-			bag.dataset = dataset
-
-			// console.log(dataset.name, dataset.config.DISTANCE_MEASURE, dataset.config.CROSS_VALIDATION_RUN)
-			// return next()
-
-			bag.transModel 	= new app.models.TransitionModel(dataset)
-			bag.transModel.init(next)
+	async.waterfall([
+		function(next) {		
+			tsnModel.init(next)
 		},
 		function(next) {
+
+			var child = cp.fork(__dirname + '/runner')
+			child.on('message', function(transitions) {
+				q.push({
+					transitions: transitions,
+					dataset: dataset
+				}, function(err) {
+					child.disconnect()
+					done(err)
+				})
+			})
+
+			child.send(dataset)
+
 			log('buildTransitions', 'init done')
-			new app.models.TxnModel(bag.dataset).getClusteredTxns(next)
-		},
-		function(txnRows, next) {
-			log('buildTransitions', 'getClusteredTxns done')
-			bag.txnRows = txnRows
-			clustering.buildClustersFromDb(bag.dataset, next)
-		},
-		function(clusters, next) {
-			log('buildTransitions', 'buildClustersFromDb done, clusters.length', clusters.clusters.length)
-			transitions.findTransitions(bag.transModel, clusters, bag.txnRows, next)
-		},
-		function(err) {
-			log.yellow('finished building transitions', err || '')
 		}
-	);
+	], function(err) {
+		log.yellow('finished building transitions', err || '')
+	});
 }
 
 
 
+var q = async.queue(function(task, done) {
+	new app.models.TransitionModel(task.dataset).insert(task.transitions, done)
+}, 1)
 
 
-buildTransitions()
+
+
+var trainingRuns = buildTrainingConfigs()
+
+async.eachLimit(
+	trainingRuns,
+	8,
+	function(dataset, next) {
+		buildTransitions(dataset, next)
+	},
+	function(err) {
+		if(err) log.red('Could not build transitions', err)
+		else log.green('All transitions built')
+	}
+);

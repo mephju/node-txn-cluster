@@ -32,6 +32,7 @@ function EvalConfigDev() {
 	this.distanceMeasures = ['levenshtein', 'jaccard', 'jaccard-bigram', 'jaccard-levenshtein']
 	this.distanceMeasures = ['jaccard']
 	this.itemChoiceStrategies = ['tfidf']
+	this.itemChoiceStrategies = ['tfidf', 'bestItemsOfCluster', 'bestItemsOverall', 'tfTfidf', 'random', 'withRatings']
 	
 	this.datasets = [{ 
 		dataset: app.datasets.movielensCustom, 

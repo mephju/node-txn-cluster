@@ -11,28 +11,7 @@ process.on('message', function(data) {
 
 var launch = function(data) {
 	
-	var dataset = null
-	
-	if(data.dataset.name.indexOf('movielens') !== -1) {
-		dataset = new app.datasets.Movielens(
-			data.dataset.filepath,
-			data.dataset.name
-		);
-	} 
-	else if(data.dataset.name.indexOf('last') !== -1) {
-		dataset = new app.datasets.LastFm(
-			data.dataset.filepath,
-			data.dataset.name
-		);
-	} 
-	else if(data.dataset.name.indexOf('gowalla') !== -1) {
-		dataset = new app.datasets.Gowalla(
-			data.dataset.filepath,
-			data.dataset.name
-		);
-	}
-
-	dataset.config = new app.Config(data.dataset.config.configOptions)
+	var dataset = app.datasets.Dataset.rebuild(data)
 	
 	var recommender = null
 
