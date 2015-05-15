@@ -1,37 +1,27 @@
 
-var eachtick 	= require('eachtick')
+ 
 
 
 
-exports.findTransitions = function(transModel, clusters, txnRows, done) {
+exports.findTransitions = function(clusters, txnRows, done) {
 	
 	console.log('findTransitions for txns', txnRows.length)
 	
 	var manyTransitions = []
 
+	txnRows.forEach(function(txnRow) {
+		process.stdout.write('.')
 
-	eachtick(
-		txnRows,
-		function(i, txnRow, next) {
-			process.stdout.write('.')
+		manyTransitions.push({ 
+			seq: findTransitionsForTxn(clusters, txnRow['item_ids']),
+			'txn_id': txnRow['txn_id']
+		})
 
-			manyTransitions.push({ 
-				seq: findTransitionsForTxn(clusters, txnRow['item_ids']), 
-				'txn_id': txnRow['txn_id'] 
-			})
+	})
 
-			if(manyTransitions.length > 1000 || i == txnRows.length-1) {
-				var data = manyTransitions
-				manyTransitions = []
-				return transModel.insertTransitions(data, next)
-			} 
-			next(null)
-		},
-		function(err, stop) {
-			console.log('findTransitions', 'done')
-			done(err)
-		}
-	);
+
+
+	done(null, manyTransitions)
 }
 
 

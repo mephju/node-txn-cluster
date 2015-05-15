@@ -2,7 +2,7 @@ require('../init')
 
 var transitions = require('./transitions')
 var clustering = require('../trainer/clustering')
-
+var cp = require('child_process')
 
 
 var buildTrainingConfigs = function() {
@@ -28,6 +28,7 @@ var buildTrainingConfigs = function() {
 			}
 
 			dataset.config = new app.Config(configOptions)		
+			dataset.config.configOptions = configOptions
 			trainingRuns.push(dataset)
 		}
 	);
@@ -41,38 +42,29 @@ var buildTransitions = function(dataset, done) {
 	
 	log('buildTransitions')
 	var bag = {}
-	var tsnModel = new app.models.TransitionModel(dataset)
+	
+	var child = cp.fork(__dirname + '/runner')
+	child.on('message', function(transitions) {
+		q.push({
+			transitions: transitions,
+			dataset: dataset
+		}, function(err) {
+			child.disconnect()
+			done(err)
+		})
+	})
 
-	async.waterfall([
-		function(next) {		
-			tsnModel.init(next)
-		},
-		function(next) {
+	child.send({
+		dataset: dataset
+	})
 
-			var child = cp.fork(__dirname + '/runner')
-			child.on('message', function(transitions) {
-				q.push({
-					transitions: transitions,
-					dataset: dataset
-				}, function(err) {
-					child.disconnect()
-					done(err)
-				})
-			})
-
-			child.send(dataset)
-
-			log('buildTransitions', 'init done')
-		}
-	], function(err) {
-		log.yellow('finished building transitions', err || '')
-	});
+	log('buildTransitions', 'init done')
 }
 
 
 
 var q = async.queue(function(task, done) {
-	new app.models.TransitionModel(task.dataset).insert(task.transitions, done)
+	new app.models.TransitionModel(task.dataset).insertTransitions(task.transitions, done)
 }, 1)
 
 
@@ -80,14 +72,28 @@ var q = async.queue(function(task, done) {
 
 var trainingRuns = buildTrainingConfigs()
 
-async.eachLimit(
+async.eachChain(
 	trainingRuns,
-	8,
 	function(dataset, next) {
-		buildTransitions(dataset, next)
+		new app.models.TransitionModel(dataset).init(next)
 	},
 	function(err) {
-		if(err) log.red('Could not build transitions', err)
-		else log.green('All transitions built')
+		if(err) {
+			return log.red(err)
+		}
+		async.eachLimit(
+			trainingRuns,
+			8,
+			function(dataset, next) {
+				buildTransitions(dataset, next)
+			},
+			function(err) {
+				if(err) log.red('Could not build transitions', err)
+				else log.green('All transitions built')
+			}
+		);
 	}
 );
+
+
+		

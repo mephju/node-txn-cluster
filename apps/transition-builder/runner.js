@@ -7,6 +7,9 @@ var clustering = require('../trainer/clustering')
 process.on('message', function(data) {
 	async.waterfall([
 		function(next) {
+			log.blue(data)
+			var dataset = app.datasets.Dataset.rebuild(data)
+
 			buildTransitions(dataset, next)
 		},
 		function(transitions, next) {
@@ -24,11 +27,11 @@ var buildTransitions = function(dataset, done) {
 
 	async.waterfall([
 		function(next) {
-			new app.models.TxnModel(bag.dataset).getClusteredTxns(next)
+			new app.models.TxnModel(dataset).getClusteredTxns(next)
 		},
 		function(txnRows, next) {
 			bag.txnRows = txnRows
-			clustering.buildClustersFromDb(bag.dataset, next)
+			clustering.buildClustersFromDb(dataset, next)
 		},
 		function(clusters, next) {
 			transitions.findTransitions(clusters, bag.txnRows, next)
