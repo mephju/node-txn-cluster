@@ -27,7 +27,7 @@ Run.prototype.start = function() {
 	for(var i=0; i<this.txnRows.length; i++) {
 		if(i%80 === 0) log.write('.' + this.dataset.config.CROSS_VALIDATION_RUN + this.dataset.config.MARKOV_ORDER)
 		precisionSum += this._evalTxn(this.txnRows[i]['item_ids'])
-		log.write(precisionSum/(i+1) + '')
+		//log.write(precisionSum/(i+1) + '')
 	}
 	log.blue('run finished')
 
