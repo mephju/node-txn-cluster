@@ -33,7 +33,7 @@ app.models = {
 	TransitionModel:  	require('../transition-builder/TransitionModel'),
 }
 
-app.config = new app.Config()
+app.config = new app.Config({})
 
 
 
