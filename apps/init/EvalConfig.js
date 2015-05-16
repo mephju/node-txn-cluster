@@ -1,4 +1,5 @@
 function EvalConfigProd() {
+	this.baselines = ['PopularityBased', 'AprioriBased']
 	this.markovOrders = [1,2,3]
 	this.xValidationRuns = [0,1,2]
 	this.distanceMeasures = ['levenshtein', 'jaccard', 'jaccard-bigram', 'jaccard-levenshtein']
@@ -27,13 +28,16 @@ function EvalConfigProd() {
 }
 
 function EvalConfigDev() {
+	this.baselines = ['PopularityBased', 'AprioriBased']
+	this.baselines = ['AprioriBased']
 	this.markovOrders = [1]
-	this.xValidationRuns = [0,1,2]
+	this.xValidationRuns = [0, 1, 2]
 	this.distanceMeasures = ['levenshtein', 'jaccard', 'jaccard-bigram', 'jaccard-levenshtein']
 	this.distanceMeasures = ['jaccard']
-	this.itemChoiceStrategies = ['tfidf']
-	this.itemChoiceStrategies = ['tfidf', 'bestItemsOfCluster', 'bestItemsOverall', 'tfTfidf', 'random', 'withRatings']
 	
+	this.itemChoiceStrategies = ['tfidf', 'bestItemsOfCluster', 'bestItemsOverall', 'tfTfidf', 'random', 'withRatings']
+	this.itemChoiceStrategies = ['tfidf']
+
 	this.datasets = [{ 
 		dataset: app.datasets.movielensCustom, 
 		txnCount: 1500 

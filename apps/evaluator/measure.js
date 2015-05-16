@@ -34,6 +34,7 @@ var precision = function(relevant, retrieved) {
 			hits++
 		}			
 	})
+	
 	return hits / retrieved.length
 }
 

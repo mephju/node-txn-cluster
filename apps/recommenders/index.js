@@ -2,7 +2,7 @@
 
 var popularityBased 	= require('./popularity-based')
 var sessionBased 		= require('./session-based')
-
+var aprioriBased 		= require('./apriori-based')
 
 
 
@@ -31,6 +31,12 @@ exports.create = function(dataset, done) {
 		},
 		function(sessionBasedRecommender, next) {
 			recommenders.sessionBased = sessionBasedRecommender
+			// log.blue(recommenders)
+			return done(null, recommenders) //TODO REMOVE LATER
+			aprioriBased.create(dataset, next)
+		},
+		function(aprioriBased, next) {
+			recommenders.aprioriBased = aprioriBased
 			log.green('recommenders created successfully')
 			done(null, recommenders)
 		}

@@ -5,7 +5,7 @@ function Config(options) {
 
 	
 	this.CROSS_VALIDATION_RUN 		= options.crossValidationRun ? options.crossValidationRun : 0
-	this.MIN_SUPPORT				= 50
+	this.MIN_SUPPORT				= 20
 	this.TRAINING_SET_SIZE 			= 0.6666667
 	//this.TRAINING_SET_SIZE 			= 0.8
 	this.VALIDATION_SET_SIZE 		= 1 - this.TRAINING_SET_SIZE
@@ -39,7 +39,11 @@ function Config(options) {
 	const REC_REAL = 1
 	const REC_APRIORI = 0
 
-	this.RECOMMENDER = 'own-method'
+	this.RECOMMENDER = 'SessionBased'
+	if(options.baseline) {
+		this.RECOMMENDER = options.baseline
+	}
+	 //AprioriBased, SessionBased, PopularityBased
 		
 }
 

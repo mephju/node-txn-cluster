@@ -22,7 +22,7 @@ var init = function(popularFallbackItems, done) {
 			db.getTxnsAsSets(next)
 		},
 		function(transactions, next) {
-			var store 	= algorithm(transactions);
+			var store 	= algorithm(transactions); //finds frequent itemsets. including their counts
 			console.log(store)
 			var rules 	= assoc.findRules(store)
 			console.log(rules)
@@ -84,9 +84,7 @@ var initApriori = function(txns) {
 
 
 var increment = function(obj, key) {
-	if(!obj[key]) {
-		obj[key] = 0
-	} 
+	if(!obj[key]) { obj[key] = 0 } 
 	obj[key]++
 }
 

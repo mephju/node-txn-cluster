@@ -25,6 +25,10 @@ var evaluate = function(dataset, done) {
 }
 
 
+	
+
+
+
 var configureRuns = function() {
 	var evalConfig = new app.EvalConfig()
 	var evaluationRuns = []
@@ -32,22 +36,21 @@ var configureRuns = function() {
 	help.comboCall(
 
 		evalConfig.datasets,
-		evalConfig.distanceMeasures,
-		evalConfig.markovOrders,
-		evalConfig.itemChoiceStrategies,
+		evalConfig.baselines,
 		evalConfig.xValidationRuns,
 
-		function(datasetRaw, measure, order, strategy, run) {
-			log.yellow('configuring', datasetRaw.dataset.name, measure, order, strategy, run)
+		function(datasetRaw, baseline, run) {
+			log.yellow('configuring', datasetRaw.dataset.name, baseline, run)
 			var original = datasetRaw.dataset 
 			
 			
 			var configOptions = {
-				distanceMeasure: measure,
-				markovOrder: order,
 				crossValidationRun: run,
 				txnCount: datasetRaw.txnCount,
-				itemChoiceStrategy: strategy,
+				baseline: baseline,
+				distanceMeasure: 'jaccard',
+				markovOrder: 1,
+				txnCount: datasetRaw.txnCount,
 			}
 
 			var dataset = new original.constructor(

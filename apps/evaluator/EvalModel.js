@@ -7,7 +7,11 @@ var db = null
 function EvalModel(dataset) {
 	app.Model.call(this, dataset)
 
-	this.filepath  = dataset.resultPath + 'evaluation-new.db'
+	this.filepath  = dataset.resultPath 
+	+ 'evaluation-' 
+	+ this.dataset.name 
+	+ '.db'
+	
 	if(!db) {
 		db = new Nedb({ 
 			filename: this.filepath,
