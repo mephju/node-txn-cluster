@@ -3,7 +3,7 @@
 
 function Config(options) {
 
-	
+	this.USE_CORES 					= 7
 	this.CROSS_VALIDATION_RUN 		= options.crossValidationRun ? options.crossValidationRun : 0
 	this.MIN_SUPPORT				= 20
 	this.TRAINING_SET_SIZE 			= 0.6666667

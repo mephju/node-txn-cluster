@@ -83,7 +83,7 @@ var start = function() {
 
 	async.eachLimit(
 		evaluationRuns, 
-		8, 
+		app.config.USE_CORES, 
 		function(dataset, next) {
 			evaluate(dataset, next)			
 		}, 

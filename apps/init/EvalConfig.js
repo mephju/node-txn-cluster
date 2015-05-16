@@ -1,4 +1,5 @@
 function EvalConfigProd() {
+	this.useCores = 7
 	this.baselines = ['PopularityBased', 'AprioriBased']
 	this.markovOrders = [1,2,3]
 	this.xValidationRuns = [0,1,2]
@@ -28,6 +29,7 @@ function EvalConfigProd() {
 }
 
 function EvalConfigDev() {
+	this.useCores = 3
 	this.baselines = ['PopularityBased', 'AprioriBased']
 	this.baselines = ['AprioriBased']
 	this.markovOrders = [1]

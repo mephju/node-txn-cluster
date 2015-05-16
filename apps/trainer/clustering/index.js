@@ -31,7 +31,7 @@ exports.buildClustersParallel = function(datasets, done) {
 
 	async.eachLimit(
 		datasets,
-		8,
+		app.config.USE_CORES,
 		function(dataset, next) {
 			startClusterRun(dataset, next)
 		},

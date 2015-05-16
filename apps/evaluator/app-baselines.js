@@ -60,6 +60,7 @@ var configureRuns = function() {
 
 			dataset.config = new app.Config(configOptions)
 			dataset.config.configOptions = configOptions
+
 			
 
 			evaluationRuns.push(dataset)
@@ -86,7 +87,7 @@ var start = function() {
 
 	async.eachLimit(
 		evaluationRuns, 
-		8, 
+		app.config.USE_CORES, 
 		function(dataset, next) {
 			evaluate(dataset, next)			
 		}, 
