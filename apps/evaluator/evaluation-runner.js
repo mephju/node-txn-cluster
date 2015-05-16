@@ -56,7 +56,6 @@ var getRecommender = function(dataset, done) {
 			} 
 			else if(dataset.config.RECOMMENDER === 'SessionBased') {
 				recommender = recommenders.sessionBased
-				log.blue(recommender)
 			}
 			else if(dataset.config.RECOMMENDER === 'PopularityBased') {
 				log.blue('returning popularityBased recommender')
