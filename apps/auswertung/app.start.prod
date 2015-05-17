@@ -1,0 +1,1 @@
+BASE_PATH=/home/kokirchn/thesis/ node --max-old-space-size=8192 /home/kokirchn/thesis/node-txn-cluster/apps/auswertung/app.js

@@ -5,7 +5,7 @@ var async 	= require('async')
 //var baseDatasetPath = '/home/kokirchn/thesis/'
 
 function Dataset(filepath, name, _config) {
-	log('BASE_PATH', process.env.BASE_PATH)
+	//log('BASE_PATH', process.env.BASE_PATH)
 
 	this.config = _config
 	var basePath = process.env.BASE_PATH ? process.env.BASE_PATH : '/stuff/datamining/'
@@ -57,7 +57,7 @@ Dataset.prototype.resultDbPath = function() {
 
 
 Dataset.prototype.prefixTableNameFull = function(tableName) {
-	log.red('prefixTableNameFull', tableName)
+	//log.red('prefixTableNameFull', tableName)
 
 	return this.config.DISTANCE_MEASURE.replace(/-/g, '_') + '_x_validation_run_' + 
 		this.config.CROSS_VALIDATION_RUN + '_markov_order_' + 

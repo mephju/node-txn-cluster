@@ -1,6 +1,9 @@
+require('../init')
 var Nedb	= require('nedb')
+
+var dataset = app.datasets.movielensCustom
 var db = new Nedb({ 
-	filename: '/stuff/datamining/results/evaluation-new.db',
+	filename: dataset.resultPath + 'evaluation-' + dataset.name + '.db' ,
 	autoload: true
 });
 
@@ -19,7 +22,7 @@ db
 	);  	
 	//console.log(doc.numTxns, doc.numTxnsTraining, doc.numTxnsValidation)
   });
-  console.log(docs[0])
+  //console.log(docs[0])
   console.log(docs.length)
 });
 
