@@ -7,7 +7,7 @@ process.on('message', function(data) {
 })
 
 var train = function(dataset) {
-	
+	log.blue('train', dataset.name, dataset.config.CROSS_VALIDATION_RUN)
 	async.waterfall([
 		function(next) {
 			new app.models.TxnModel(dataset).txnsForTraining(next)
