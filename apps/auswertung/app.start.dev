@@ -1,1 +1,1 @@
-BASE_PATH=/stuff/datamining/ node /home/mephju/maproject/daport/apps/auswertung/app.js
+BASE_PATH=/stuff/datamining/ DATASET=movielens node /home/mephju/maproject/daport/apps/auswertung/app.js
