@@ -38,7 +38,7 @@ exports.create = create
 //
 // get most popular items from the training set
 //
-var getPopularItemsSql = function(txnItemGroupsTable, dataset) {
+var getPopularItemsSqlBad = function(txnItemGroupsTable, dataset) {
 	log('getPopularItemsSql')
 	return 'select 	item_id, count(item_id) 	\
 				as count 		\
@@ -47,6 +47,18 @@ var getPopularItemsSql = function(txnItemGroupsTable, dataset) {
 		(select txn_id 			\
 		from ' + txnItemGroupsTable + ' \
 		limit ' + dataset.config.N + ') \
+	group by 	item_id			\
+	order by 	count desc  	\
+	limit ' + dataset.config.N
+}
+var getPopularItemsSql = function(txnItemGroupsTable, dataset) {
+	log('getPopularItemsSql')
+	return 'select 	item_id, count(item_id) 	\
+				as count 		\
+	from 		txn_items 		\
+	where 		txn_id in 		\
+		(select txn_id 			\
+		from ' + txnItemGroupsTable +  ') \
 	group by 	item_id			\
 	order by 	count desc  	\
 	limit ' + dataset.config.N
