@@ -134,7 +134,7 @@ Apriori.prototype.genCandidates = function(store, k) {
 Apriori.prototype.mergeSets = function(set1, set2) {
 	var newSet = set1.slice()
 	for(var i=0,len=set2.length; i<len; i++) {
-		mergeInto(newSet, set2[i])
+		this.mergeInto(newSet, set2[i])
 	}
 	return newSet
 }

@@ -31,13 +31,15 @@ exports.create = function(dataset, done) {
 		},
 		function(sessionBasedRecommender, next) {
 			recommenders.sessionBased = sessionBasedRecommender
-			// log.blue(recommenders)
-			return done(null, recommenders) //TODO REMOVE LATER
 			aprioriBased.create(dataset, next)
 		},
 		function(aprioriBased, next) {
 			recommenders.aprioriBased = aprioriBased
 			log.green('recommenders created successfully')
+			log.green('aprioriBased available', typeof(recommenders.aprioriBased) !== undefined)
+			log.green('sessionBased available', typeof(recommenders.sessionBased) !== undefined)
+			log.green('popularityBased available', typeof(recommenders.popularityBased) !== undefined)
+			//return 
 			done(null, recommenders)
 		}
 	], function(err) {
