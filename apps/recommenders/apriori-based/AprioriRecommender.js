@@ -33,19 +33,15 @@ AprioriRecommender.prototype.recommend = function(session) {
 		var item = session[s]
 		var itemRules = this.rules[item]
 
-		if(itemRules) {
-			for(var i=0; i<itemRules.length; i++) {
-				for(var j=0; j<itemRules[i].consequent; j++) {
-					recs.push(itemRules[i].consequent[j])
-					if(recs.length >= this.dataset.config.N) {
-						return recs.slice(0,5)
-					}
+		if(!itemRules) { return recs }
+			
+		for(var i=0; i<itemRules.length; i++) {
+			for(var j=0; j<itemRules[i].consequent; j++) {
+				recs.push(itemRules[i].consequent[j])
+				if(recs.length === this.dataset.config.N) {
+					return recs
 				}
-				// recs = _.union(recs, itemRules[i].consequent)	
-				
-
-					
-			}
+			}					
 		}	
 	}
 		
