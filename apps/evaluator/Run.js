@@ -2,6 +2,7 @@ var measure 	= require('./measure')
 
 
 function Run(dataset, recommender, txnRows) {
+	if(!recommender) { throw new Error('no recommender supplied ' + recommender)}
 	this.dataset = dataset
 	this.recommender = recommender
 	this.txnRows = txnRows

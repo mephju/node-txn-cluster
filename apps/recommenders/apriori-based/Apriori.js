@@ -97,7 +97,7 @@ Apriori.prototype.genCandidates = function(store, k) {
 
 
 	var candidates = []
-	var keys = Object.keys(store[k-1])
+	var keys = Object.keys(store[k-1]) //all keys of level k-1
 	var frequent = keys.map(function(key) {
 		return help.textToNumArray(key)
 	})
@@ -107,19 +107,16 @@ Apriori.prototype.genCandidates = function(store, k) {
 
 	var len = frequent.length
 	for(var i=0; i<len; i++) {
-		//console.log(i)
+		
 		for(var h=i+1; h<len; h++) {
 			
 			var c = this.mergeSets(frequent[i], frequent[h])
 			
-			if(c.length === k) {
+			if(c.length === k && !candidates.hasArray(c)) { 
+				var subsets = this.makeSubsets(c, k-1)
+				if(this.areSetsIn(subsets, frequent)) {
 			
-				if(!candidates.hasArray(c)) { 
-					var subsets = this.makeSubsets(c, k-1)
-					if(this.areSetsIn(subsets, frequent)) {
-				
-						candidates.push(c)
-					}
+					candidates.push(c)
 				}
 			}
 		}
@@ -130,25 +127,28 @@ Apriori.prototype.genCandidates = function(store, k) {
 	return candidates
 }
 
-
+/**
+ * Creates a candidate by merging set1 and set2.
+ * 
+ */
 Apriori.prototype.mergeSets = function(set1, set2) {
 	var newSet = set1.slice()
 	for(var i=0,len=set2.length; i<len; i++) {
-		var pos = this.findInsertPos(newSet, set2[i])
-		if(pos !== -1) {
-			newSet.splice(pos, 0, set2[i])
-		}
+		mergeInto(newSet, set2[i])
 	}
 	return newSet
 }
 
-Apriori.prototype.findInsertPos = function(set, value) {
+//Find position in 'set' where new value should be inserted
+Apriori.prototype.mergeInto = function(set, value) {
 	for(var i=0,len=set.length; i<len; i++) {
 		if(value === set[i]) {
-				return -1
+			return -1
 		} 
 		if(value < set[i]) {
-			return i
+			// at position i do not remove any elements 
+			// but insert 'value'
+			return set.splice(i, 0, value) 
 		}
 	}	
 	return set.length
