@@ -1,7 +1,7 @@
 function EvalConfigProd() {
 	this.useCores = 7
 	this.baselines = ['PopularityBased', 'AprioriBased']
-	this.baselines = ['PopularityBased']
+	//this.baselines = ['PopularityBased']
 	this.markovOrders = [1,2,3]
 	this.xValidationRuns = [0,1,2]
 	this.distanceMeasures = ['levenshtein', 'jaccard', 'jaccard-bigram', 'jaccard-levenshtein']
@@ -18,14 +18,14 @@ function EvalConfigProd() {
 			dataset: app.datasets.movielens,
 			txnCount:0
 		}, 
-		// {
-		// 	dataset: app.datasets.lastFm,
-		// 	txnCount:0
-		// },
-		// {
-		// 	dataset: app.datasets.gowalla,
-		// 	txnCount:0
-		// }
+		{
+			dataset: app.datasets.lastFm,
+			txnCount:0
+		},
+		{
+			dataset: app.datasets.gowalla,
+			txnCount:0
+		}
 	];
 }
 
