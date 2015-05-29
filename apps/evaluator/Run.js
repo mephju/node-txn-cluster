@@ -57,7 +57,7 @@ Run.prototype._evalTxn = function(txn) {
 		var sessionEnd 	 	= txn.slice(i, i+config.N)
 
 		var recommendations = this.recommender.recommend(sessionBegin, config.N)
-		log(sessionBegin.slice(-5), recommendations)
+		//log(sessionBegin.slice(-5), recommendations)
 		if(recommendations.length > 0) { 
 			precisionSum += measure.precision(
 				sessionEnd, 

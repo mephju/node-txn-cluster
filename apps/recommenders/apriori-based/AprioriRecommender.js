@@ -36,10 +36,10 @@ AprioriRecommender.prototype.recommend = function(session) {
 		if(itemRules) {
 			for(var i=0; i<itemRules.length; i++) {
 				recs = _.union(recs, itemRules[i].consequent)	
-				recs = _.difference(recs, session)
+				//recs = _.difference(recs, session)
 
 				if(recs.length >= this.dataset.config.N) {
-					return recs
+					return recs.slice(0,5)
 				}
 			}
 		}	
