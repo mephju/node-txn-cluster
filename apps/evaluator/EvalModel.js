@@ -8,7 +8,7 @@ function EvalModel(dataset, baseline) {
 	app.Model.call(this, dataset)
 
 	this.filepath  = dataset.resultPath 
-	+ 'evaluation-' + (baseline ? baseline : '') // append baseline value so we can find an evaluation result file for baselines
+	+ 'evaluation-' + (baseline ? baseline + '-' : '') // append baseline value so we can find an evaluation result file for baselines
 	+ this.dataset.name 
 	+ '.db'
 	
