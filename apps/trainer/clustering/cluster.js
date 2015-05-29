@@ -35,10 +35,6 @@ Cluster.prototype.addMember = function(txnRow) {
 }
 
 
-Cluster.prototype.distanceFast = function(txnRow) {
-	return this.distancesOfCentroid[txnRow['txn_id']-1]
-}
-
 Cluster.prototype.distance = function(txn) {
 	return this.distanceMeasure.distance(
 		this.centroidRow['item_ids'],
@@ -89,9 +85,36 @@ Cluster.prototype._hasChanged = function(currentCentroid, nextCentroid) {
 
 }
 
+Cluster.prototype._distanceSumsNoDb = function(done) {
 
+	var distanceSums = []
+	var bag = {}
 
+	async.eachChain(
+		this.members,
+		function(memberA, next) {
+			bag.memberA = memberA
+			this.distanceModel.getDistances(memberA, next)
+		},
+		function(distances, next) {
 
+			var sum = 0
+			for(var b=0, len=this.members.length; b<len; b++) {
+				var memberB = this.members[b]
+				sum += distances[memberB['txn_id']-1]
+
+				// log('distance from db', distances[memberB['txn_id']-1])
+				// log('distance calculated', this.distanceMeasure.distance(memberB['item_ids'], bag.memberA['item_ids']))
+			}
+			distanceSums.push(sum)
+			next()
+		},
+		function(err) {
+			done(err, distanceSums)
+		},
+		this
+	);
+}
 
 
 Cluster.prototype._distanceSums = function(done) {
