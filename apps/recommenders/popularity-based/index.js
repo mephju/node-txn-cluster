@@ -7,15 +7,17 @@ var PopularityBasedRecommender 	= require('./popularity-based-recommender')
 var create = function(dataset, done) {
 	console.log('mostpopular.init')
 
+
 	var db = new sqlite3.Database(dataset.dbPath)
+	var txnModel = new app.models.TxnModel(dataset)
 	
 	async.waterfall([
 		function(next) {
-			new app.models.TxnModel(dataset).txnsForTraining(next)
+			txnModel.txnsForTraining(next)
 		},
 		function(txns, next) {
 			db.all(
-				getPopularItemsSql(txns.length, dataset), 
+				getPopularItemsSql(txnModel.table.txnItemGroups, dataset), 
 				next
 			);
 		},
@@ -36,17 +38,14 @@ exports.create = create
 //
 // get most popular items from the training set
 //
-var getPopularItemsSql = function(trainingSize, dataset) {
+var getPopularItemsSql = function(txnItemGroupsTable, dataset) {
 	log('getPopularItemsSql')
 	return 'select 	item_id, count(item_id) 	\
 				as count 		\
 	from 		txn_items 		\
-	where 		txn_id  		\
-	in 							\
-	(select 	txn_id 			\
-	from 		txns 			\
-	order by 	txn_id			\
-	limit ' + 	trainingSize +')\
+	where 		txn_id in 		\
+		(select txn_id 			\
+		from ' + txnItemGroupsTable + ') \
 	group by 	item_id			\
 	order by 	count desc  	\
 	limit ' 	+ dataset.config.N

@@ -4,11 +4,11 @@ var clustering 	= require('../trainer/clustering')
 
 var db = null
 
-function EvalModel(dataset) {
+function EvalModel(dataset, baseline) {
 	app.Model.call(this, dataset)
 
 	this.filepath  = dataset.resultPath 
-	+ 'evaluation-' 
+	+ 'evaluation-' + (baseline ? baseline : '') // append baseline value so we can find an evaluation result file for baselines
 	+ this.dataset.name 
 	+ '.db'
 	

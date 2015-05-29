@@ -71,7 +71,7 @@ var configureRuns = function() {
 }
 
 var q = async.queue(function(task, done) {
-	new EvalModel(task.dataset).insert(task.precision, done)
+	new EvalModel(task.dataset, 'baseline').insert(task.precision, done)
 }, 1)
 
 

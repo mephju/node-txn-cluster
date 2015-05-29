@@ -1,6 +1,7 @@
 function EvalConfigProd() {
 	this.useCores = 7
 	this.baselines = ['PopularityBased', 'AprioriBased']
+	this.baselines = ['PopularityBased']
 	this.markovOrders = [1,2,3]
 	this.xValidationRuns = [0,1,2]
 	this.distanceMeasures = ['levenshtein', 'jaccard', 'jaccard-bigram', 'jaccard-levenshtein']
@@ -32,6 +33,7 @@ function EvalConfigDev() {
 	this.useCores = 3
 	this.baselines = ['PopularityBased', 'AprioriBased']
 	this.baselines = ['AprioriBased']
+	this.baselines = ['PopularityBased']
 	this.markovOrders = [1]
 	this.xValidationRuns = [0, 1, 2]
 	this.distanceMeasures = ['levenshtein', 'jaccard', 'jaccard-bigram', 'jaccard-levenshtein']
