@@ -45,8 +45,9 @@ var getPopularItemsSql = function(txnItemGroupsTable, dataset) {
 	from 		txn_items 		\
 	where 		txn_id in 		\
 		(select txn_id 			\
-		from ' + txnItemGroupsTable + ') \
+		from ' + txnItemGroupsTable + ' \
+		limit ' + dataset.config.N + ') \
 	group by 	item_id			\
 	order by 	count desc  	\
-	limit ' 	+ dataset.config.N
+	limit ' + dataset.config.N
 }

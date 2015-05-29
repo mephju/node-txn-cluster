@@ -12,7 +12,7 @@ PopularityBasedRecommender.prototype = Object.create(Recommender.prototype, {
 
 PopularityBasedRecommender.prototype.recommend = function(sessionBegin, n) {
 	//return [ 785, 592, 1097, 2544, 1359 ]
-	return this.popularItemMap[n-2]
+	return this.popularItemMap[n]
 }
 
 module.exports = PopularityBasedRecommender
