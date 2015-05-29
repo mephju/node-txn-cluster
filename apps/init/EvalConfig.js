@@ -14,10 +14,10 @@ function EvalConfigProd() {
 		txnCount: 1500 
 	}]
 	this.datasets = [
-		{
-			dataset: app.datasets.movielens,
-			txnCount:0
-		}, 
+		// {
+		// 	dataset: app.datasets.movielens,
+		// 	txnCount:0
+		// }, 
 		{
 			dataset: app.datasets.lastFm,
 			txnCount:0
