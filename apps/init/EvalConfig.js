@@ -7,21 +7,22 @@ function EvalConfigProd() {
 	this.distanceMeasures = ['levenshtein', 'jaccard', 'jaccard-bigram', 'jaccard-levenshtein']
 
 	this.itemChoiceStrategies = ['tfidf', 'bestItemsOfCluster', 'bestItemsOverall', 'tfTfidf', 'random', 'withRatings']
+	this.itemChoiceStrategies = ['tfidf', 'bestItemsOfCluster', 'bestItemsOverall', 'tfTfidf', 'random']
 	//this.itemChoiceStrategies = ['tfidf', 'bestItemsOverall', 'tfTfidf', 'random', 'withRatings']
-	
-	this.datasets = [{ 
-		dataset: app.datasets.movielensCustom, 
-		txnCount: 1500 
-	}]
+
 	this.datasets = [
-		{
-			dataset: app.datasets.movielens,
-			txnCount:0
-		}, 
 		// {
-		// 	dataset: app.datasets.lastFm,
-		// 	txnCount:0
+		// 	dataset: app.datasets.movielensCustom, 
+		// 	txnCount: 1500 
 		// },
+		// {
+		// 	dataset: app.datasets.movielens,
+		// 	txnCount:0
+		// }, 
+		{
+			dataset: app.datasets.lastFm,
+			txnCount:0
+		},
 		// {
 		// 	dataset: app.datasets.gowalla,
 		// 	txnCount:0
