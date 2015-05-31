@@ -13,22 +13,7 @@ var Cluster = function(centroidRow, distanceMeasure, distanceModel) {
 Cluster.prototype.init = function(done) {
 	log('Cluster.init', this.centroidRow['txn_id'])
 	return done()
-	// async.wfall([
-	// 	function(next) {
-	// 		this.distanceModel.getDistances(this.centroidRow, next)
-	// 	},
-	// 	function(distances, next) {
-	// 		this.distancesOfCentroid = distances
-	// 		done()
-	// 	}
-	// ], this, done)
 }
-
-
-
-// Cluster.prototype.id = function() {
-// 	return this.centroidRow['txn_id']
-// }
 
 Cluster.prototype.addMember = function(txnRow) {
 	this.members.push(txnRow)
@@ -58,11 +43,7 @@ Cluster.prototype.recomputeCentroid = function(done) {
 
 	async.wfall([
 		function(next) {
-			//this._distanceSums(next)
-			this._distanceSumsFast(next)
-		},
-		function(distanceSums, next) {
-
+			var distanceSums 	= this._distanceSumsNoDb()
 			var minIdx	 		= help.minIdx(distanceSums)
 			var nextCentroid 	= this.members[minIdx]
 			var changed 		= false //nextCentroid['txn_id'] !== this.centroidRow['txn_id']
@@ -85,135 +66,152 @@ Cluster.prototype._hasChanged = function(currentCentroid, nextCentroid) {
 
 }
 
-Cluster.prototype._distanceSumsNoDb = function(done) {
+Cluster.prototype._distanceSumsNoDb = function() {
 
 	var distanceSums = []
 	var bag = {}
+	var len = this.members.length
 
-	async.eachChain(
-		this.members,
-		function(memberA, next) {
-			bag.memberA = memberA
-			this.distanceModel.getDistances(memberA, next)
-		},
-		function(distances, next) {
-
-			var sum = 0
-			for(var b=0, len=this.members.length; b<len; b++) {
-				var memberB = this.members[b]
-				sum += distances[memberB['txn_id']-1]
-
-				// log('distance from db', distances[memberB['txn_id']-1])
-				// log('distance calculated', this.distanceMeasure.distance(memberB['item_ids'], bag.memberA['item_ids']))
-			}
-			distanceSums.push(sum)
-			next()
-		},
-		function(err) {
-			done(err, distanceSums)
-		},
-		this
-	);
+	var matrix = Cluster.buildSimMatrix(this.members, this.distanceMeasure)
+	for(var r=0; r<len; r++) { //r for row
+		distanceSums[r] = Cluster.sumRow(matrix, r)
+	}
+	return distanceSums
 }
 
+Cluster.buildSimMatrix = function(members, distanceMeasure) {
+	var matrix = []
+	var len = members.length
+	for(var i=0; i<len; i++) {
+		
+		matrix[i] = []
 
-Cluster.prototype._distanceSums = function(done) {
-
-	var distanceSums = []
-	var bag = {}
-
-	async.eachChain(
-		this.members,
-		function(memberA, next) {
-			bag.memberA = memberA
-			this.distanceModel.getDistances(memberA, next)
-		},
-		function(distances, next) {
-
-			var sum = 0
-			for(var b=0, len=this.members.length; b<len; b++) {
-				var memberB = this.members[b]
-				sum += distances[memberB['txn_id']-1]
-
-				// log('distance from db', distances[memberB['txn_id']-1])
-				// log('distance calculated', this.distanceMeasure.distance(memberB['item_ids'], bag.memberA['item_ids']))
-			}
-			distanceSums.push(sum)
-			next()
-		},
-		function(err) {
-			done(err, distanceSums)
-		},
-		this
-	);
-}
-
-
-/**
- * Similar to Cluster._distanceSums but creates less I/O because 
- * we retrieve distances for many txns instead of just one txn at a time.
- *
- * Get distanceSums for all members of this cluster.
- * distanceSums[0] corresponds to distance sum of this.member[0]
- * 
- * @param  {Function} done [description]
- * @return {[type]}        [description]
- */
-Cluster.prototype._distanceSumsFast = function(done) {
-	var distanceSums = []
-	
-	var memberGroups = this._buildMemberGroups()
-
-	async.eachChain(
-		memberGroups,
-		function(group, next) {
-			this.distanceModel.getDistancesForMany(group, next)
-		},
-		function(distancesForMany, next) {
-
-			distancesForMany.forEach(function(distances) {
-				var sum = 0
-				for(var b=0, len=this.members.length; b<len; b++) {
-					var memberB = this.members[b]
-					var idxMemberB = memberB['txn_id']-1
-					sum += distances[idxMemberB]
-				}
-				distanceSums.push(sum)
+		for(var j=i+1; j<len; j++) {
 			
-			}.bind(this))
-
-				
-			next()
-		},
-		function(err) {
-			done(err, distanceSums)
-		},
-		this
-	);
-
-}
-
-/**
- * Divides this.members into chunks of 20 members each.
- * @return {[type]} [description]
- */
-Cluster.prototype._buildMemberGroups = function() {
-	// log('Cluster._buildMemberGroups')
-	var memberGroups = []
-	var group = []
-
-	for(var i=0; i<this.members.length; i++) {
-		group.push(this.members[i])
-		//push group every 20 txns AND
-		//push group if loop is about to end
-		if(i !== 0 && (i % 20) === 0 || i == (this.members.length - 1)) {
-			memberGroups.push(group)
-			group = []
+			if(i !== j) {
+				matrix[i][j] = distanceMeasure.distance(
+					members[i]['item_ids'], 
+					members[j]['item_ids']
+				)
+			}
 		}
 	}
-
-	return memberGroups
+	return matrix
 }
+
+Cluster.sumRow = function(matrix, r) {
+	var sum = 0
+	for(var i=0; i<matrix[r].length; i++) {
+		if(i < r) {
+			sum += matrix[i][r]
+		} else if(i > r) {
+			sum += matrix[r][i]
+		} 
+	} 
+	return sum
+}
+
+
+
+
+
+// Cluster.prototype._distanceSums = function(done) {
+
+// 	var distanceSums = []
+// 	var bag = {}
+
+// 	async.eachChain(
+// 		this.members,
+// 		function(memberA, next) {
+// 			bag.memberA = memberA
+// 			this.distanceModel.getDistances(memberA, next)
+// 		},
+// 		function(distances, next) {
+
+// 			var sum = 0
+// 			for(var b=0, len=this.members.length; b<len; b++) {
+// 				var memberB = this.members[b]
+// 				sum += distances[memberB['txn_id']-1]
+
+// 				// log('distance from db', distances[memberB['txn_id']-1])
+// 				// log('distance calculated', this.distanceMeasure.distance(memberB['item_ids'], bag.memberA['item_ids']))
+// 			}
+// 			distanceSums.push(sum)
+// 			next()
+// 		},
+// 		function(err) {
+// 			done(err, distanceSums)
+// 		},
+// 		this
+// 	);
+// }
+
+
+// /**
+//  * Similar to Cluster._distanceSums but creates less I/O because 
+//  * we retrieve distances for many txns instead of just one txn at a time.
+//  *
+//  * Get distanceSums for all members of this cluster.
+//  * distanceSums[0] corresponds to distance sum of this.member[0]
+//  * 
+//  * @param  {Function} done [description]
+//  * @return {[type]}        [description]
+//  */
+// Cluster.prototype._distanceSumsFast = function(done) {
+// 	var distanceSums = []
+	
+// 	var memberGroups = this._buildMemberGroups()
+
+// 	async.eachChain(
+// 		memberGroups,
+// 		function(group, next) {
+// 			this.distanceModel.getDistancesForMany(group, next)
+// 		},
+// 		function(distancesForMany, next) {
+
+// 			distancesForMany.forEach(function(distances) {
+// 				var sum = 0
+// 				for(var b=0, len=this.members.length; b<len; b++) {
+// 					var memberB = this.members[b]
+// 					var idxMemberB = memberB['txn_id']-1
+// 					sum += distances[idxMemberB]
+// 				}
+// 				distanceSums.push(sum)
+			
+// 			}.bind(this))
+
+				
+// 			next()
+// 		},
+// 		function(err) {
+// 			done(err, distanceSums)
+// 		},
+// 		this
+// 	);
+
+// }
+
+// /**
+//  * Divides this.members into chunks of 20 members each.
+//  * @return {[type]} [description]
+//  */
+// Cluster.prototype._buildMemberGroups = function() {
+// 	// log('Cluster._buildMemberGroups')
+// 	var memberGroups = []
+// 	var group = []
+
+// 	for(var i=0; i<this.members.length; i++) {
+// 		group.push(this.members[i])
+// 		//push group every 20 txns AND
+// 		//push group if loop is about to end
+// 		if(i !== 0 && (i % 20) === 0 || i == (this.members.length - 1)) {
+// 			memberGroups.push(group)
+// 			group = []
+// 		}
+// 	}
+
+// 	return memberGroups
+// }
 
 
 module.exports = Cluster
