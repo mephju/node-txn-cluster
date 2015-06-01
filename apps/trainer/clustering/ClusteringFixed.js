@@ -88,7 +88,7 @@ ClusteringFixed.prototype._chooseValidCentroid = function(done) {
 	var max 		= txnRows.length - 1
 	var randomIdx 	= Math.floor(Math.random() * max)
 	var isValid 	= this._isValidCentroid(randomIdx)
-
+	log.blue('isvalid', isValid)
 	if(isValid) {
 		return done(null, this.txnRows[randomIdx])
 	}
