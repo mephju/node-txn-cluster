@@ -48,7 +48,7 @@ Clustering.prototype._init = function(done) {
 	var centroids 		= []
 	var clusters	 	= this.clusters
 	
-	process.stdout.write('-' + K)
+	process.stdout.write('i' + K)
 
 	async.whilst(
 	    function() { 
@@ -62,13 +62,12 @@ Clustering.prototype._init = function(done) {
 				}
 
 				centroids.push(centroid)
-				var c = new Cluster(
+				clusters.addCluster(new Cluster(
 					centroid, 
-					this.distanceMeasure, 
-					this.distanceModel
-				);
-				clusters.addCluster(c);
-				c.init(next)
+					this.distanceMeasure
+				));
+				
+				next()
 			}.bind(this))
 	    }.bind(this),
 	    done
@@ -89,33 +88,26 @@ ClusteringFixed.prototype._chooseValidCentroid = function(done) {
 	var max 		= txnRows.length - 1
 	var randomIdx 	= Math.floor(Math.random() * max)
 	var centroid 	= txnRows[randomIdx]
+	var isValid 	= this._isValidCentroid(centroid)
 
-	async.wfall([
-		function(next) {
-			this._isValidCentroid(centroid, next)
-		},
-		function(isValid, next) {
-			if(isValid) {
-				return done(null, centroid)
-			}
-			this._chooseValidCentroid(done)
-		},
-	], this, done)
+	if(isValid) {
+		return done(null, centroid)
+	}
+	this._chooseValidCentroid(done)
 }
 
-ClusteringFixed.prototype._isValidCentroid = function(centroid, done) {
+ClusteringFixed.prototype._isValidCentroid = function(centroid) {
 
-	async.wfall([
-		function(next) {
-			this.distanceModel.getDistances(centroid, next)
-		},
-		function(distances, next) {
-			var sum = distances.reduce(function(le, ri) {
-				return le + ri
-			})
-			done(null, sum < distances.length)
-		},
-	], this, done)
+	for(var i=0; i<this.txnRows.length; i++) {
+		var d = this.distanceMeasure.distance(
+			centroid['item_ids'],
+			this.txnRows[i]['item_ids']
+		);
+		if(d < 1) {
+			return true
+		}
+	}
+	return false
 }
 
 

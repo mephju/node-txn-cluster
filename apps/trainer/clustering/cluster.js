@@ -1,10 +1,9 @@
 
 
-var Cluster = function(centroidRow, distanceMeasure, distanceModel) {
+var Cluster = function(centroidRow, distanceMeasure) {
 	this.centroidRow 	= centroidRow
 	this.members 		= [centroidRow]
 	this.distanceMeasure = distanceMeasure
-	this.distanceModel 	= distanceModel
 
 }
 
@@ -41,9 +40,11 @@ Cluster.prototype.recomputeCentroid = function(done) {
 		return done(null, false)
 	}
 
+	//return log(this.members)
+
 	async.wfall([
 		function(next) {
-			var distanceSums 	= this._distanceSumsNoDb()
+			var distanceSums 	= this._distanceSums()
 			var minIdx	 		= help.minIdx(distanceSums)
 			var nextCentroid 	= this.members[minIdx]
 			var changed 		= false //nextCentroid['txn_id'] !== this.centroidRow['txn_id']
@@ -53,7 +54,7 @@ Cluster.prototype.recomputeCentroid = function(done) {
 				changed = true
 			}
 
-			console.log('recomputed Centroid with num members', this.members.length, 'found minIdx', minIdx, 'changed', changed, nextCentroid['txn_id'])
+			log('recomputed Centroid with num members', this.members.length, 'found minIdx', minIdx, 'changed', changed, nextCentroid['txn_id'])
 			
 			done(null, changed)		
 		}
@@ -61,12 +62,11 @@ Cluster.prototype.recomputeCentroid = function(done) {
 }
 
 Cluster.prototype._hasChanged = function(currentCentroid, nextCentroid) {
-	//return currentCentroid['txn_id'] !== nextCentroid['txn_id']
 	return currentCentroid['item_ids'].toString() !== nextCentroid['item_ids'].toString()
 
 }
 
-Cluster.prototype._distanceSumsNoDb = function() {
+Cluster.prototype._distanceSums = function() {
 
 	var distanceSums = []
 	var bag = {}
@@ -82,18 +82,17 @@ Cluster.prototype._distanceSumsNoDb = function() {
 Cluster.buildSimMatrix = function(members, distanceMeasure) {
 	var matrix = []
 	var len = members.length
+	
 	for(var i=0; i<len; i++) {
 		
 		matrix[i] = []
+		matrix[i][i] = 0
 
 		for(var j=i+1; j<len; j++) {
-			
-			if(i !== j) {
-				matrix[i][j] = distanceMeasure.distance(
-					members[i]['item_ids'], 
-					members[j]['item_ids']
-				)
-			}
+			matrix[i][j] = distanceMeasure.distance(
+				members[i]['item_ids'], 
+				members[j]['item_ids']
+			);
 		}
 	}
 	return matrix

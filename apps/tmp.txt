@@ -1,0 +1,372 @@
+app init done
+[36m last_fm_small jaccard 1 0 [0m
+[35m About to start trainingRuns 1 [0m
+app init done
+[34m ClusterRun got message { dataset: 
+   { config: 
+      { USE_CORES: 7,
+        CROSS_VALIDATION_RUN: 0,
+        MIN_SUPPORT: 2,
+        TRAINING_SET_SIZE: 0.6666667,
+        VALIDATION_SET_SIZE: 0.33333330000000005,
+        TXN_ID_BATCH_SIZE: 900,
+        MIN_CLUSTER_SIZE: 4,
+        CLUSTERS: 13,
+        MIN_CENTROID_LENGTH: 20,
+        EASY_SEQUENCE_SIZE: 225,
+        N: 5,
+        MAX_CONTRIBUTION: 0.6,
+        BASELINE_ON: true,
+        MARKOV_ORDER: 1,
+        ITEM_CHOICE_STRATEGY: 'bestItemsOfCluster',
+        DISTANCE_MEASURE: 'jaccard',
+        RECOMMENDER: 'SessionBased',
+        configOptions: [Object] },
+     basePath: '/stuff/datamining/',
+     name: 'last_fm_small',
+     resultPath: '/stuff/datamining/results/',
+     filepath: '/stuff/datamining/datasets//stuff/datamining/datasets/lastfm-dataset-1K/feedback_small.tsv',
+     dbPath: '/stuff/datamining/results/last_fm_small.sqlite',
+     datasetSize: 0,
+     trainingSize: 0,
+     separator: '\t',
+     timeDistance: 900,
+     indices: { userId: 0, itemId: 1, timestamp: 3 } } } [0m
+[34m ClusteringFixed [0m
+[36m DistanceModel going to get distances from last_fm_small_jaccard [0m
+cluster
+[31m prefixTableName cluster_members [0m
+txnsForTraining
+getTableSize
+TRAINING SET SIZE 0.6666667 1246
+clustering.init centroids 82 txnRows count 1246
+-82.getDistances last_fm_small_jaccard 893.got results 893
+Cluster.init 893
+.getDistances last_fm_small_jaccard 1118.got results 1118
+Cluster.init 1118
+.getDistances last_fm_small_jaccard 529.got results 529
+Cluster.init 529
+.getDistances last_fm_small_jaccard 1726.got results 1726
+Cluster.init 1726
+.getDistances last_fm_small_jaccard 1300.got results 1300
+Cluster.init 1300
+.getDistances last_fm_small_jaccard 1675.got results 1675
+Cluster.init 1675
+.getDistances last_fm_small_jaccard 1571.got results 1571
+Cluster.init 1571
+.getDistances last_fm_small_jaccard 1798.got results 1798
+Cluster.init 1798
+.getDistances last_fm_small_jaccard 1255.got results 1255
+Cluster.init 1255
+.getDistances last_fm_small_jaccard 572.got results 572
+Cluster.init 572
+.getDistances last_fm_small_jaccard 448.got results 448
+Cluster.init 448
+.getDistances last_fm_small_jaccard 1852.got results 1852
+Cluster.init 1852
+.getDistances last_fm_small_jaccard 517.got results 517
+Cluster.init 517
+.getDistances last_fm_small_jaccard 1776.got results 1776
+Cluster.init 1776
+.getDistances last_fm_small_jaccard 445.got results 445
+Cluster.init 445
+.getDistances last_fm_small_jaccard 1436.got results 1436
+Cluster.init 1436
+.getDistances last_fm_small_jaccard 613.got results 613
+Cluster.init 613
+.getDistances last_fm_small_jaccard 1548.got results 1548
+Cluster.init 1548
+.getDistances last_fm_small_jaccard 325.got results 325
+Cluster.init 325
+.getDistances last_fm_small_jaccard 190.got results 190
+Cluster.init 190
+.getDistances last_fm_small_jaccard 1496.got results 1496
+Cluster.init 1496
+.getDistances last_fm_small_jaccard 439.got results 439
+Cluster.init 439
+.getDistances last_fm_small_jaccard 782.got results 782
+Cluster.init 782
+.getDistances last_fm_small_jaccard 773.got results 773
+Cluster.init 773
+.getDistances last_fm_small_jaccard 1690.got results 1690
+Cluster.init 1690
+.getDistances last_fm_small_jaccard 1098.got results 1098
+Cluster.init 1098
+.getDistances last_fm_small_jaccard 1417.got results 1417
+Cluster.init 1417
+.getDistances last_fm_small_jaccard 1473.got results 1473
+Cluster.init 1473
+.getDistances last_fm_small_jaccard 376.got results 376
+Cluster.init 376
+.getDistances last_fm_small_jaccard 129.got results 129
+Cluster.init 129
+.getDistances last_fm_small_jaccard 1217.got results 1217
+Cluster.init 1217
+.getDistances last_fm_small_jaccard 1526.got results 1526
+Cluster.init 1526
+.getDistances last_fm_small_jaccard 1383.got results 1383
+Cluster.init 1383
+.getDistances last_fm_small_jaccard 1321.got results 1321
+Cluster.init 1321
+.getDistances last_fm_small_jaccard 610.got results 610
+Cluster.init 610
+.getDistances last_fm_small_jaccard 1573.got results 1573
+Cluster.init 1573
+.getDistances last_fm_small_jaccard 742.got results 742
+Cluster.init 742
+.getDistances last_fm_small_jaccard 591.got results 591
+Cluster.init 591
+.getDistances last_fm_small_jaccard 129.got results 129
+.getDistances last_fm_small_jaccard 90.got results 90
+Cluster.init 90
+.getDistances last_fm_small_jaccard 1439.got results 1439
+Cluster.init 1439
+.getDistances last_fm_small_jaccard 917.got results 917
+Cluster.init 917
+.getDistances last_fm_small_jaccard 1396.got results 1396
+Cluster.init 1396
+.getDistances last_fm_small_jaccard 772.got results 772
+Cluster.init 772
+.getDistances last_fm_small_jaccard 796.got results 796
+Cluster.init 796
+.getDistances last_fm_small_jaccard 1473.got results 1473
+.getDistances last_fm_small_jaccard 1647.got results 1647
+Cluster.init 1647
+.getDistances last_fm_small_jaccard 1713.got results 1713
+Cluster.init 1713
+.getDistances last_fm_small_jaccard 502.got results 502
+Cluster.init 502
+.getDistances last_fm_small_jaccard 64.got results 64
+Cluster.init 64
+.getDistances last_fm_small_jaccard 104.got results 104
+Cluster.init 104
+.getDistances last_fm_small_jaccard 1354.got results 1354
+Cluster.init 1354
+.getDistances last_fm_small_jaccard 68.got results 68
+Cluster.init 68
+.getDistances last_fm_small_jaccard 510.got results 510
+Cluster.init 510
+.getDistances last_fm_small_jaccard 1198.got results 1198
+Cluster.init 1198
+.getDistances last_fm_small_jaccard 1857.got results 1857
+Cluster.init 1857
+.getDistances last_fm_small_jaccard 130.got results 130
+Cluster.init 130
+.getDistances last_fm_small_jaccard 790.got results 790
+Cluster.init 790
+.getDistances last_fm_small_jaccard 457.got results 457
+Cluster.init 457
+.getDistances last_fm_small_jaccard 31.got results 31
+Cluster.init 31
+.getDistances last_fm_small_jaccard 1723.got results 1723
+Cluster.init 1723
+.getDistances last_fm_small_jaccard 1484.got results 1484
+Cluster.init 1484
+.getDistances last_fm_small_jaccard 1292.got results 1292
+Cluster.init 1292
+.getDistances last_fm_small_jaccard 607.got results 607
+Cluster.init 607
+.getDistances last_fm_small_jaccard 399.got results 399
+Cluster.init 399
+.getDistances last_fm_small_jaccard 1376.got results 1376
+Cluster.init 1376
+.getDistances last_fm_small_jaccard 596.got results 596
+Cluster.init 596
+.getDistances last_fm_small_jaccard 1633.got results 1633
+Cluster.init 1633
+.getDistances last_fm_small_jaccard 711.got results 711
+Cluster.init 711
+.getDistances last_fm_small_jaccard 1735.got results 1735
+Cluster.init 1735
+.getDistances last_fm_small_jaccard 23.got results 23
+Cluster.init 23
+.getDistances last_fm_small_jaccard 1455.got results 1455
+Cluster.init 1455
+.getDistances last_fm_small_jaccard 687.got results 687
+Cluster.init 687
+.getDistances last_fm_small_jaccard 549.got results 549
+Cluster.init 549
+.getDistances last_fm_small_jaccard 225.got results 225
+Cluster.init 225
+.getDistances last_fm_small_jaccard 440.got results 440
+Cluster.init 440
+.getDistances last_fm_small_jaccard 1173.got results 1173
+Cluster.init 1173
+.getDistances last_fm_small_jaccard 717.got results 717
+Cluster.init 717
+.getDistances last_fm_small_jaccard 225.got results 225
+.getDistances last_fm_small_jaccard 1309.got results 1309
+Cluster.init 1309
+.getDistances last_fm_small_jaccard 718.got results 718
+Cluster.init 718
+.getDistances last_fm_small_jaccard 1289.got results 1289
+Cluster.init 1289
+.getDistances last_fm_small_jaccard 1255.got results 1255
+.getDistances last_fm_small_jaccard 955.got results 955
+Cluster.init 955
+.getDistances last_fm_small_jaccard 1232.got results 1232
+Cluster.init 1232
+.getDistances last_fm_small_jaccard 826.got results 826
+Cluster.init 826
+clusterIterate with num txns 1246
+[32m clusterIterate isIterationNeeded true [0m
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------recomputeCentroids
+[ { txn_id: 866,
+    item_ids: [ 597, 596, 595, 908, 907, 906, 1054, 1053, 1052, 1051, 1050 ] },
+  { txn_id: 901,
+    item_ids: 
+     [ 1189,
+       664,
+       663,
+       662,
+       661,
+       658,
+       1188,
+       1187,
+       1186,
+       1190,
+       940,
+       1188,
+       1187,
+       597,
+       596,
+       595,
+       908,
+       907,
+       1026,
+       1025,
+       1024,
+       1023,
+       1022,
+       1021,
+       1020,
+       1019,
+       1342,
+       1341,
+       1340,
+       1339,
+       1338,
+       1338,
+       1338,
+       1337,
+       1336 ] },
+  { txn_id: 993,
+    item_ids: [ 871, 1128, 1128, 1192, 482, 1192, 597, 582, 1131, 1117, 1128 ] },
+  { txn_id: 892,
+    item_ids: [ 597, 556, 555, 554, 553, 554, 553, 552, 392, 552, 392, 551, 551 ] },
+  { txn_id: 891,
+    item_ids: 
+     [ 597,
+       596,
+       595,
+       930,
+       929,
+       919,
+       928,
+       927,
+       926,
+       1054,
+       1053,
+       1052,
+       1053,
+       1051,
+       1052,
+       1051,
+       1050,
+       1049,
+       1048,
+       597,
+       596,
+       595,
+       908,
+       907,
+       908,
+       906,
+       907,
+       906,
+       1054,
+       1054,
+       597 ] },
+  { txn_id: 870,
+    item_ids: 
+     [ 597,
+       1392,
+       1391,
+       1352,
+       1353,
+       1390,
+       1389,
+       1388,
+       1387,
+       1386,
+       596,
+       595,
+       908,
+       907,
+       906,
+       1054,
+       1053,
+       1052,
+       1051,
+       1050,
+       1385,
+       556,
+       555,
+       554,
+       553 ] },
+  { txn_id: 905, item_ids: [ 596 ] },
+  { txn_id: 869,
+    item_ids: [ 596, 595, 908, 907, 906, 1054, 1053, 1052, 1051, 1050 ] },
+  { txn_id: 894, item_ids: [ 596, 595, 595 ] },
+  { txn_id: 893, item_ids: [ 597, 597, 596 ] },
+  { txn_id: 879,
+    item_ids: [ 597, 615, 614, 613, 612, 611, 610, 609, 615 ] },
+  { txn_id: 865,
+    item_ids: [ 1049, 1048, 597, 596, 595, 908, 907 ] },
+  { txn_id: 868,
+    item_ids: 
+     [ 1049,
+       1048,
+       597,
+       596,
+       595,
+       908,
+       907,
+       906,
+       1054,
+       1053,
+       1052,
+       1051,
+       1050,
+       1049,
+       597,
+       596,
+       595,
+       597 ] },
+  { txn_id: 881,
+    item_ids: 
+     [ 597,
+       596,
+       595,
+       908,
+       907,
+       906,
+       1054,
+       1053,
+       1052,
+       1051,
+       1050,
+       1049,
+       1048,
+       597,
+       596,
+       595,
+       908,
+       907 ] },
+  { txn_id: 1120, item_ids: [ 630, 597, 596, 595, 908 ] },
+  { txn_id: 899, item_ids: [ 597, 596, 595, 908 ] },
+  { txn_id: 1073,
+    item_ids: [ 597, 596, 597, 596, 595, 595, 908, 908, 907, 906, 907 ] },
+  { txn_id: 945, item_ids: [ 596, 595, 908 ] },
+  { txn_id: 947, item_ids: [ 597 ] },
+  { txn_id: 924, item_ids: [ 597, 596, 595 ] } ]

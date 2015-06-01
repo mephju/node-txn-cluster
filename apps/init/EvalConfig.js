@@ -37,8 +37,9 @@ function EvalConfigDev() {
 	this.baselines = ['PopularityBased']
 	this.markovOrders = [1]
 	this.xValidationRuns = [0, 1, 2]
+	//this.xValidationRuns = [0]
 	this.distanceMeasures = ['levenshtein', 'jaccard', 'jaccard-bigram', 'jaccard-levenshtein']
-	this.distanceMeasures = ['jaccard']
+	//this.distanceMeasures = ['jaccard']
 	
 	this.itemChoiceStrategies = ['tfidf', 'bestItemsOfCluster', 'bestItemsOverall', 'tfTfidf', 'random', 'withRatings']
 	this.itemChoiceStrategies = ['tfidf']
@@ -49,14 +50,14 @@ function EvalConfigDev() {
 	}]
 	
 	this.datasets = [
-		{ 
-			dataset: app.datasets.movielensCustom, 
-			txnCount: 2000,
-		},
 		// { 
-		// 	dataset: app.datasets.lastFmSmall, 
-		// 	txnCount: 1870,
+		// 	dataset: app.datasets.movielensCustom, 
+		// 	txnCount: 2000,
 		// },
+		{ 
+			dataset: app.datasets.lastFmSmall, 
+			txnCount: 1870,
+		},
 		// { 
 		// 	dataset: app.datasets.gowallaSmall, 
 		// 	txnCount: 5329,
