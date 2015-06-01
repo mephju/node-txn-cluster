@@ -82,23 +82,26 @@ Clustering.prototype._init = function(done) {
  */
 ClusteringFixed.prototype._chooseValidCentroid = function(done) {
 
-	process.stdout.write('.')
+	process.stdout.write('x')
 	
 	var txnRows 	= this.txnRows
 	var max 		= txnRows.length - 1
 	var randomIdx 	= Math.floor(Math.random() * max)
-	var centroid 	= txnRows[randomIdx]
-	var isValid 	= this._isValidCentroid(centroid)
+	var isValid 	= this._isValidCentroid(randomIdx)
 
 	if(isValid) {
-		return done(null, centroid)
+		return done(null, this.txnRows[randomIdx])
 	}
 	this._chooseValidCentroid(done)
 }
 
-ClusteringFixed.prototype._isValidCentroid = function(centroid) {
+ClusteringFixed.prototype._isValidCentroid = function(randomIdx) {
+
+	var centroid = this.txnRows[randomIdx]
 
 	for(var i=0; i<this.txnRows.length; i++) {
+		
+		if(i === randomIdx) continue
 		var d = this.distanceMeasure.distance(
 			centroid['item_ids'],
 			this.txnRows[i]['item_ids']
