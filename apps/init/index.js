@@ -34,6 +34,7 @@ app.models = {
 }
 
 app.config = new app.Config({})
+app.config.USE_CORES = new app.EvalConfig().useCores
 
 
 

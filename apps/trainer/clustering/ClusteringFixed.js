@@ -48,28 +48,33 @@ Clustering.prototype._init = function(done) {
 	var centroids 		= []
 	var clusters	 	= this.clusters
 	
+	
 	process.stdout.write('i' + K)
+
+	var self = this
 
 	async.whilst(
 	    function() { 
 	    	return centroids.length < K 
 	    },
 	    function(next) {
-			this._chooseValidCentroid(function(err, centroid) {
+	    	
+			var centroid = self._chooseValidCentroid()
 
-				if(centroids.indexOf(centroid) !== -1) {
-					return next()
-				}
+			if(centroids.indexOf(centroid) !== -1) {
+				return next()
+			}
 
-				centroids.push(centroid)
-				clusters.addCluster(new Cluster(
-					centroid, 
-					this.distanceMeasure
-				));
-				
-				next()
-			}.bind(this))
-	    }.bind(this),
+			centroids.push(centroid)
+			clusters.addCluster(new Cluster(
+				centroid, 
+				self.distanceMeasure
+			));
+
+			log.green('centroids sofar', centroids.length)
+			
+			next()
+	    },
 	    done
 	);
 }
@@ -81,18 +86,20 @@ Clustering.prototype._init = function(done) {
  * @return {[type]}        [description]
  */
 ClusteringFixed.prototype._chooseValidCentroid = function(done) {
+	log('_chooseValidCentroid', this.txnRows.length)
 
-	process.stdout.write('x')
-	
 	var txnRows 	= this.txnRows
 	var max 		= txnRows.length - 1
-	var randomIdx 	= Math.floor(Math.random() * max)
-	var isValid 	= this._isValidCentroid(randomIdx)
-	log.blue('isvalid', isValid)
-	if(isValid) {
-		return done(null, this.txnRows[randomIdx])
+	var isValid 	= false
+	var randomIdx 	= -1
+	
+	while(!isValid) {
+		log.write('x')
+		randomIdx 	= Math.floor(Math.random() * max)
+		isValid 	= this._isValidCentroid(randomIdx)
 	}
-	this._chooseValidCentroid(done)
+	
+	return this.txnRows[randomIdx]
 }
 
 ClusteringFixed.prototype._isValidCentroid = function(randomIdx) {
