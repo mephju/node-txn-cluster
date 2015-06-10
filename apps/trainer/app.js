@@ -49,9 +49,6 @@ var startTraining = function() {
 		if(d.config.DISTANCE_MEASURE === 'jaccard' && d.config.CROSS_VALIDATION_RUN === 2) {
 			return true
 		}
-		if(d.config.DISTANCE_MEASURE === 'jaccard-levenshtein' && d.config.CROSS_VALIDATION_RUN === 1) {
-			return true
-		}
 		return false
 	})
 
