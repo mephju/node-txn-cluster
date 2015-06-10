@@ -139,8 +139,6 @@ Clustering.prototype.clusterIterate = function(done) {
 		return done(null, this.clusters)
 	}
 
-
-	this.clusters.clearMembers()
 	var txnRows = this.txnRows
 
 	for(var i=0, len=txnRows.length; i<len; i++) {
@@ -155,11 +153,11 @@ Clustering.prototype.clusterIterate = function(done) {
 	
 	async.wfall([
 		function(next) {
-			this.clusters.cleanUp()		
 			this.clusters.recomputeCentroids(next)
 		},
 		function() {
-			return this.clusterIterate(done)
+			this.clusters.clearMembers()
+			this.clusterIterate(done)
 		}
 	], this, done)
 }

@@ -92,7 +92,7 @@ ClusterGroup.prototype.findBestMatchSeq = function(txn) {
  */
 ClusterGroup.prototype.clearMembers = function() {
 	this.clusters.forEach(function(cluster) {
-		cluster.members = []
+		cluster.clearMembers()
 	}) 
 }
 

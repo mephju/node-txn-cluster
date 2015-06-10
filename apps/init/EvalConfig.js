@@ -31,7 +31,7 @@ function EvalConfigProd() {
 }
 
 function EvalConfigDev() {
-	this.useCores = 3
+	this.useCores = 2
 	this.baselines = ['PopularityBased', 'AprioriBased']
 	this.baselines = ['AprioriBased']
 	this.baselines = ['PopularityBased']

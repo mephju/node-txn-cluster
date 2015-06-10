@@ -7,6 +7,9 @@ var Cluster = function(centroidRow, distanceMeasure) {
 
 }
 
+Cluster.prototype.clearMembers = function() {
+	this.members = [this.centroidRow]
+}
 
 
 Cluster.prototype.init = function(done) {
