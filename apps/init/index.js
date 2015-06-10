@@ -40,7 +40,7 @@ app.config.USE_CORES = new app.EvalConfig().useCores
 
 
 
-log('app init done')
+log('app init done', app.config.USE_CORES)
 
 
 

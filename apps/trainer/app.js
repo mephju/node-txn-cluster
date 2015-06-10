@@ -41,18 +41,31 @@ var buildTrainingConfigs = function() {
 
 var startTraining = function() {
 	
-	var trainingRuns = buildTrainingConfigs()
+	var trainingRuns = buildTrainingConfigs().filter(function(dataset) {
+		var d = dataset
+		if(d.config.DISTANCE_MEASURE === 'jaccard' && d.config.CROSS_VALIDATION_RUN === 1) {
+			return true
+		}
+		if(d.config.DISTANCE_MEASURE === 'jaccard' && d.config.CROSS_VALIDATION_RUN === 2) {
+			return true
+		}
+		if(d.config.DISTANCE_MEASURE === 'jaccard-levenshtein' && d.config.CROSS_VALIDATION_RUN === 1) {
+			return true
+		}
+		return false
+	})
+
+
 
 	trainingRuns.forEach(function(dataset, i) {
 		log.cyan(
 			dataset.name, 
 			dataset.config.DISTANCE_MEASURE, 
-			dataset.config.MARKOV_ORDER, 
 			dataset.config.CROSS_VALIDATION_RUN
 		);
 	})
 
-	log.magenta('About to start trainingRuns', trainingRuns.length)
+	log.magenta('About to start trainingRuns', trainingRuns.length, 'using cores', app.config.USE_CORES)
 
 
 
@@ -62,23 +75,6 @@ var startTraining = function() {
 		log.red(err)
 	})
 
-
-	// async.eachChain(
-	// 	trainingRuns,
-	// 	function(dataset, next) {
-	// 		cluster(dataset, next)
-	// 	},
-	// 	function(next) {
-	// 		log.green('finished training session based recommender')
-	// 		next()
-	// 	},
-	// 	function(err) {
-	// 		log.yellow('finished training all recommenders?')
-	// 		if(err) {
-	// 			throw log.red(err)
-	// 		}
-	// 	}
-	// );
 }
 
 

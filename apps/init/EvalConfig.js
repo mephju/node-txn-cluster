@@ -31,7 +31,7 @@ function EvalConfigProd() {
 }
 
 function EvalConfigDev() {
-	this.useCores = 1
+	this.useCores = 3
 	this.baselines = ['PopularityBased', 'AprioriBased']
 	this.baselines = ['AprioriBased']
 	this.baselines = ['PopularityBased']
@@ -39,10 +39,9 @@ function EvalConfigDev() {
 	this.markovOrders = [1]
 	
 	this.xValidationRuns = [0, 1, 2]
-	this.xValidationRuns = [0]
 	
 	this.distanceMeasures = ['levenshtein', 'jaccard', 'jaccard-bigram', 'jaccard-levenshtein']
-	this.distanceMeasures = ['jaccard']
+	//this.distanceMeasures = ['jaccard']
 	
 	this.itemChoiceStrategies = ['tfidf', 'bestItemsOfCluster', 'bestItemsOverall', 'tfTfidf', 'random', 'withRatings']
 	this.itemChoiceStrategies = ['tfidf']
