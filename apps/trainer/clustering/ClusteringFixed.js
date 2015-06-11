@@ -133,10 +133,7 @@ Clustering.prototype.clusterIterate = function(done) {
 	log('clusterIterate with num txns', this.txnRows.length)
 	log.green('clusterIterate isIterationNeeded', this.clusters.isIterationNeeded)
 	
-	if(!this.clusters.isIterationNeeded) {
-		this.clusters.cleanUp()
-		return done(null, this.clusters)
-	}
+
 
 	var txnRows = this.txnRows
 
@@ -155,6 +152,11 @@ Clustering.prototype.clusterIterate = function(done) {
 			this.clusters.recomputeCentroids(next)
 		},
 		function() {
+			if(!this.clusters.isIterationNeeded) {
+				this.clusters.cleanUp()
+				return done(null, this.clusters)
+			}
+
 			this.clusters.clearMembers()
 			this.clusterIterate(done)
 		}
