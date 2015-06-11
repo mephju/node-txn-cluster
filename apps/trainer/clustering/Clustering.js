@@ -1,7 +1,5 @@
 var ClusterGroup 	= require('./cluster-group')
 var Distance 		= require('../similarity').Distance
-var DistanceModel = require('../../distances/DistanceModel') 
-
 
 
 
@@ -9,7 +7,6 @@ function Clustering(dataset) {
 	this.dataset = dataset
 	this.txnRows = null
 	this.distanceMeasure 	= new Distance(dataset)
-	this.distanceModel 		= new DistanceModel(dataset)
 	this.clusters 			= new ClusterGroup(dataset)
 }
 
