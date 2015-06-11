@@ -31,10 +31,11 @@ exports.create = function(dataset, done) {
 		},
 		function(sessionBasedRecommender, next) {
 			recommenders.sessionBased = sessionBasedRecommender
-			aprioriBased.create(dataset, next)
-		},
-		function(aprioriBased, next) {
-			recommenders.aprioriBased = aprioriBased
+		// TODO Unquote this for baseline evaluations
+		// 	aprioriBased.create(dataset, next) 
+		// },
+		// function(aprioriBased, next) {
+			// recommenders.aprioriBased = aprioriBased
 			log.green('recommenders created successfully')
 			log.green('aprioriBased available', typeof(recommenders.aprioriBased) !== undefined)
 			log.green('sessionBased available', typeof(recommenders.sessionBased) !== undefined)
