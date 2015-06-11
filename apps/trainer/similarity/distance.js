@@ -44,7 +44,7 @@ exports.Distance = Distance
  */
 var jaccLevDistance = function(array1, array2) {
     //log('jaccLevDistance', array1, array2)
-    return 1/4 * jaccardDistance(array1, array2) + 3/4 * levenshtein(array1, array2)
+    return 1/4 * jaccardDistanceSlow(array1, array2) + 3/4 * levenshtein(array1, array2)
 }
 
 var jaccLevSim = function(array1, array2) {
@@ -105,6 +105,7 @@ var jaccardDistanceSlow = function(array1, array2) {
 }
 
 
+
 var jaccardDistance = function(array1, array2) {
     var intersectNum = intersect(array1, array2)
     if(intersectNum === 0) return 1
@@ -131,11 +132,10 @@ var intersect =  function(a1, a2) {
 
     }
 
-    // log(a1, a2, x)
-
     return x
 }
 
+Distance.intersectSlow = help.intersectNum
 Distance.intersect = intersect
 
 

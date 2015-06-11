@@ -240,8 +240,9 @@ Model.prototype._txns = function(sql, done, validation) {
 
 var toSortedSets = function(txnRows) {
 	txnRows.forEach(function(txnRow) {
-		txnRow['item_ids'] = _.unique(txnRows['item_ids']).sort()
+		txnRow['item_ids'] = _.unique(txnRow['item_ids']).sort()
 	})
+
 }
 
 
