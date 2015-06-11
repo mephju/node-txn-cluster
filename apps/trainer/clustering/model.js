@@ -1,7 +1,7 @@
 var Cluster = require('./cluster')
 var ClusterGroup = require('./cluster-group')
 var Distance  = require('../similarity').Distance
-var DistanceModel = require('../../distances/DistanceModel')
+
 
 
 function Model(dataset) {
@@ -54,7 +54,7 @@ Model.prototype._createClusterGroup = function(centroidRows, done) {
 	log('_createClusterGroup', centroidRows.length)
 	
 	var distanceMeasure 	= new Distance(this.dataset)
-	var distanceModel 		= new DistanceModel(this.dataset)
+	
 	var clusters 			= new ClusterGroup(this.dataset)	
 
 	var model = this
@@ -68,7 +68,7 @@ Model.prototype._createClusterGroup = function(centroidRows, done) {
 			model.getClusterMembers(clusterId, next)
 		},
 		function(members, next) {
-			var cluster = new Cluster(this.centroidRow, distanceMeasure, distanceModel) 
+			var cluster = new Cluster(this.centroidRow, distanceMeasure) 
 			cluster.members = members
 			clusters.addCluster(cluster)
 			cluster.init(next)
