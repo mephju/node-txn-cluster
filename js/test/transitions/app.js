@@ -1,1 +1,0 @@
-var transitionApp = require('../../transitions/app')

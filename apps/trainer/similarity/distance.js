@@ -98,15 +98,45 @@ var jaccardBigram = function(array1, array2) {
 
 }
 
-
+var jaccardDistanceSlow = function(array1, array2) {
+    var intersectNum = help.intersectNum(array1, array2)
+    if(intersectNum === 0) return 1
+    return 1 - intersectNum / (array1.length + array2.length - intersectNum)
+}
 
 
 var jaccardDistance = function(array1, array2) {
-   var intersectNum = help.intersectNum(array1, array2)
-   if(intersectNum == 0) return 1
-   return 1 - intersectNum/help.unionNum(array1, array2, intersectNum)
+    var intersectNum = intersect(array1, array2)
+    if(intersectNum === 0) return 1
+    return 1 - intersectNum / (array1.length + array2.length - intersectNum)
 }
 
+
+var intersect =  function(a1, a2) {
+    var x = 0
+    var len1 = a1.length
+    var len2 = a2.length
+    var max1 = a1[len1-1]
+    var max2 = a2[len2-1]
+
+    for(var i=0; i<len1; i++) {
+
+        if(a1[i] > max2) { break }
+        
+        for(var j=0; j<len2; j++) {
+            
+            if(a1[i] < a2[j])   { break }
+            if(a1[i] === a2[j]) { x++; break }
+        }
+
+    }
+
+    // log(a1, a2, x)
+
+    return x
+}
+
+Distance.intersect = intersect
 
 
 

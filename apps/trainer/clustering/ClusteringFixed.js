@@ -28,6 +28,11 @@ Clustering.prototype.init = function(done) {
 		},
 		function(txnRows, next) {
 			if(txnRows.length === 0) { return done('cannot cluster 0 txn rows')}
+			if(this.dataset.config.DISTANCE_MEASURE === 'jaccard') {
+				txnRows.forEach(function(txnRow) {
+					txnRow['item_ids'] = _.unique(txnRow['item_ids']).sort()
+				})
+			}
 
 			this.txnRows = txnRows
 			this._init(done)
@@ -113,9 +118,7 @@ ClusteringFixed.prototype._isValidCentroid = function(randomIdx) {
 			centroid['item_ids'],
 			this.txnRows[i]['item_ids']
 		);
-		if(d < 1) {
-			return true
-		}
+		if(d < 1) { return true }
 	}
 	return false
 }
@@ -134,6 +137,7 @@ ClusteringFixed.prototype._isValidCentroid = function(randomIdx) {
 Clustering.prototype.clusterIterate = function(done) {
 	log('clusterIterate with num txns', this.txnRows.length)
 	log.green('clusterIterate isIterationNeeded', this.clusters.isIterationNeeded)
+	
 	if(!this.clusters.isIterationNeeded) {
 		this.clusters.cleanUp()
 		return done(null, this.clusters)
@@ -142,13 +146,13 @@ Clustering.prototype.clusterIterate = function(done) {
 	var txnRows = this.txnRows
 
 	for(var i=0, len=txnRows.length; i<len; i++) {
-		process.stdout.write('-')
+		
 		var txnRow = txnRows[i]
 		var c = this.clusters.findBestMatch(txnRow)
 		
-		if(c) { 	
-			c.addMember(txnRow) 
-		} 
+		if(c) { c.addMember(txnRow) }
+		if(!(i % 100)) log.write('-') 
+
 	}
 	
 	async.wfall([
