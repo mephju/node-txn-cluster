@@ -4,6 +4,7 @@ var sql 		= require('./sql')
 function Model(dataset) {
 	app.Model.call(this, dataset)
 
+	this.asSets = this.dataset.config.DISTANCE_MEASURE === 'jaccard'
 
 	this.table = {
 		clusterMembers: this.dataset.prefixTableName('cluster_members'),
@@ -143,26 +144,6 @@ Model.prototype.getUserIds = function(callback) {
 
 
 
-Model.prototype.getTxn = function(txnId, callback) {
-	this.db.all(
-		sql.getTxnItemsStmt(),
-		txnId, 
-		function(e, rows) {
-
-			if(e) {
-				callback(e) 		
-			} else {
-				var txn = rows.map(function(row) {
-					return row['item_id']
-				})
-				callback(null, txn)
-			}
-			
-		}
-	);
-}
-
-
 
 
 
@@ -186,9 +167,23 @@ Model.prototype.getClusteredTxns = function(done) {
 				row['item_ids'] = JSON.parse('[' + row['item_ids'] + ']')
 				//console.log(JSON.stringify(row))
 			})
+			if(model.asSets) {
+				toSortedSets(rows)
+			}
 			done(null, rows)
 		}
 	], done)
+}
+
+Model.prototype.txns = function(done) {
+	this._txns('select * from txn_item_groups_original order by txn_id asc', done)
+}
+Model.prototype.txnsForValidation = function(done) {
+	this._getAllTxns(true, done)
+}
+Model.prototype.txnsForTraining = function(done) {
+	log('txnsForTraining')
+	this._getAllTxns(false, done)
 }
 
 // 
@@ -218,22 +213,12 @@ Model.prototype._getAllTxns = function(validation, done) {
 	], this, done)
 }
 
-Model.prototype.txnsForValidation = function(done) {
-	this._getAllTxns(true, done)
-}
 
-Model.prototype.txnsForTraining = function(done) {
-	log('txnsForTraining')
-	this._getAllTxns(false, done)
-}
-Model.prototype.txns = function(done) {
-	this._txns('select * from txn_item_groups_original order by txn_id asc', done)
-}
 
 Model.prototype._txns = function(sql, done, validation) {
 	
 	var config = this.dataset.config
-
+	var self = this
 	async.waterfall([
 		function(next) {
 			var statement = this.db.prepare(sql)
@@ -245,9 +230,18 @@ Model.prototype._txns = function(sql, done, validation) {
 				row['item_ids'] = help.textToNumArray(row['item_ids'])
 				return !validation || row['item_ids'].length > config.N //if validation, the txns should have a minimum length 
 			})
+			if(self.asSets) {
+				toSortedSets(rows)
+			}
 			done(null, rows)
 		}
 	], done)
+}
+
+var toSortedSets = function(txnRows) {
+	txnRows.forEach(function(txnRow) {
+		txnRow['item_ids'] = _.unique(txnRows['item_ids']).sort()
+	})
 }
 
 

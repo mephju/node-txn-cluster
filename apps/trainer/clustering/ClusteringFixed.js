@@ -28,11 +28,6 @@ Clustering.prototype.init = function(done) {
 		},
 		function(txnRows, next) {
 			if(txnRows.length === 0) { return done('cannot cluster 0 txn rows')}
-			if(this.dataset.config.DISTANCE_MEASURE === 'jaccard') {
-				txnRows.forEach(function(txnRow) {
-					txnRow['item_ids'] = _.unique(txnRow['item_ids']).sort()
-				})
-			}
 
 			this.txnRows = txnRows
 			this._init(done)
