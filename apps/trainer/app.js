@@ -41,18 +41,7 @@ var buildTrainingConfigs = function() {
 
 var startTraining = function() {
 	
-	var trainingRuns = buildTrainingConfigs().filter(function(dataset) {
-		var d = dataset
-		if(d.config.DISTANCE_MEASURE === 'jaccard' && d.config.CROSS_VALIDATION_RUN === 1) {
-			return true
-		}
-		if(d.config.DISTANCE_MEASURE === 'jaccard' && d.config.CROSS_VALIDATION_RUN === 2) {
-			return true
-		}
-		return false
-	})
-
-
+	var trainingRuns = buildTrainingConfigs()
 
 	trainingRuns.forEach(function(dataset, i) {
 		log.cyan(
@@ -63,9 +52,6 @@ var startTraining = function() {
 	})
 
 	log.magenta('About to start trainingRuns', trainingRuns.length, 'using cores', app.config.USE_CORES)
-
-
-
 	
 
 	clustering.buildClustersParallel(trainingRuns, function(err) {
