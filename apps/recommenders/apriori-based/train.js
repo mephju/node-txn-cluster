@@ -29,7 +29,7 @@ var start = function() {
 	var trainingRuns = buildTrainingConfigs()
 	async.eachLimit(
 		trainingRuns,
-		8,
+		app.config.USE_CORES,
 		function(dataset, next) {
 			var child = cp.fork(__dirname + '/runner')
 			child.on('message', function() {

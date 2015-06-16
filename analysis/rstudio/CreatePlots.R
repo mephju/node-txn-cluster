@@ -3,7 +3,10 @@ library(plyr)
 
 source('./lib.R')
 
-kPathPrefix = '/home/mephju/maproject/thesis/template/Figures/'
+
+kDatasetName <- 'lastfm'
+kDatasetPath <- '../lastfm_more.csv'
+kPathPrefix <- '/home/mephju/maproject/thesis/template/Figures/'
 
 # Create a plot of the evaluation results for
 # the given datasetName. Compares precision of evaluation runs
@@ -11,17 +14,17 @@ kPathPrefix = '/home/mephju/maproject/thesis/template/Figures/'
 CreateDistancePlot <- function(datasetName) {
 	
 	eval = read.csv(
-		'../movielens_more.csv', 
+		kDatasetPath, 
 		header=TRUE
-	)
+		)
 	
 	names(eval)[names(eval) == 'precision'] <- 'Precision'
 	mapvalues(c('a'), from=c('a'), to=('b'))
 	
 	eval$Strategy = mapvalues(
 		eval$strategy, 
-		from=c('random', 'tfTfidf', 'tfidf', 'withRatings', 'bestItemsOverall', 'bestItemsOfCluster'), 
-		to=c('Random', 'TF-TF-IDF', 'TF-IDF', 'Best Rated', 'Most Popular', 'Most Frequent')
+		from=c('random', 'tfTfidf', 'tfidf', 'bestItemsOverall', 'bestItemsOfCluster'), 
+		to=c('Random', 'TF-TF-IDF', 'TF-IDF', 'Most Popular', 'Most Frequent')
 	)
 	
 	eval$Distance = mapvalues(
@@ -45,7 +48,7 @@ CreateDistancePlot <- function(datasetName) {
 			axis.title.y = element_text(colour='#858585')
 		)
 	
-	filename = paste(kPathPrefix, datasetName, '-compare-distance-strategy.pdf', sep='')
+	filename = paste0(kPathPrefix, datasetName, '-compare-distance-strategy.pdf', sep='')
 	ggsave(filename, my.plot, width=5.8, height=5)
 	
 	return(my.plot)
@@ -56,14 +59,15 @@ CreateDistancePlot <- function(datasetName) {
 
 
 CreateParamPlot <- function(dataset.name) {
-	eval = read.csv('../param_means.csv', header=TRUE)
+	filepath <- paste0('../', dataset.name, '_param_means.csv')
+	eval = read.csv(filepath, header=TRUE)
 	
 	names(eval)[names(eval) == 'precision'] <- 'Precision'
 	
 	eval$param = mapvalues(
 		eval$param, 
-		from=c('random', 'tfTfidf', 'tfidf', 'withRatings', 'bestItemsOverall', 'bestItemsOfCluster'), 
-		to=c('Random', 'TF-TF-IDF', 'TF-IDF', 'Best Rated', 'Most Popular', '         Most Frequent')
+		from=c('random', 'tfTfidf', 'tfidf', 'bestItemsOverall', 'bestItemsOfCluster'), 
+		to=c('Random', 'TF-TF-IDF', 'TF-IDF', 'Most Popular', '         Most Frequent')
 	)
 	
 	eval$param = mapvalues(
@@ -161,13 +165,13 @@ CreateBarChart <- function(data) {
 	) +
 	coord_flip() 
 
-	filename = paste(kPathPrefix, 'movielens-results.pdf', sep='')
+	filename = paste(kPathPrefix, kDatasetName, '-results.pdf', sep='')
 	ggsave(filename, bar.chart, width=5.8, height=4.5)
 }
 
 
-cp = CreateParamPlot('movielens')
-bp = CreateDistancePlot('movielens')
+cp = CreateParamPlot(kDatasetName)
+bp = CreateDistancePlot(kDatasetName)
 
 
 

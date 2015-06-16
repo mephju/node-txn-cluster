@@ -4,7 +4,7 @@ source('./Baseline.R')
 
 CreateMethodResults <- function() {
 	eval <- read.csv(
-		'../movielens_more.csv', 
+		'../lastfm_more.csv', 
 		header=TRUE
 	)
 
@@ -32,8 +32,8 @@ CreateMethodResults <- function() {
 
 	res$strategy = mapvalues(
 		res$strategy, 
-		from=c('random', 'tfTfidf', 'tfidf', 'withRatings', 'bestItemsOverall', 'bestItemsOfCluster'), 
-		to=c('Random', 'TF-TF-IDF', 'TF-IDF', 'Best Rated', 'Most Popular', 'Most Frequent')
+		from=c('random', 'tfTfidf', 'tfidf', 'bestItemsOverall', 'bestItemsOfCluster'), 
+		to=c('Random', 'TF-TF-IDF', 'TF-IDF', 'Most Popular', 'Most Frequent')
 	)
 	
 	res$distance = mapvalues(
@@ -52,7 +52,7 @@ CreateMethodResults <- function() {
 
 CreateTopList <- function() {
 	methodResults			= CreateMethodResults()
-	baselineResults 		= CreateBaselineResults()
+	#baselineResults 		= CreateBaselineResults()
 	
 	methodCol <- paste(methodResults$distance, '/', methodResults$markov, '/',  methodResults$strategy)
 	merged <- data.frame(
@@ -61,7 +61,7 @@ CreateTopList <- function() {
 	)
 
 	names(merged) <- c('method', 'precision')
-	merged <- rbind(merged, baselineResults)
+	#merged <- rbind(merged, baselineResults)
 	merged <- merged[order(-merged$precision),]
 
 	print(merged)

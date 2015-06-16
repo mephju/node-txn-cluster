@@ -1,0 +1,74 @@
+              distance markov           strategy precision
+1              jaccard      1 bestItemsOfCluster    0.0141
+5              jaccard      2 bestItemsOfCluster    0.0147
+9              jaccard      3 bestItemsOfCluster    0.0147
+13             jaccard      1   bestItemsOverall    0.0038
+17             jaccard      2   bestItemsOverall    0.0040
+21             jaccard      3   bestItemsOverall    0.0040
+25             jaccard      1             random    0.0045
+29             jaccard      2             random    0.0045
+33             jaccard      3             random    0.0044
+37             jaccard      1              tfidf    0.0111
+41             jaccard      2              tfidf    0.0116
+45             jaccard      3              tfidf    0.0117
+49             jaccard      1            tfTfidf    0.0111
+53             jaccard      2            tfTfidf    0.0115
+57             jaccard      3            tfTfidf    0.0116
+2       jaccard-bigram      1 bestItemsOfCluster    0.0202
+6       jaccard-bigram      2 bestItemsOfCluster    0.0220
+10      jaccard-bigram      3 bestItemsOfCluster    0.0231
+14      jaccard-bigram      1   bestItemsOverall    0.0051
+18      jaccard-bigram      2   bestItemsOverall    0.0053
+22      jaccard-bigram      3   bestItemsOverall    0.0055
+26      jaccard-bigram      1             random    0.0042
+30      jaccard-bigram      2             random    0.0040
+34      jaccard-bigram      3             random    0.0041
+38      jaccard-bigram      1              tfidf    0.0167
+42      jaccard-bigram      2              tfidf    0.0180
+46      jaccard-bigram      3              tfidf    0.0189
+50      jaccard-bigram      1            tfTfidf    0.0165
+54      jaccard-bigram      2            tfTfidf    0.0178
+58      jaccard-bigram      3            tfTfidf    0.0187
+3  jaccard-levenshtein      1 bestItemsOfCluster    0.0350
+7  jaccard-levenshtein      2 bestItemsOfCluster    0.0352
+11 jaccard-levenshtein      3 bestItemsOfCluster    0.0356
+15 jaccard-levenshtein      1   bestItemsOverall    0.0062
+19 jaccard-levenshtein      2   bestItemsOverall    0.0063
+23 jaccard-levenshtein      3   bestItemsOverall    0.0064
+27 jaccard-levenshtein      1             random    0.0035
+31 jaccard-levenshtein      2             random    0.0036
+35 jaccard-levenshtein      3             random    0.0033
+39 jaccard-levenshtein      1              tfidf    0.0295
+43 jaccard-levenshtein      2              tfidf    0.0296
+47 jaccard-levenshtein      3              tfidf    0.0298
+51 jaccard-levenshtein      1            tfTfidf    0.0299
+55 jaccard-levenshtein      2            tfTfidf    0.0299
+59 jaccard-levenshtein      3            tfTfidf    0.0302
+4          levenshtein      1 bestItemsOfCluster    0.0199
+8          levenshtein      2 bestItemsOfCluster    0.0200
+12         levenshtein      3 bestItemsOfCluster    0.0202
+16         levenshtein      1   bestItemsOverall    0.0040
+20         levenshtein      2   bestItemsOverall    0.0041
+24         levenshtein      3   bestItemsOverall    0.0041
+28         levenshtein      1             random    0.0026
+32         levenshtein      2             random    0.0025
+36         levenshtein      3             random    0.0025
+40         levenshtein      1              tfidf    0.0170
+44         levenshtein      2              tfidf    0.0172
+48         levenshtein      3              tfidf    0.0172
+52         levenshtein      1            tfTfidf    0.0171
+56         levenshtein      2            tfTfidf    0.0172
+60         levenshtein      3            tfTfidf    0.0173
+          res.distance res.markov
+1              jaccard          1
+2              jaccard          2
+3              jaccard          3
+4       jaccard-bigram          1
+5       jaccard-bigram          2
+6       jaccard-bigram          3
+7  jaccard-levenshtein          1
+8  jaccard-levenshtein          2
+9  jaccard-levenshtein          3
+10         levenshtein          1
+11         levenshtein          2
+12         levenshtein          3

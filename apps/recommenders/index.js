@@ -27,15 +27,15 @@ exports.create = function(dataset, done) {
 			recommenders.popularityBased = popularityBased
 			log.green('fallbackItems', popularityBased.popularItems)
 			var fallbackItems = recommenders.popularityBased.popularItems
-			sessionBased.create(dataset, fallbackItems, next)
-		},
-		function(sessionBasedRecommender, next) {
-			recommenders.sessionBased = sessionBasedRecommender
-		// TODO Unquote this for baseline evaluations
-		// 	aprioriBased.create(dataset, next) 
+		// 	sessionBased.create(dataset, fallbackItems, next)
 		// },
-		// function(aprioriBased, next) {
-			// recommenders.aprioriBased = aprioriBased
+		// function(sessionBasedRecommender, next) {
+		// 	recommenders.sessionBased = sessionBasedRecommender
+		// // TODO Unquote this for baseline evaluations
+			aprioriBased.create(dataset, next) 
+		},
+		function(aprioriBased, next) {
+			recommenders.aprioriBased = aprioriBased
 			log.green('recommenders created successfully')
 			log.green('aprioriBased available', typeof(recommenders.aprioriBased) !== undefined)
 			log.green('sessionBased available', typeof(recommenders.sessionBased) !== undefined)

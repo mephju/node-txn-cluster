@@ -70,6 +70,7 @@ Apriori.prototype.iteration = function(store, txns, k) {
 	var candidates = this.genCandidates(store, k)
 
 	for(var c=0,clen=candidates.length; c<clen; c++) {
+		if((c%100) === 0) log.write('.')
 		var candidate = candidates[c]
 		var key = candidate.toString()
 		store[k][key] = 0
@@ -132,25 +133,28 @@ Apriori.prototype.genCandidates = function(store, k) {
  * 
  */
 Apriori.prototype.mergeSets = function(set1, set2) {
+	
 	var newSet = set1.slice()
 	for(var i=0,len=set2.length; i<len; i++) {
 		this.mergeInto(newSet, set2[i])
 	}
+	//log('mergeSets', set1, set2, newSet)
 	return newSet
 }
 
 //Find position in 'set' where new value should be inserted
 Apriori.prototype.mergeInto = function(set, value) {
+	//log('mergeInto')
 	for(var i=0,len=set.length; i<len; i++) {
 		if(value === set[i]) {
-			return -1
+			return
 		} 
-		if(value < set[i]) {
-			// at position i do not remove any elements 
-			// but insert 'value'
+		if(set[i] > value) {
+			// at position i do not remove any elements but insert 'value'
 			return set.splice(i, 0, value) 
 		}
-	}	
+	}
+	set.push(value)	
 	return set.length
 }
 

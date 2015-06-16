@@ -4,7 +4,7 @@
 function Config(options) {
 
 	this.CROSS_VALIDATION_RUN 		= options.crossValidationRun ? options.crossValidationRun : 0
-	this.MIN_SUPPORT				= 2//250
+	this.MIN_SUPPORT				= 60 //250
 	this.TRAINING_SET_SIZE 			= 0.6666667
 	//this.TRAINING_SET_SIZE 			= 0.8
 	this.VALIDATION_SET_SIZE 		= 1 - this.TRAINING_SET_SIZE
@@ -13,13 +13,7 @@ function Config(options) {
 	this.CLUSTERS 					= options.txnCount ? parseInt(options.txnCount / 140) : 500
 	//this.AVG_TXNS_PER_CLUSTER 		= 60
 	this.MIN_CENTROID_LENGTH		= 20
-	/**
-	 * Distances of 2 sequences longer than the specified value 
-	 * will will be stored in a map to save time the next time the same distance is 
-	 * required. 
-	 * 
-	 * @type {Number}
-	 */
+
 	this.EASY_SEQUENCE_SIZE = 225 //225 
 	//number of recommendations which are requested
 	this.N = 5
@@ -35,8 +29,7 @@ function Config(options) {
 	// this.ITEM_CHOICE_STRATEGY = 'bestItemsOverall'
 	// this.ITEM_CHOICE_STRATEGY = 'withRatings'
 
-	const REC_REAL = 1
-	const REC_APRIORI = 0
+
 
 	this.RECOMMENDER = 'SessionBased'
 	if(options.baseline) {

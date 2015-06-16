@@ -17,7 +17,7 @@ else {
 	dataset = app.datsets.movielensCustom
 }
 
-var filename = dataset.basePath + '/results-from-server/evaluation-baseline-' + dataset.name + '.db'
+var filename = dataset.basePath + '/results-from-server/evaluation-' + dataset.name + '.db'
 log.blue(filename)
 var db = new Nedb({ 
 	filename:  filename,
@@ -41,7 +41,7 @@ var baselineResults = function() {
 }
 
 
-baselineResults()
+// baselineResults()
 
 
 
@@ -139,4 +139,4 @@ var flatten = function(docs) {
 
 }
 
-//http://www.notebooksbilliger.de/pc+systeme/hp+pavilion+500+455ng+amd+a+serie+apu+a8+6500
+methodResults()

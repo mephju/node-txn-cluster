@@ -2,7 +2,7 @@
 
 CreateMeanResults <- function() {
 	eval <- read.csv(
-		'../movielens_more.csv', 
+		'../lastfm_more.csv', 
 		header=TRUE
 	)
 
@@ -26,17 +26,19 @@ CreateMeanResults <- function() {
 		FUN=mean
 	)
 
+
 	names(res)[names(res) == 'x'] <- 'precision'
 
 	res <- res[order(res$distance),]
 
 	res$precision = round(res$precision, digits=4)
 
+	print(res)	
 
 	strategies = c(
 		'tfidf', 
 		'tfTfidf', 
-		'withRatings', 
+		#'withRatings', 
 		'bestItemsOverall', 
 		'bestItemsOfCluster', 
 		'random'
@@ -54,9 +56,8 @@ CreateMeanResults <- function() {
 	res <- merge(res, subframes.tfTfidf)
 	res <- merge(res, subframes.bestItemsOfCluster)
 	res <- merge(res, subframes.bestItemsOverall)
-	res <- merge(res, subframes.withRatings)
-
-	res <- data.frame(res$distance, res$markov, res$withRatings)
+	# res <- merge(res, subframes.withRatings)
+	res <- data.frame(res$distance, res$markov)
 
 	print(res)
 	return(res)

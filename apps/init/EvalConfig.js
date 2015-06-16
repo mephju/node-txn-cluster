@@ -33,8 +33,8 @@ function EvalConfigProd() {
 function EvalConfigDev() {
 	this.useCores = 1
 	this.baselines = ['PopularityBased', 'AprioriBased']
-	this.baselines = ['AprioriBased']
-	this.baselines = ['PopularityBased']
+	// this.baselines = ['AprioriBased']
+	// this.baselines = ['PopularityBased']
 	
 	this.markovOrders = [1]
 	
