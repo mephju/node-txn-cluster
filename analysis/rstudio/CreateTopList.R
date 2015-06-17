@@ -1,10 +1,8 @@
 
-source('./Baseline.R')
 
-
-CreateMethodResults <- function() {
+CreateMethodResults <- function(kDatasetName) {
 	eval <- read.csv(
-		'../lastfm_more.csv', 
+		paste0('../', kDatasetName, '_more.csv'),
 		header=TRUE
 	)
 
@@ -50,9 +48,39 @@ CreateMethodResults <- function() {
 	return(res)
 } 
 
-CreateTopList <- function() {
-	methodResults			= CreateMethodResults()
-	#baselineResults 		= CreateBaselineResults()
+
+
+CreateBaselineResults <- function(kDatasetName) {
+	eval <- read.csv(
+		paste0('../', kDatasetName, '_baseline_more.csv'),
+		header=TRUE
+	)
+
+	res <- aggregate(
+		eval$precision,
+		by=list(baseline=eval$baseline),
+		FUN=mean
+	)
+
+	names(res) = c('method', 'precision') 
+	
+	res$method = mapvalues(
+		res$method, 
+		from=c('AprioriBased', 'PopularityBased'),
+		to=c('Apriori-Based', 'Popularity-Based')
+	)
+
+	
+	res$precision = round(res$precision, digits=4)
+
+	return(res)
+}
+
+
+
+CreateTopList <- function(kDatasetName) {
+	methodResults			= CreateMethodResults(kDatasetName)
+	baselineResults 		= CreateBaselineResults(kDatasetName)
 	
 	methodCol <- paste(methodResults$distance, '/', methodResults$markov, '/',  methodResults$strategy)
 	merged <- data.frame(
@@ -61,7 +89,7 @@ CreateTopList <- function() {
 	)
 
 	names(merged) <- c('method', 'precision')
-	#merged <- rbind(merged, baselineResults)
+	merged <- rbind(merged, baselineResults)
 	merged <- merged[order(-merged$precision),]
 
 	print(merged)

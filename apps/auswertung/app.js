@@ -17,8 +17,8 @@ else {
 	dataset = app.datsets.movielensCustom
 }
 
-var filename = dataset.basePath + '/results-from-server/evaluation-' + dataset.name + '.db'
-log.blue(filename)
+var filename = dataset.basePath + '/results-from-server/evaluation-baseline-' + dataset.name + '.db'
+
 var db = new Nedb({ 
 	filename:  filename,
 	autoload: true
@@ -41,7 +41,7 @@ var baselineResults = function() {
 }
 
 
-// baselineResults()
+baselineResults()
 
 
 
@@ -139,4 +139,4 @@ var flatten = function(docs) {
 
 }
 
-methodResults()
+// methodResults()

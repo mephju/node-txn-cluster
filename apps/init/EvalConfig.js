@@ -60,14 +60,14 @@ function EvalConfigDev() {
 		// 	dataset: app.datasets.lastFmSmall, 
 		// 	txnCount: 1870,
 		// },
-		// { 
-		// 	dataset: app.datasets.gowallaSmall, 
-		// 	txnCount: 5329,
-		// }
-		{
-			dataset: app.datasets.lastFm,
-			txnCount:0
-		},
+		{ 
+			dataset: app.datasets.gowallaSmall, 
+			txnCount: 5329,
+		}
+		// {
+		// 	dataset: app.datasets.lastFm,
+		// 	txnCount:0
+		// },
 	];
 }
 

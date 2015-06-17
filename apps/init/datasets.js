@@ -125,7 +125,7 @@ function Gowalla(filepath, name) {
 	Dataset.call(this, filepath, name)
 	this.separator = '\t'
 	//this.timeDistance =  31536000
-	this.timeDistance = 43200 
+	this.timeDistance = 86400 //43200 
 	this.indices = {
 		userId:0,
 		itemId:4,

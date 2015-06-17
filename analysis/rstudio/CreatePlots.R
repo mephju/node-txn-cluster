@@ -4,17 +4,15 @@ library(plyr)
 source('./lib.R')
 
 
-kDatasetName <- 'lastfm'
-kDatasetPath <- '../lastfm_more.csv'
-kPathPrefix <- '/home/mephju/maproject/thesis/template/Figures/'
+
 
 # Create a plot of the evaluation results for
 # the given datasetName. Compares precision of evaluation runs
 # for varying distance measures and item choice strategies
-CreateDistancePlot <- function(datasetName) {
+CreateDistancePlot <- function(kDatasetName, kPathPrefix) {
 	
 	eval = read.csv(
-		kDatasetPath, 
+		paste0('../', kDatasetName, '_more.csv'),
 		header=TRUE
 		)
 	
@@ -48,7 +46,7 @@ CreateDistancePlot <- function(datasetName) {
 			axis.title.y = element_text(colour='#858585')
 		)
 	
-	filename = paste0(kPathPrefix, datasetName, '-compare-distance-strategy.pdf', sep='')
+	filename = paste0(kPathPrefix, kDatasetName, '-compare-distance-strategy.pdf', sep='')
 	ggsave(filename, my.plot, width=5.8, height=5)
 	
 	return(my.plot)
@@ -58,10 +56,9 @@ CreateDistancePlot <- function(datasetName) {
 
 
 
-CreateParamPlot <- function(dataset.name) {
-	filepath <- paste0('../', dataset.name, '_param_means.csv')
-	eval = read.csv(filepath, header=TRUE)
+CreateParamPlot <- function(dataset.name, kPathPrefix, groupByFrame) {
 	
+	eval = groupByFrame	
 	names(eval)[names(eval) == 'precision'] <- 'Precision'
 	
 	eval$param = mapvalues(
@@ -78,13 +75,13 @@ CreateParamPlot <- function(dataset.name) {
 	
 	eval$param = mapvalues(
 		eval$param, 
-		from=c(1,2,3), 
+		from=c('1','2','3'), 
 		to=c('1st Order', '               2nd Order', '3rd Order')
 	)
 	
 	eval.distance = eval[1:4, ]
-	eval.strategy = eval[5:10, ]
-	eval.markov = eval[11:13, ]
+	eval.markov = eval[5:7, ]
+	eval.strategy = eval[8:12, ]
 	
 	names(eval.distance)[names(eval.distance) == 'param'] <- 'Distance'
 	names(eval.strategy)[names(eval.strategy) == 'param'] <- 'Strategy'
@@ -116,12 +113,12 @@ CreateParamPlot <- function(dataset.name) {
 	multiplot(plot.distance,  plot.markov, plot.strategy, cols=3)
 	dev.off()
 
-	filename = paste(kPathPrefix, dataset.name, '-param-distance-means.pdf', sep='')
-	ggsave(filename, plot.distance, width=5.8, height=5)
-	filename = paste(kPathPrefix, dataset.name, '-param-markov-means.pdf', sep='')
-	ggsave(filename, plot.markov, width=5.8, height=5)
-	filename = paste(kPathPrefix, dataset.name, '-param-strategy-means.pdf', sep='')
-	ggsave(filename, plot.strategy, width=5.8, height=5)
+	# filename = paste(kPathPrefix, dataset.name, '-param-distance-means.pdf', sep='')
+	# ggsave(filename, plot.distance, width=5.8, height=5)
+	# filename = paste(kPathPrefix, dataset.name, '-param-markov-means.pdf', sep='')
+	# ggsave(filename, plot.markov, width=5.8, height=5)
+	# filename = paste(kPathPrefix, dataset.name, '-param-strategy-means.pdf', sep='')
+	# ggsave(filename, plot.strategy, width=5.8, height=5)
 }
 
 
@@ -147,31 +144,8 @@ buildParamPlot <- function(xdata, ydata, xtitle, ytitle) {
 
 
 
-CreateBarChart <- function(data) {
-	bar.chart = ggplot(
-		data=data, 
-		aes(reorder(method, precision), y=precision)
-	) + 
-	geom_bar(
-		stat="identity"
-	) +
-	scale_x_discrete(name='Method') +
-	scale_y_continuous('Precision') +
-	theme(
-		legend.position="none",
-		axis.title.x = element_text(colour='#858585'),
-		axis.title.y = element_text(colour='#858585')
-		#plot.margin = unit(c(2, 2, 2, 2), "inches")
-	) +
-	coord_flip() 
-
-	filename = paste(kPathPrefix, kDatasetName, '-results.pdf', sep='')
-	ggsave(filename, bar.chart, width=5.8, height=4.5)
-}
 
 
-cp = CreateParamPlot(kDatasetName)
-bp = CreateDistancePlot(kDatasetName)
 
 
 
