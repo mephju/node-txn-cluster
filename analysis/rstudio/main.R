@@ -2,6 +2,7 @@ source('./CreateBarChart.R')
 source('./CreatePlots.R')
 source('./CreateTopList.R')
 source('./CreateMeans.R')
+source('./CreateTable.R')
 
 
 
@@ -31,6 +32,7 @@ CreateDatasetResult <- function() {
 	print(groupByFrame)
 	CreateParamPlot(kDatasetName, kPathPrefix, groupByFrame)
 	CreateDistancePlot(kDatasetName, kPathPrefix)
+	CreateTable(kDatasetName)
 }
 
 CreateDatasetResult()

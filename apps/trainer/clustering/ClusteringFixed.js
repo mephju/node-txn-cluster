@@ -39,8 +39,10 @@ Clustering.prototype.init = function(done) {
 Clustering.prototype._init = function(done) {
 	const K = parseInt(Math.pow(
 		this.txnRows.length, 
-		0.6195
+		0.5//0.6195
 	));
+
+
 	var txnRows = this.txnRows
 
 	console.log('clustering.init centroids', K, 'txnRows count', txnRows.length)
