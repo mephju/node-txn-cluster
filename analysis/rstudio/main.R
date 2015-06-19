@@ -3,6 +3,9 @@ source('./CreatePlots.R')
 source('./CreateTopList.R')
 source('./CreateMeans.R')
 source('./CreateTable.R')
+source('./CreateData.R')
+
+
 
 
 
@@ -22,17 +25,20 @@ CreateDatasetResult <- function() {
 	kDatasetName 	<- 'lastfm' #'movielens'
 	kPathPrefix 	<- '/home/mephju/maproject/thesis/template/Figures/'
 
-	topResults <- CreateTopList(kDatasetName)
-	chart <- CreateBarChart(topResults, kPathPrefix, kDatasetName)
+	topResults 		<- CreateTopList(kDatasetName)
+	chart 			<- CreateBarChart(topResults, kPathPrefix, kDatasetName)
 	print(topResults)
 	print(chart)
 
-	CreateMeans(kDatasetName, kPathPrefix)
-	groupByFrame <- CreateGroupByParamFrame(kDatasetName, kPathPrefix)
+	# CreateMeans(kDatasetName, kPathPrefix)
+	groupByFrame <- CreateGroupByParamFrame(kDatasetName)
 	print(groupByFrame)
 	CreateParamPlot(kDatasetName, kPathPrefix, groupByFrame)
 	CreateDistancePlot(kDatasetName, kPathPrefix)
 	CreateTable(kDatasetName)
+
+	bar.data <- CreateDistanceVsStrategyFrame('lastfm')
+	SaveBarChart(bar.data, kPathPrefix, 'lastfm-results-distance-strategy.pdf')
 }
 
 CreateDatasetResult()

@@ -2,7 +2,7 @@
 
 # Groups evaluation results by each param (distance, markov, strategy)
 # and unites all resulting data frames into a single data frame.
-CreateGroupByParamFrame <- function(kDatasetName, kPathPrefix) {
+CreateGroupByParamFrame <- function(kDatasetName) {
 	eval <- read.csv(
 		paste0('../', kDatasetName, '_more.csv'), 
 		header=TRUE

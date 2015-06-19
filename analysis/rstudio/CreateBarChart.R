@@ -20,3 +20,28 @@ CreateBarChart <- function(data, kPathPrefix, kDatasetName) {
 	print(bar.chart)
 	ggsave(filename, bar.chart, width=5.8, height=4.5)
 }
+
+
+SaveBarChart <- function(data, kPathPrefix, name) {
+	bar.chart = ggplot(
+		data=data, 
+		aes(reorder(method, precision), y=precision)
+	) + 
+	geom_bar(
+		stat="identity"
+	) +
+	scale_x_discrete(name='Method') +
+	scale_y_continuous('Precision') +
+	theme(
+		legend.position="none",
+		axis.text=element_text(size=9),
+		axis.title.x = element_text(colour='#858585'),
+		axis.title.y = element_text(colour='#858585')
+		#plot.margin = unit(c(2, 2, 2, 2), "inches")
+	) +
+	coord_flip() 
+
+	filename = paste0(kPathPrefix, name)
+	print(bar.chart)
+	ggsave(filename, bar.chart, width=5.8, height=4.5)
+}
