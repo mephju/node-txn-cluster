@@ -32,9 +32,10 @@ var buildTrainingConfigs = function() {
 		}
 	);
 
-	return trainingRuns
+	return trainingRuns.filter(function(run) {
+		return run.config.DISTANCE_MEASURE == 'levenshtein' 
+	})
 }
-
 
 
 
