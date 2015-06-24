@@ -13,18 +13,22 @@ else if(process.env.DATASET === 'lastfm') {
 else if(process.env.DATASET === 'movielensCustom') {
 	dataset = app.datasets.movielensCustom
 }
+else if(process.env.DATASET === 'gowalla') {
+	dataset = app.datasets.gowalla
+}
 else {
 	dataset = app.datsets.movielensCustom
 }
 
-var filename = dataset.basePath + '/results-from-server/evaluation-baseline-' + dataset.name + '.db'
-
-var db = new Nedb({ 
-	filename:  filename,
-	autoload: true
-});
+	
 
 var baselineResults = function() {
+	var filename = dataset.basePath + '/results-from-server/evaluation-baseline-' + dataset.name + '.db'
+
+	var db = new Nedb({ 
+		filename:  filename,
+		autoload: true
+	});
 	db
 	.find({})
 	.sort({ 'config.RECOMMENDER': 1 })
@@ -47,6 +51,14 @@ baselineResults()
 
 
 var methodResults = function() {
+
+	var filename = dataset.basePath + '/results-from-server/evaluation-' + dataset.name + '.db'
+
+	var db = new Nedb({ 
+		filename:  filename,
+		autoload: true
+	});
+
 	db
 	.find({})
 	.sort({ 'config.DISTANCE_MEASURE':1, 'config.MARKOV_ORDER':1, 'config.ITEM_CHOICE_STRATEGY':1,'config.CROSS_VALIDATION_RUN':1 })
@@ -62,40 +74,36 @@ var methodResults = function() {
 		// //console.log(doc.numTxns, doc.numTxnsTraining, doc.numTxnsValidation)
 	 //  });
 
-	  for(var i=0; i<docs.length; i=i+3) {
+	 //  for(var i=0; i<docs.length; i=i+3) {
 	  	
-	  	var doc = docs[i]
-	  	var precision1 = docs[i].precision
-	  	var precision2 = docs[i+1].precision
-	  	var precision3 = docs[i+2].precision
+	 //  	var doc = docs[i]
+	 //  	var precision1 = docs[i].precision
+	 //  	var precision2 = docs[i+1].precision
+	 //  	var precision3 = docs[i+2].precision
 	  	
-	 //  	console.log(
-		// 	doc.config.DISTANCE_MEASURE, 
-		// 	doc.config.MARKOV_ORDER, 
-		// 	doc.config.ITEM_CHOICE_STRATEGY, 
-		// 	doc.config.CROSS_VALIDATION_RUN,
-		// 	doc.numClusters,
-		// 	precision1,
-		// 	precision2,
-		// 	precision3,
-		// 	(precision1+precision2+precision3)/3.0
-		// );	
+	 // //  	console.log(
+		// // 	doc.config.DISTANCE_MEASURE, 
+		// // 	doc.config.MARKOV_ORDER, 
+		// // 	doc.config.ITEM_CHOICE_STRATEGY, 
+		// // 	doc.config.CROSS_VALIDATION_RUN,
+		// // 	doc.numClusters,
+		// // 	precision1,
+		// // 	precision2,
+		// // 	precision3,
+		// // 	(precision1+precision2+precision3)/3.0
+		// // );	
 
-	  }
+	 //  }
 	  log(docs[0])
 	  docs = flatten(docs)
 
 
 	  log(docs[0])
-	  log('dataset', 'sessionCutoff', 'minClusterSize', 
-	  	'distance', 'markov', 'strategy', 'xvalidation', 
-	  	'numClusters', 'clusteredTxns', 'numTxns', 
-	  	'numTxnsTraining', 'numTxnsValidation', 'precision'
-	  );
+	  log('dataset, sessionCutoff, minClusterSize, distance, markov, strategy, xvalidation, numClusters, clusteredTxns, numTxns, numTxnsTraining, numTxnsValidation, precision');
 
 	  docs.forEach(function(doc, i) {
-		  console.log(
-		 	doc.dataset, 
+	  	var array = [
+	  		doc.dataset,  
 		 	doc.sessionCutoff,
 		 	doc.minClusterSize,
 		 	doc.distance,
@@ -108,9 +116,11 @@ var methodResults = function() {
 		 	doc.numTxnsTraining,
 		 	doc.numTxnsValidation,
 		 	doc.precision
-	);
+	  	]
+		console.log(array.join(', '))
 	  })
 
+	  console.log(docs.length)
 	  
 	});
 }
@@ -139,4 +149,4 @@ var flatten = function(docs) {
 
 }
 
-// methodResults()
+methodResults()

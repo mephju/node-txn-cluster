@@ -3,7 +3,8 @@
 CreateMethodResults <- function(kDatasetName) {
 	eval <- read.csv(
 		paste0('../', kDatasetName, '_more.csv'),
-		header=TRUE
+		header=TRUE,
+		strip.white=TRUE
 	)
 
 
@@ -42,7 +43,7 @@ CreateMethodResults <- function(kDatasetName) {
 
 	res <- res[order(-res$precision),]
 
-	res$precision = round(res$precision, digits=4)
+	#res$precision = round(res$precision, digits=4)
 	res <- res[1:10,]
 	
 	return(res)
@@ -53,7 +54,8 @@ CreateMethodResults <- function(kDatasetName) {
 CreateBaselineResults <- function(kDatasetName) {
 	eval <- read.csv(
 		paste0('../', kDatasetName, '_baseline_more.csv'),
-		header=TRUE
+		header=TRUE,
+		strip.white=TRUE
 	)
 
 	res <- aggregate(
@@ -71,7 +73,6 @@ CreateBaselineResults <- function(kDatasetName) {
 	)
 
 	
-	res$precision = round(res$precision, digits=4)
 
 	return(res)
 }
@@ -91,8 +92,6 @@ CreateTopList <- function(kDatasetName) {
 	names(merged) <- c('method', 'precision')
 	merged <- rbind(merged, baselineResults)
 	merged <- merged[order(-merged$precision),]
-
-	print(merged)
 
 	return(merged)
 }

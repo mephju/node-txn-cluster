@@ -5,7 +5,8 @@
 CreateGroupByParamFrame <- function(kDatasetName) {
 	eval <- read.csv(
 		paste0('../', kDatasetName, '_more.csv'), 
-		header=TRUE
+		header=TRUE,
+		strip.white=TRUE
 	)
 
 	res <- data.frame(

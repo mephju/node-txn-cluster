@@ -59,44 +59,44 @@ var jaccardBigramDistance = function(array1, array2) {
 }
 var jaccardBigram = function(array1, array2) {
 
-
-    var len1    = array1.length
-    var len2    = array2.length
+    var len1    = array1.length - 1
+    var len2    = array2.length - 1
     var len     = Math.max(len1, len2)
 
-    if(Math.min(len1, len2) < 2) { return 0 }
+    if(Math.min(len1, len2) < 1) { return 0 }
 
-    var array1Bigrams = []
-    var array2Bigrams = []
+    var array1Bigrams = {}
+    var array2Bigrams = {}
 
-    
-
-    for(var i=1; i<len; i++) {
+    for(var i=0; i<len; i++) {
 
         if(i < len1) {
-            var candidate = array1.slice(i-1, i+1) //[array1[i-1], array1[i]]
-            if(!help.contains(array1Bigrams, candidate)) {
-                array1Bigrams.push(candidate)    
-            }
+            var candidate = array1[i] + ',' + array1[i+1] 
+            array1Bigrams[candidate] = true
         }
         if(i < len2) {
-            var candidate = array2.slice(i-1, i+1) //[array2[i-1], array2[i]]
-            if(!help.contains(array2Bigrams, candidate)) {
-                array2Bigrams.push(candidate)    
-            }
+            var candidate = array2[i]  + ',' + array2[i+1]
+            array2Bigrams[candidate] = true
         }
     }
+
+
+    array1Bigrams = Object.keys(array1Bigrams)
+    array2Bigrams = Object.keys(array2Bigrams)
+
 
 
     var intersectNum = help.intersectNum(
         array1Bigrams, 
         array2Bigrams
     );
+    // console.log(array1Bigrams, array2Bigrams, intersectNum)
     //log(array1Bigrams, array2Bigrams, intersectNum)
-    return intersectNum/(array1Bigrams.length + array2Bigrams.length - intersectNum)
-
-
+     return intersectNum/(array1Bigrams.length + array2Bigrams.length - intersectNum)
+    // return intersectNum / Math.max(array1Bigrams.length, array2Bigrams.length)
 }
+
+
 
 var jaccardDistanceSlow = function(array1, array2) {
     var intersectNum = help.intersectNum(array1, array2)

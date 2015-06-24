@@ -6,10 +6,6 @@ source('./CreateTable.R')
 source('./CreateData.R')
 
 
-
-
-
-
 # Create 3 charts
 # 1. Compare best results of own method against 2 baselines in a bar chart.
 # 	 Needs 2 files: dataset_baseline_more.csv, dataset_more.csv
@@ -22,23 +18,25 @@ source('./CreateData.R')
 # 	 is because it does not have too much impact on the results.
 
 CreateDatasetResult <- function() {
-	kDatasetName 	<- 'lastfm' #'movielens'
+	kDatasetName 	<- 'gowalla' #'lastfm' #'movielens'
 	kPathPrefix 	<- '/home/mephju/maproject/thesis/template/Figures/'
 
 	topResults 		<- CreateTopList(kDatasetName)
 	chart 			<- CreateBarChart(topResults, kPathPrefix, kDatasetName)
-	print(topResults)
-	print(chart)
+
 
 	# CreateMeans(kDatasetName, kPathPrefix)
 	groupByFrame <- CreateGroupByParamFrame(kDatasetName)
-	print(groupByFrame)
+
+
 	CreateParamPlot(kDatasetName, kPathPrefix, groupByFrame)
 	CreateDistancePlot(kDatasetName, kPathPrefix)
-	CreateTable(kDatasetName)
+	
 
-	bar.data <- CreateDistanceVsStrategyFrame('lastfm')
-	SaveBarChart(bar.data, kPathPrefix, 'lastfm-results-distance-strategy.pdf')
+	bar.data <- CreateDistanceVsStrategyFrame(kDatasetName)
+	SaveBarChart(bar.data, kPathPrefix, paste0(kDatasetName, '-results-distance-strategy.pdf'))
+
+	CreateTable(kDatasetName)
 }
 
 CreateDatasetResult()

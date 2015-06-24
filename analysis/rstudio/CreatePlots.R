@@ -3,70 +3,6 @@ library(plyr)
 
 source('./lib.R')
 
-
-
-
-# Create a plot of the evaluation results for
-# the given datasetName. Compares precision of evaluation runs
-# for varying distance measures and item choice strategies
-CreateDistanceVsStrategyFrame <- function(kDatasetName) {
-	
-	eval <- read.csv(
-		paste0('../', kDatasetName, '_more.csv'),
-		header=TRUE
-	)
-
-
-	res <- data.frame(
-		eval$distance,
-		eval$xvalidation,
-		eval$markov,
-		eval$strategy,
-		eval$precision
-	)
-	names(res) <- c('distance', 'xvalidation', 'markov', 'strategy', 'precision')
-
-	res <- aggregate(
-		res$precision,
-		by=list(
-			distance=eval$distance, 
-			strategy=eval$strategy
-		),
-		FUN=mean
-	)
-
-	names(res)[names(res) == 'x'] <- 'precision'
-
-	res$strategy = mapvalues(
-		res$strategy, 
-		from=c('random', 'tfTfidf', 'tfidf', 'bestItemsOverall', 'bestItemsOfCluster'), 
-		to=c('Random', 'TF-TF-IDF', 'TF-IDF', 'Most Popular', 'Most Frequent')
-	)
-	
-	res$distance = mapvalues(
-		res$distance, 
-		from=c('jaccard', 'jaccard-bigram', 'jaccard-levenshtein', 'levenshtein'), 
-		to=c('Jaccard', 'Jaccard Bigram', ' Jaccard Levenshtein', 'Levenshtein')
-	)
-
-	res <- res[order(-res$precision),]
-
-	res$precision = round(res$precision, digits=4)
-
-	methodCol <- paste(res$distance, '/', res$strategy)
-	merged <- data.frame(
-		methodCol, 
-		res$precision
-	)
-
-	names(merged) <- c('method', 'precision')
-	merged <- merged[order(-merged$precision),]
-	
-	return(merged)
-
-}
-
-
 # Create a plot of the evaluation results for
 # the given datasetName. Compares precision of evaluation runs
 # for varying distance measures and item choice strategies
@@ -74,7 +10,8 @@ CreateDistancePlot <- function(kDatasetName, kPathPrefix) {
 	
 	eval = read.csv(
 		paste0('../', kDatasetName, '_more.csv'),
-		header=TRUE
+		header=TRUE,
+		strip.white=TRUE
 		)
 	
 	names(eval)[names(eval) == 'precision'] <- 'Precision'
@@ -198,8 +135,7 @@ buildParamPlot <- function(xdata, ydata, xtitle, ytitle) {
 			axis.title.x = element_text(colour='#858585'),
 			axis.title.y = element_text(colour='#858585')
 			#plot.margin = unit(c(2, 2, 2, 2), "inches")
-		) +
-		expand_limits(y=c(0,0.021))
+		) + expand_limits(y=c(0,0.008))
 }
 
 

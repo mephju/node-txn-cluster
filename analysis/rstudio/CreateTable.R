@@ -1,10 +1,12 @@
+
+
 CreateTable <- function(kDatasetName) {
 	eval <- read.csv(
 		paste0('../', kDatasetName, '_more.csv'), 
-		header=TRUE
+		header=TRUE,
+		strip.white=TRUE
 	)
-
-
+	
 	res <- data.frame(
 		eval$distance,
 		eval$xvalidation,
@@ -12,6 +14,8 @@ CreateTable <- function(kDatasetName) {
 		eval$strategy,
 		eval$precision
 	)
+
+
 	names(res) <- c('distance', 'xvalidation', 'markov', 'strategy', 'precision')
 
 	res <- aggregate(
@@ -24,7 +28,7 @@ CreateTable <- function(kDatasetName) {
 		FUN=mean
 	)
 
-
+	
 
 	names(res)[names(res) == 'x'] <- 'precision'
 
@@ -32,7 +36,7 @@ CreateTable <- function(kDatasetName) {
 
 	res$precision = round(res$precision, digits=4)
 
-	print(res)
+	
 
 	strategies = c(
 		'tfidf', 
@@ -43,7 +47,8 @@ CreateTable <- function(kDatasetName) {
 		'random'
 	)
 
-	subframes = data.frame()
+
+
 	for(strategy in strategies) {
 		assign(
 			paste0('subframes.', strategy), 
@@ -51,14 +56,13 @@ CreateTable <- function(kDatasetName) {
 		)
 	}
 
-
-	
 	res <- merge(subframes.tfidf, subframes.tfTfidf)
 	res <- merge(res, subframes.random)
 	res <- merge(res, subframes.bestItemsOfCluster)
 	res <- merge(res, subframes.bestItemsOverall)
 	# res <- merge(res, subframes.withRatings)
 	# res <- data.frame(res$distance, res$markov)
+
 
 	for(y in 1:nrow(res)) {
 		
@@ -76,16 +80,16 @@ CreateTable <- function(kDatasetName) {
 		
 	}
 
-	# return(res)
+	return(res)
 } 
 
 
-
+# Takes a frame's values which are equal to colname
+# and creates a new column based on these values 
 MakeSubFrame <- function(frame, colname) {
 	subframe = frame[frame$strategy == colname,]
+	
 	names(subframe)[names(subframe) == 'precision'] <- colname
 	subframe <- subframe[-3]
 	return(subframe)
 }
-
-CreateTable('lastfm')

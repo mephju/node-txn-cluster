@@ -159,11 +159,11 @@ var intersectNumDes = function(a, b) {
 
 var intersectNum = function(array1, array2) {
 	 return fastIntersetcNum(array1, array2)
-	 return array_intersect(array1, array2).length
-	 var a = array1.slice(0)
-	 var b = array2.slice(0)
+	 // return array_intersect(array1, array2).length
+	 // var a = array1.slice(0)
+	 // var b = array2.slice(0)
 	 
-	 return intersectNumDes(a, b)
+	 // return intersectNumDes(a, b)
 }
 
 function fastIntersetcNum() {
