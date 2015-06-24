@@ -53,18 +53,15 @@ Clustering.prototype._init = function(done) {
 	
 	process.stdout.write('i' + K)
 
-	var self = this
-
-	
     while(centroids.length < K ) {
     	
-		var centroid = self._chooseValidCentroid()
+		var centroid = this._chooseValidCentroid()
 
 		if(centroids.indexOf(centroid) === -1) {
 			centroids.push(centroid)
 			clusters.addCluster(new Cluster(
 				centroid, 
-				self.distanceMeasure
+				this.distanceMeasure
 			));
 
 			log.green('centroids sofar', centroids.length)
