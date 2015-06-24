@@ -55,18 +55,12 @@ Clustering.prototype._init = function(done) {
 
 	var self = this
 
-	async.whilst(
-	    function() { 
-	    	return centroids.length < K 
-	    },
-	    function(next) {
-	    	
-			var centroid = self._chooseValidCentroid()
+	
+    while(centroids.length < K ) {
+    	
+		var centroid = self._chooseValidCentroid()
 
-			if(centroids.indexOf(centroid) !== -1) {
-				return next()
-			}
-
+		if(centroids.indexOf(centroid) === -1) {
 			centroids.push(centroid)
 			clusters.addCluster(new Cluster(
 				centroid, 
@@ -74,11 +68,9 @@ Clustering.prototype._init = function(done) {
 			));
 
 			log.green('centroids sofar', centroids.length)
-			
-			next()
-	    },
-	    done
-	);
+		}
+    }
+    done()
 }
 
 /**
