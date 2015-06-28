@@ -120,12 +120,10 @@ ClusteringFixed.prototype._isValidCentroid = function(randomIdx) {
  * @param  {[type]} clusters [description]
  * @return {[type]}          [description]
  */
-Clustering.prototype.clusterIterate = function(done) {
+Clustering.prototype.clusterIterate = function() {
 	log('clusterIterate with num txns', this.txnRows.length)
 	log.green('clusterIterate isIterationNeeded', this.clusters.isIterationNeeded)
 	
-
-
 	var txnRows = this.txnRows
 
 	for(var i=0, len=txnRows.length; i<len; i++) {
@@ -138,20 +136,14 @@ Clustering.prototype.clusterIterate = function(done) {
 
 	}
 	
-	async.wfall([
-		function(next) {
-			this.clusters.recomputeCentroids(next)
-		},
-		function() {
-			if(!this.clusters.isIterationNeeded) {
-				this.clusters.cleanUp()
-				return done(null, this.clusters)
-			}
-
-			this.clusters.clearMembers()
-			this.clusterIterate(done)
-		}
-	], this, done)
+	this.clusters.recomputeCentroids()
+		
+	if(this.clusters.isIterationNeeded) {
+		this.clusters.clearMembers()
+		return this.clusterIterate()	
+	} 
+	this.clusters.cleanUp()
+	return this.clusters
 }
 
 

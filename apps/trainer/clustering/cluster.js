@@ -36,7 +36,7 @@ Cluster.prototype.distance = function(txn) {
  * 
  * @return {[type]} [description]
  */
-Cluster.prototype.recomputeCentroid = function(done) {
+Cluster.prototype.recomputeCentroid = function() {
 
 	// centroid for sure doesn't change if cluster has zero members
 	if(this.members.length === 0) {
@@ -45,23 +45,20 @@ Cluster.prototype.recomputeCentroid = function(done) {
 
 	//return log(this.members)
 
-	async.wfall([
-		function(next) {
-			var distanceSums 	= this._distanceSums()
-			var minIdx	 		= help.minIdx(distanceSums)
-			var nextCentroid 	= this.members[minIdx]
-			var changed 		= false //nextCentroid['txn_id'] !== this.centroidRow['txn_id']
-			
-			if(this._hasChanged(this.centroidRow, nextCentroid)) {
-				this.centroidRow = nextCentroid
-				changed = true
-			}
+	
+	var distanceSums 	= this._distanceSums()
+	var minIdx	 		= help.minIdx(distanceSums)
+	var nextCentroid 	= this.members[minIdx]
+	var changed 		= false //nextCentroid['txn_id'] !== this.centroidRow['txn_id']
+	
+	if(this._hasChanged(this.centroidRow, nextCentroid)) {
+		this.centroidRow = nextCentroid
+		changed = true
+	}
 
-			log('recomputed Centroid with num members', this.members.length, 'found minIdx', minIdx, 'changed', changed, nextCentroid['txn_id'])
-			
-			done(null, changed)		
-		}
-	], this, done)
+	log('recomputed Centroid with num members', this.members.length, 'found minIdx', minIdx, 'changed', changed, nextCentroid['txn_id'])
+	
+	return changed	
 }
 
 Cluster.prototype._hasChanged = function(currentCentroid, nextCentroid) {

@@ -3,12 +3,13 @@ function EvalConfigProd() {
 	this.baselines = ['PopularityBased', 'AprioriBased']
 	//this.baselines = ['PopularityBased']
 	this.markovOrders = [1,2,3]
+	this.markovOrders = [1]
 	this.xValidationRuns = [0,1,2]
 	this.distanceMeasures = ['levenshtein', 'jaccard', 'jaccard-bigram', 'jaccard-levenshtein']
-	this.distanceMeasures = ['levenshtein', 'jaccard-levenshtein']
+	this.distanceMeasures = ['jaccard-levenshtein']
 
 	this.itemChoiceStrategies = ['tfidf', 'bestItemsOfCluster', 'bestItemsOverall', 'tfTfidf', 'random', 'withRatings']
-	this.itemChoiceStrategies = ['tfidf', 'bestItemsOfCluster', 'bestItemsOverall', 'tfTfidf', 'random']
+	this.itemChoiceStrategies = ['tfidf', 'bestItemsOfCluster', 'tfTfidf']
 	//this.itemChoiceStrategies = ['tfidf', 'bestItemsOverall', 'tfTfidf', 'random', 'withRatings']
 
 	this.datasets = [
@@ -42,7 +43,7 @@ function EvalConfigDev() {
 	this.xValidationRuns = [0, 1, 2]
 	
 	this.distanceMeasures = ['levenshtein', 'jaccard', 'jaccard-bigram', 'jaccard-levenshtein']
-	//this.distanceMeasures = ['jaccard']
+	this.distanceMeasures = ['jaccard-levenshtein']
 	
 	this.itemChoiceStrategies = ['tfidf', 'bestItemsOfCluster', 'bestItemsOverall', 'tfTfidf', 'random', 'withRatings']
 	this.itemChoiceStrategies = ['tfidf']

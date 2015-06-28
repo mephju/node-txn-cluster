@@ -20,17 +20,14 @@ module.exports = Clustering
  */
 Clustering.prototype.cluster = function(done) {
 
-
 	log('cluster')
 	async.wfall([
 		function(next) {
 			this.init(next)
 		},
 		function(next) {	
-			this.clusterIterate(next)
-		},
-		function(_clusters) {
-			done(null, _clusters)
+			var clusters = this.clusterIterate()
+			done(null, clusters)
 		}
 	], this, done)
 			

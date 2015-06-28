@@ -110,25 +110,16 @@ ClusterGroup.prototype.cleanUp = function() {
 }
 
 
-ClusterGroup.prototype.recomputeCentroids = function(done) {
+ClusterGroup.prototype.recomputeCentroids = function() {
 	log('recomputeCentroids')
 	this.isIterationNeeded = false
 
 	var _this = this
 
-	
-
-	async.eachChain(
-		this.clusters,
-		function(cluster, next) {
-			cluster.recomputeCentroid(next)
-		},
-		function(changed, next) {
-			_this.isIterationNeeded = _this.isIterationNeeded || changed
-			next()
-		},
-		done
-	);
+	this.clusters.forEach(function(cluster) {
+		var changed = cluster.recomputeCentroid()
+		_this.isIterationNeeded = _this.isIterationNeeded || changed
+	})
 }
 
 
