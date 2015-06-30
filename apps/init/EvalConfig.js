@@ -41,6 +41,7 @@ function EvalConfigDev() {
 	this.markovOrders = [1]
 	
 	this.xValidationRuns = [0, 1, 2]
+	this.xValidationRuns = [0]
 	
 	this.distanceMeasures = ['levenshtein', 'jaccard', 'jaccard-bigram', 'jaccard-levenshtein']
 	this.distanceMeasures = ['jaccard-levenshtein']

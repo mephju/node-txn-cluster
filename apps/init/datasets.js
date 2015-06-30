@@ -155,18 +155,7 @@ TestDataset.prototype = Object.create(Dataset.prototype, {
 	constructor: { value: TestDataset }
 })
 
-// Movielens.prototype 				= Dataset.prototype
-// Movielens.prototype.constructor 	= Movielens
 
-// LastFm.prototype 					= Dataset.prototype
-// LastFm.prototype.constructor 		= LastFm
-
-// TestDataset.prototype 				= Dataset.prototype
-// TestDataset.prototype.constructor 	= TestDataset
-// exports.TestDataset = TestDataset
-
-// Gowalla.prototype 					= Dataset.prototype
-// Gowalla.prototype.constructor 		= Gowalla
 
 
 var datasetInstance = null

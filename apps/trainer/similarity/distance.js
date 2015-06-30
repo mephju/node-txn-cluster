@@ -113,6 +113,12 @@ var jaccardDistance = function(array1, array2) {
 }
 
 
+/**
+ * Assumes that a1 and a2 are sorted in ascending order.
+ * @param  {[type]} a1 [description]
+ * @param  {[type]} a2 [description]
+ * @return {[type]}    [description]
+ */
 var intersect =  function(a1, a2) {
     var x = 0
     var len1 = a1.length
