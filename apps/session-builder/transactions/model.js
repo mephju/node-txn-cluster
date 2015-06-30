@@ -4,7 +4,8 @@ var sql 		= require('./sql')
 function Model(dataset) {
 	app.Model.call(this, dataset)
 
-	this.asSets = this.dataset.config.DISTANCE_MEASURE === 'jaccard'
+	this.asSets 				= this.dataset.config.DISTANCE_MEASURE === 'jaccard'
+	this.asSetsAndSequences 	= this.dataset.config.DISTANCE_MEASURE === 'jaccard-levenshtein'
 
 	this.table = {
 		clusterMembers: this.dataset.prefixTableName('cluster_members'),
@@ -170,6 +171,9 @@ Model.prototype.getClusteredTxns = function(done) {
 			if(model.asSets) {
 				toSortedSets(rows)
 			}
+			else if(self.asSetsAndSequences) {
+				addSortedSets(rows)
+			}
 			done(null, rows)
 		}
 	], done)
@@ -232,6 +236,9 @@ Model.prototype._txns = function(sql, done, validation) {
 			})
 			if(self.asSets) {
 				toSortedSets(rows)
+			} 
+			else if(self.asSetsAndSequences) {
+				addSortedSets(rows)
 			}
 			done(null, rows)
 		}
@@ -240,9 +247,14 @@ Model.prototype._txns = function(sql, done, validation) {
 
 var toSortedSets = function(txnRows) {
 	txnRows.forEach(function(txnRow) {
-		txnRow['item_ids'] = _.unique(txnRow['item_ids']).sort()
+		txnRow['item_ids'] = _.unique(txnRow['item_ids']).sort(function(a,b) {return a-b})
 	})
+}
 
+var addSortedSets = function(txnRows) {
+	txnRows.forEach(function(txnRow) {
+		txnRow['sorted_item_ids'] = _.unique(txnRow['item_ids']).sort(function(a,b) {return a-b})
+	})
 }
 
 

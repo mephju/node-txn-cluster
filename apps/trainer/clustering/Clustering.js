@@ -8,6 +8,10 @@ function Clustering(dataset) {
 	this.txnRows = null
 	this.distanceMeasure 	= new Distance(dataset)
 	this.clusters 			= new ClusterGroup(dataset)
+
+	//During clustering we can improve speed by also providing sorted sets 
+	//for jaccard and jaccard levenshtein
+	this.distanceMeasure.makeFast(true)
 }
 
 module.exports = Clustering

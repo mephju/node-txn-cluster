@@ -7,16 +7,16 @@ function Distance(dataset) {
 
     switch(this.config.DISTANCE_MEASURE) {
         case 'jaccard-levenshtein':
-            this.distanceAlgo = jaccLevDistance
+            this.distance = jaccLev
             break;
         case 'jaccard':
-            this.distanceAlgo = jaccardDistance
+            this.distance = jaccard
             break;
         case 'jaccard-bigram':
-            this.distanceAlgo = jaccardBigramDistance
+            this.distance = jaccardBigram
             break;
         case 'levenshtein':
-            this.distanceAlgo = levenshtein
+            this.distance = levenshtein
             break;
         default: throw 'no distance measure defined'
     }
@@ -24,10 +24,13 @@ function Distance(dataset) {
     this.distanceStore = new DistanceStore(dataset, this)
 }
 
-Distance.prototype.distance = function(left, right) {
-    //log.yellow('distance', left, right)
-    //return this.distanceAlgo(left, right)
-    return this.distanceStore.distance(left, right)
+
+Distance.prototype.makeFast = function(fast) {
+    if(fast && this.config.DISTANCE_MEASURE === 'jaccard-levenshtein') {
+        this.distance = jaccLevFast
+    } else if(fast && this.config.DISTANCE_MEASURE === 'jaccard') {
+        this.distance = jaccardFast
+    }
 }
 
 exports.Distance = Distance
@@ -42,21 +45,33 @@ exports.Distance = Distance
 
       *       [description]
  */
-var jaccLevDistance = function(array1, array2) {
-    //log('jaccLevDistance', array1, array2)
-    return 1/4 * jaccardDistanceSlow(array1, array2) + 3/4 * levenshtein(array1, array2)
+var jaccLev = function(array1, array2) {
+    return 1/4 * jaccard(array1, array2) + 3/4 * levenshtein(array1, array2)
+}
+var jaccLevFast = function() {
+    
+    // log('jaccLevDistanceFast', arguments[1], arguments[3])
+    // log('jaccLevDistanceFast', arguments)
+    
+    var d =  3/4 * levenshtein(arguments[0], arguments[1]) + 1/4 * jaccardFast(arguments[2], arguments[3])
+    var d1 = levenshtein(arguments[0], arguments[1])
+    var d2 = jaccardFast(arguments[2], arguments[3])
+
+    // if(d1 < 1 || d2 < 1) {
+    //     log(JSON.stringify({
+    //         jacclev: d,
+    //         levenshtein: d1,
+    //         jaccard: d2
+    //     }, null, 2))
+    // }
+        
+    
+    return d
 }
 
-var jaccLevSim = function(array1, array2) {
-    return 
-        1/4 * jaccard(array1, array2) + 
-        3/4 * (1 - levenshtein(array1, array2))
-}
 
 
-var jaccardBigramDistance = function(array1, array2) {
-    return 1-jaccardBigram(array1, array2)
-}
+
 var jaccardBigram = function(array1, array2) {
 
     var len1    = array1.length - 1
@@ -92,13 +107,13 @@ var jaccardBigram = function(array1, array2) {
     );
     // console.log(array1Bigrams, array2Bigrams, intersectNum)
     //log(array1Bigrams, array2Bigrams, intersectNum)
-     return intersectNum/(array1Bigrams.length + array2Bigrams.length - intersectNum)
+     return 1 - intersectNum/(array1Bigrams.length + array2Bigrams.length - intersectNum)
     // return intersectNum / Math.max(array1Bigrams.length, array2Bigrams.length)
 }
 
 
 
-var jaccardDistanceSlow = function(array1, array2) {
+var jaccard = function(array1, array2) {
     var intersectNum = help.intersectNum(array1, array2)
     if(intersectNum === 0) return 1
     return 1 - intersectNum / (array1.length + array2.length - intersectNum)
@@ -106,7 +121,7 @@ var jaccardDistanceSlow = function(array1, array2) {
 
 
 
-var jaccardDistance = function(array1, array2) {
+var jaccardFast = function(array1, array2) {
     var intersectNum = intersect(array1, array2)
     if(intersectNum === 0) return 1
     return 1 - intersectNum / (array1.length + array2.length - intersectNum)
@@ -199,6 +214,6 @@ var levenshtein = function(s, t) {
 exports.test = {
     jaccardBigram: jaccardBigram,
     levenshtein:levenshtein,
-    jaccardDistance: jaccardDistance,
-    jaccLev: jaccLevDistance
+    jaccardDistance: jaccard,
+    jaccLev: jaccLev
 }

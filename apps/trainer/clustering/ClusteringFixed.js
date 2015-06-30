@@ -6,6 +6,7 @@ var Cluster 		= require('./cluster')
 function ClusteringFixed(dataset, txnRows) {
 	log.blue('ClusteringFixed')
 	Clustering.call(this, dataset, txnRows)
+	
 }
 
 ClusteringFixed.prototype = Object.create(Clustering.prototype, {
@@ -13,6 +14,16 @@ ClusteringFixed.prototype = Object.create(Clustering.prototype, {
 })
 
 module.exports = ClusteringFixed
+
+
+ClusteringFixed.prototype.distance = function(centroid, txn) {
+	return this.distanceMeasure.distance(
+		centroid['item_ids'], 
+		txn['item_ids'],
+		centroid['sorted_item_ids'], 	// only valid if jaccard-levenshtein
+		txn['sorted_item_ids']			// only valid if jaccard-levenshtein
+	)
+}
 
 /**
  * Choose initial centroids randomly
@@ -40,16 +51,16 @@ Clustering.prototype.init = function(done) {
 Clustering.prototype._init = function() {
 	const K = parseInt(Math.pow(
 		this.txnRows.length,
-		0.6195//0.5//0.6195
+		0.6 //0.6195//0.5//0.6195
 	));
 
-	console.log('clustering.init centroids', K, 'txnRows count', this.txnRows.length)
+	log('clustering.init centroids', K, 'txnRows count', this.txnRows.length)
 
 	var centroids 		= []
 
 	process.stdout.write('i' + K)
 
-  while(centroids.length < K ) {
+	while(centroids.length < K ) {
 
 		var centroid = this._chooseValidCentroid()
 
@@ -62,7 +73,7 @@ Clustering.prototype._init = function() {
 
 			log.green('centroids sofar', centroids.length)
 		}
-  }
+	}
 }
 
 /**
@@ -99,14 +110,18 @@ ClusteringFixed.prototype._isValidCentroid = function(randomIdx) {
 	for(var i=0; i<this.txnRows.length; i++) {
 
 		if(i === randomIdx) continue
-		var d = this.distanceMeasure.distance(
-			centroid['item_ids'],
-			this.txnRows[i]['item_ids']
+		var d = this.distance(
+			centroid, this.txnRows[i]
 		);
+
 		if(d < 1) { return true }
 	}
 	return false
 }
+
+
+
+
 
 
 
