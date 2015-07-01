@@ -171,7 +171,7 @@ Model.prototype.getClusteredTxns = function(done) {
 			if(model.asSets) {
 				toSortedSets(rows)
 			}
-			else if(self.asSetsAndSequences) {
+			else if(model.asSetsAndSequences) {
 				addSortedSets(rows)
 			}
 			done(null, rows)
