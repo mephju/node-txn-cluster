@@ -30,6 +30,7 @@ Feeder.prototype.import = function(done) {
 	var feeder = this
 	var lines = []
 	var input = fs.createReadStream(this.dataset.filepath)
+	log(input)
 	var	rl = readline.createInterface(input, null, null)
 
 
