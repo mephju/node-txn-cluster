@@ -29,7 +29,8 @@ Feeder.prototype.import = function(done) {
 
 	var feeder = this
 	var lines = []
-	var	rl = readline.createInterface(fs.createReadStream(this.dataset.filepath))
+	var input = fs.createReadStream(this.dataset.filepath)
+	var	rl = readline.createInterface(input, null, null)
 
 
 	rl.on('line', function(line) {
