@@ -6,10 +6,12 @@ function EvalConfigProd() {
 	this.markovOrders = [1]
 	this.xValidationRuns = [0,1,2]
 	this.distanceMeasures = ['levenshtein', 'jaccard', 'jaccard-bigram', 'jaccard-levenshtein']
-	this.distanceMeasures = ['levenshtein', 'jaccard-levenshtein']
+	// this.distanceMeasures = ['levenshtein', 'jaccard-levenshtein']
 
 	this.itemChoiceStrategies = ['tfidf', 'bestItemsOfCluster', 'bestItemsOverall', 'tfTfidf', 'random', 'withRatings']
+
 	this.itemChoiceStrategies = ['tfidf', 'bestItemsOfCluster', 'tfTfidf']
+	this.itemChoiceStrategies = ['tfidf', 'bestItemsOfCluster', 'bestItemsOverall', 'tfTfidf', 'random']
 	//this.itemChoiceStrategies = ['tfidf', 'bestItemsOverall', 'tfTfidf', 'random', 'withRatings']
 
 	this.datasets = [
@@ -25,8 +27,12 @@ function EvalConfigProd() {
 		// 	dataset: app.datasets.lastFm,
 		// 	txnCount:0
 		// },
+		// {
+		// 	dataset: app.datasets.gowalla,
+		// 	txnCount:0
+		// }
 		{
-			dataset: app.datasets.gowalla,
+			dataset: app.datasets.lastFm1k,
 			txnCount:0
 		}
 	];
@@ -68,14 +74,18 @@ function EvalConfigDev() {
 		// 	dataset: app.datasets.gowallaSmall, 
 		// 	txnCount: 5329,
 		// }
-		{ 
-			dataset: app.datasets.gowallaSmall, 
-			txnCount: 5329,
-		}
+		// { 
+		// 	dataset: app.datasets.gowallaSmall, 
+		// 	txnCount: 5329,
+		// }
 		// {
 		// 	dataset: app.datasets.lastFm,
 		// 	txnCount:0
 		// },
+		{
+			dataset: app.datasets.lastFm1k,
+			txnCount:0
+		}
 	];
 }
 

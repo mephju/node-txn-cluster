@@ -161,8 +161,9 @@ TestDataset.prototype = Object.create(Dataset.prototype, {
 var datasetInstance = null
 var gowalla 		= new Gowalla('gowalla/checkins.txt', 					'gowalla');
 var gowallaSmall  	= new Gowalla('gowalla/checkins_small.txt', 			'gowalla_small'); 
-var lastFm 			= new LastFm('lastfm-dataset-1K/feedback.tsv', 			'last_fm')
-var lastFmSmall 	= new LastFm('lastfm-dataset-1K/feedback_small.tsv', 	'last_fm_small')
+var lastFm 			= new LastFm('lastfm-dataset/feedback.tsv', 			'last_fm')
+var lastFmSmall 	= new LastFm('lastfm-dataset/feedback_small.tsv', 	'last_fm_small')
+var lastFm1k 		= new LastFm('lastfm-dataset-1K/feedback.tsv',  		'last_fm_1k')
 var movielens 		= new Movielens('movielens/ml-1m/ml-1m/ratings.dat', 	'movielens_1m')
 var movielensCustom = new Movielens('movielens/ratings-custom-large.dat',	'movielens_custom_large') 
 var movielensSmall 	= new Movielens('movielens/ratings-small.dat',			'movielens_small') 
@@ -176,6 +177,7 @@ exports.movielensSmall = movielensSmall
 exports.movielensCustom = movielensCustom
 exports.gowallaSmall = gowallaSmall
 exports.lastFmSmall = lastFmSmall
+exports.lastFm1k = lastFm1k
 
 exports.init = function(datasetName) {
 	switch(datasetName) {
@@ -200,6 +202,8 @@ exports.init = function(datasetName) {
 		case 'test_dataset': 
 			datasetInstance = testDataset
 			break;
+		case 'last_fm_1k':
+			datasetInstance = lastFm1k
 		default: throw 'invalid dataset name given'
 	}
 }

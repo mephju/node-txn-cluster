@@ -1,0 +1,12 @@
+             distance markov           strategy          x
+1 jaccard-levenshtein      1 bestItemsOfCluster 0.01836893
+2         levenshtein      1 bestItemsOfCluster 0.01683927
+3 jaccard-levenshtein      1              tfidf 0.01739103
+4         levenshtein      1              tfidf 0.01597351
+5 jaccard-levenshtein      1            tfTfidf 0.01767600
+6         levenshtein      1            tfTfidf 0.01632327
+NA & NA & \cy NA & \cy NA & \cy NA & \cy NA & \cy NA \\ \hline
+ &  & \cy  & \cy  & \cy  & \cy  & \cy  \\ \hline
+[1] distance           markov             tfidf              tfTfidf           
+[5] random             bestItemsOfCluster bestItemsOverall  
+<0 rows> (or 0-length row.names)

@@ -56,7 +56,7 @@ exports.prepare = function(dataset, done) {
 exports.insert = function(dataset, records, callback) {
 	
 	var table = dataset.name
-	console.log('insert')
+	log('insert', records.length)
 	
 
 	async.waterfall([

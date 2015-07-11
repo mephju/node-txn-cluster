@@ -21,20 +21,21 @@ CreateDatasetResult <- function() {
 	kDatasetName 	<- 'gowalla' #'lastfm' #'movielens'
 	kPathPrefix 	<- '/home/mephju/maproject/thesis/template/Figures/'
 
-	topResults 		<- CreateTopList(kDatasetName)
-	chart 			<- CreateBarChart(topResults, kPathPrefix, kDatasetName)
+	# topResults 		<- CreateTopList(kDatasetName)
+	# chart 			<- CreateBarChart(topResults, kPathPrefix, kDatasetName)
 
-
-	# CreateMeans(kDatasetName, kPathPrefix)
-	groupByFrame <- CreateGroupByParamFrame(kDatasetName)
-
-
-	CreateParamPlot(kDatasetName, kPathPrefix, groupByFrame)
-	CreateDistancePlot(kDatasetName, kPathPrefix)
 	
 
-	bar.data <- CreateDistanceVsStrategyFrame(kDatasetName)
-	SaveBarChart(bar.data, kPathPrefix, paste0(kDatasetName, '-results-distance-strategy.pdf'))
+	# CreateMeans(kDatasetName, kPathPrefix)
+	# groupByFrame <- CreateGroupByParamFrame(kDatasetName)
+
+
+	# CreateParamPlot(kDatasetName, kPathPrefix, groupByFrame)
+	# CreateDistancePlot(kDatasetName, kPathPrefix)
+	
+
+	# bar.data <- CreateDistanceVsStrategyFrame(kDatasetName)
+	# SaveBarChart(bar.data, kPathPrefix, paste0(kDatasetName, '-results-distance-strategy.pdf'))
 
 	CreateTable(kDatasetName)
 }

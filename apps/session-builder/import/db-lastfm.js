@@ -68,7 +68,6 @@ exports.makeLastFmItem = function(record, callback) {
 	//log(bindParams.toString())
 	
 	if(itemId) {
-		// log('1', itemId)
 		return callback(null, itemId)
 	} 
 	async.waterfall([

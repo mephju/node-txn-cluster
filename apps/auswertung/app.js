@@ -60,40 +60,17 @@ var methodResults = function() {
 	});
 
 	db
-	.find({})
-	.sort({ 'config.DISTANCE_MEASURE':1, 'config.MARKOV_ORDER':1, 'config.ITEM_CHOICE_STRATEGY':1,'config.CROSS_VALIDATION_RUN':1 })
+	.find({
+		createdAt: {'$gt': new Date('07-07-2015') }
+	})
+	.sort({
+
+		'config.DISTANCE_MEASURE':1, 
+		'config.MARKOV_ORDER':1, 
+		'config.ITEM_CHOICE_STRATEGY':1,
+		'config.CROSS_VALIDATION_RUN':1
+	})
 	.exec(function (err, docs) {
-	 //  docs.forEach(function(doc) {
-		// console.log(
-		// 	doc.config.DISTANCE_MEASURE, 
-		// 	doc.config.MARKOV_ORDER, 
-		// 	doc.config.ITEM_CHOICE_STRATEGY, 
-		// 	doc.config.CROSS_VALIDATION_RUN,
-		// 	doc.precision
-		// );  	
-		// //console.log(doc.numTxns, doc.numTxnsTraining, doc.numTxnsValidation)
-	 //  });
-
-	 //  for(var i=0; i<docs.length; i=i+3) {
-	  	
-	 //  	var doc = docs[i]
-	 //  	var precision1 = docs[i].precision
-	 //  	var precision2 = docs[i+1].precision
-	 //  	var precision3 = docs[i+2].precision
-	  	
-	 // //  	console.log(
-		// // 	doc.config.DISTANCE_MEASURE, 
-		// // 	doc.config.MARKOV_ORDER, 
-		// // 	doc.config.ITEM_CHOICE_STRATEGY, 
-		// // 	doc.config.CROSS_VALIDATION_RUN,
-		// // 	doc.numClusters,
-		// // 	precision1,
-		// // 	precision2,
-		// // 	precision3,
-		// // 	(precision1+precision2+precision3)/3.0
-		// // );	
-
-	 //  }
 	  log(docs[0])
 	  docs = flatten(docs)
 
@@ -118,6 +95,7 @@ var methodResults = function() {
 		 	doc.precision
 	  	]
 		console.log(array.join(', '))
+		
 	  })
 
 	  console.log(docs.length)

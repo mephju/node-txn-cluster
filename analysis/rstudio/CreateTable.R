@@ -28,6 +28,8 @@ CreateTable <- function(kDatasetName) {
 		FUN=mean
 	)
 
+	print(res)
+
 	
 
 	names(res)[names(res) == 'x'] <- 'precision'
