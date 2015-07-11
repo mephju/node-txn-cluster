@@ -25,7 +25,7 @@ Feeder.prototype.insertLines = function(lines, done) {
 
 Feeder.prototype.import = function(done) {
 
-	log('import data of ', this.dataset.name)
+	log('import data of ', this.dataset.name, this.dataset.filepath)
 
 	var feeder = this
 	var lines = []
