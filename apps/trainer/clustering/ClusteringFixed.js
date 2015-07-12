@@ -39,6 +39,9 @@ Clustering.prototype.init = function(done) {
 		},
 		function(txnRows, next) {
 			if(txnRows.length === 0) { return done('cannot cluster 0 txn rows')}
+			// txnRows = txnRows.filter(function(txnRow) {
+			// 	return txnRow['item_ids'].length > 1
+			// })
 
 			this.txnRows = txnRows
 			this._init()

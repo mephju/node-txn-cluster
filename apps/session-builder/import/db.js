@@ -167,17 +167,6 @@ var insertLastFm = function(dataset, records, done) {
 }
 
 
-// var insertLastFmFeedback = function(dataset, records, done) {
-// 	async.eachSeries(
-// 		records,
-// 		function(rec, next) {
-// 			db.run('INSERT INTO last_fm_feedback VALUES(?,?,?,?,?,?)', rec, next)
-// 		},
-// 		done
-// 	);
-// }
-
-
 exports.createFeedbackIdx = function(done) {
 	log('createFeedbackIdx')
 	var createIndex = 

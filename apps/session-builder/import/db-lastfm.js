@@ -24,12 +24,6 @@ var getLastFmItemId 		= null;
 exports.init = function(db, callback) {
 	async.series([
 		function(next) {
-			db.run('DROP TABLE IF EXISTS last_fm_feedback', next)
-		},
-		function(next) {
-			db.run('create table last_fm_feedback(user_id, timestamp, artist_id, artist, song_id, song)', next)
-		},
-		function(next) {
 			db.run('DROP TABLE IF EXISTS last_fm_items', next)
 		},
 		function(next) {
