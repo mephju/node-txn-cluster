@@ -158,23 +158,24 @@ var insertLastFm = function(dataset, records, done) {
 			})
 		},
 		function(err) {
+			done(err)
 			console.log('insertLastFm.finished', err)
-			insertLastFmFeedback(dataset, records, done)
+			//insertLastFmFeedback(dataset, records, done)
 		}
 	);
 		
 }
 
 
-var insertLastFmFeedback = function(dataset, records, done) {
-	async.eachSeries(
-		records,
-		function(rec, next) {
-			db.run('INSERT INTO last_fm_feedback VALUES(?,?,?,?,?,?)', rec, next)
-		},
-		done
-	);
-}
+// var insertLastFmFeedback = function(dataset, records, done) {
+// 	async.eachSeries(
+// 		records,
+// 		function(rec, next) {
+// 			db.run('INSERT INTO last_fm_feedback VALUES(?,?,?,?,?,?)', rec, next)
+// 		},
+// 		done
+// 	);
+// }
 
 
 exports.createFeedbackIdx = function(done) {
