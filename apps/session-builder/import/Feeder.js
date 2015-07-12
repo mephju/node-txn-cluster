@@ -1,6 +1,7 @@
 var fs 			= require('fs')
 var db			= require('./db')
 var readline  	= require('readline')
+var lineReader 	= require('line-reader')
 
 
 function Feeder(dataset) {
@@ -9,7 +10,7 @@ function Feeder(dataset) {
 
 module.exports = Feeder 
 
-const LINES_MAX = 1000
+const LINES_MAX = 100000
 
 
 Feeder.prototype.insertLines = function(lines, done) {
@@ -29,31 +30,23 @@ Feeder.prototype.import = function(done) {
 
 	var feeder = this
 	var lines = []
-	var input = fs.createReadStream(this.dataset.filepath)
-	log(input)
-	var	rl = readline.createInterface(input, null, null)
 
-
-	rl.on('line', function(line) {
-
+	lineReader.eachLine(this.dataset.filepath, function(line, last, next) {
 		lines.push(line)
-		
-		if(lines.length !== LINES_MAX) {
-			return
-		}
-		rl.pause()
-		async.waterfall([
-			function(next) {
-				feeder.insertLines(lines, next)
-			},
-			function(next) {
+
+		if(last || lines.length === LINES_MAX) {
+			return feeder.insertLines(lines, function(err) {
 				lines.length = 0
-				rl.resume()
-			}
-		], done)
+				log(last)
+				if(last) { return done(err) }
+				next()
+
+			})
+		} 
+		next()
 		
-	})
-	
+			
+	})	
 }
 
 

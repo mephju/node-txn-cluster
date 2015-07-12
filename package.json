@@ -7,6 +7,7 @@
     "async": "*",
     "deep-equal": "*",
     "eachtick": "*",
+    "line-reader": "^0.2.4",
     "nedb": "^1.1.1",
     "node-mysql": "^0.4.2",
     "sqlite3": "*"
