@@ -56,7 +56,7 @@ ClusterGroup.prototype.findBestMatch = function(txnRow) {
  */
 ClusterGroup.prototype.findBestMatchSeq = function(txn) {
 
-	var	distance = 1,
+	var	distance = 1
 	var	idx = -1
 
 	for (var i=0; i<this.clusters.length; i++) {
