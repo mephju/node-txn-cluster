@@ -37,7 +37,7 @@ var buildTransitions = function(dataset, done) {
 			})
 
 			var txnRows = txnRows.filter(function(row) {
-				return Math.round(Math.random()) === 0
+				return Math.round(Math.random()) === 0;
 			})			
 			
 			log.red('got txns after', txnRows.length)
