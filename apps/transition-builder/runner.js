@@ -33,12 +33,12 @@ var buildTransitions = function(dataset, done) {
 		function(txnRows, next) {
 			log.red('got txns', txnRows.length)
 			var txnRows = txnRows.filter(function(row) {
-				return row['item_ids'].length > 4 && row['item_ids'].length < 50 
+				return row['item_ids'].length > 10 && row['item_ids'].length < 40 
 			})
 			
 			log.red('got txns after', txnRows.length)
 			bag.txnRows = txnRows
-		
+			return
 			clustering.buildClustersFromDb(dataset, next)
 		},
 		function(clusters, next) {
