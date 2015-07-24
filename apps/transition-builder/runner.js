@@ -22,6 +22,7 @@ process.on('message', function(data) {
 var buildTransitions = function(dataset, done) {
 	
 	log('buildTransitions')
+	
 	var bag = {}
 
 

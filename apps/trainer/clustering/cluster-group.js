@@ -56,29 +56,20 @@ ClusterGroup.prototype.findBestMatch = function(txnRow) {
  */
 ClusterGroup.prototype.findBestMatchSeq = function(txn) {
 
-	//log('findBestMatchSeq', txn.slice(0,10).toString(), this.clusters.length)
-	var bestMatch = {
-		distance: 1,
-		idx: -1
-	}
+	var	distance = 1,
+	var	idx = -1
 
 	for (var i=0; i<this.clusters.length; i++) {
 		var c = this.clusters[i]
 		
-		var distance 	= c.distance(txn)		
+		var d	= c.distance(txn)		
 
-		
-		//log('findBestMatchSeq', i, distance)
-		if(distance < bestMatch.distance) {
-			bestMatch.distance	= distance
-			bestMatch.idx 		= i
+		if(d < distance) {
+			distance	= d
+			idx 		= i
 		}	
 	};
-
-	//log.cyan('b', bestMatch, '\n\n\n')
-
-
-	return bestMatch.idx
+	return idx
 }
 
 
