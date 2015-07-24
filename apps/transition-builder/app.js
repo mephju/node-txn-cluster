@@ -83,7 +83,7 @@ async.eachChain(
 		}
 		async.eachLimit(
 			trainingRuns,
-			1,//app.config.USE_CORES,
+			12,//app.config.USE_CORES,
 			function(dataset, next) {
 				buildTransitions(dataset, next)
 			},

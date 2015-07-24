@@ -42,7 +42,7 @@ var buildTransitions = function(dataset, done) {
 			
 			log.red('got txns after', txnRows.length)
 			bag.txnRows = txnRows
-			return
+			
 			clustering.buildClustersFromDb(dataset, next)
 		},
 		function(clusters, next) {
