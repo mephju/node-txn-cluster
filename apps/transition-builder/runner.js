@@ -35,6 +35,10 @@ var buildTransitions = function(dataset, done) {
 			var txnRows = txnRows.filter(function(row) {
 				return row['item_ids'].length > 10 && row['item_ids'].length < 30 
 			})
+
+			var txnRows = txnRows.filter(function(row) {
+				return Math.round(Math.random()) === 0
+			})			
 			
 			log.red('got txns after', txnRows.length)
 			bag.txnRows = txnRows
