@@ -31,7 +31,13 @@ var buildTransitions = function(dataset, done) {
 			new app.models.TxnModel(dataset).getClusteredTxns(next)
 		},
 		function(txnRows, next) {
+			log.red('got txns', txnRows.length)
+			var txnRows = txnRows.filter(function(row) {
+				return row['item_ids'].length > 2
+			})
+			log.red('got txns after', txnRows.length)
 			bag.txnRows = txnRows
+			return
 			clustering.buildClustersFromDb(dataset, next)
 		},
 		function(clusters, next) {
