@@ -36,7 +36,7 @@ Model.prototype.createIndices = function(done) {
 	var self = this
 	async.waterfall([
 		function(next) {
-			log('create cluster members index')
+			log.red('create cluster members index')
 			self.db.run(
 				'create index if not exists ' + self.table.clusterMembers + '_index ' + 
 				'on ' + self.table.clusterMembers + '(cluster_id)',
