@@ -44,8 +44,8 @@ CreateDistanceVsStrategyFrame <- function(kDatasetName) {
 
 	res$strategy = mapvalues(
 		res$strategy, 
-		from=c('random', 'tfTfidf', 'tfidf', 'bestItemsOverall', 'bestItemsOfCluster'), 
-		to=c('Random', 'TF-TF-IDF', 'TF-IDF', 'Most Popular', 'Most Frequent')
+		from=c('random', 'tfTfidf', 'tfidf', 'bestItemsOverall', 'bestItemsOfCluster', 'withRatings'), 
+		to=c('Random', 'TF-TF-IDF', 'TF-IDF', 'Most Popular', 'Most Frequent', 'Best Rated')
 	)
 	
 	res$distance = mapvalues(

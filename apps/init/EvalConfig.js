@@ -1,17 +1,17 @@
 function EvalConfigProd() {
-	this.useCores = 16
+	this.useCores = 8
 	this.baselines = ['PopularityBased', 'AprioriBased']
 	//this.baselines = ['PopularityBased']
 	this.markovOrders = [1,2,3]
-	this.markovOrders = [1]
 	this.xValidationRuns = [0,1,2]
 	this.distanceMeasures = ['levenshtein', 'jaccard', 'jaccard-bigram', 'jaccard-levenshtein']
-	this.distanceMeasures = ['levenshtein', 'jaccard-levenshtein', 'jaccard-bigram']
+	this.distanceMeasures = ['jaccard', 'levenshtein', 'jaccard-levenshtein', 'jaccard-bigram']
+	this.distanceMeasures = ['jaccard']
 
 	this.itemChoiceStrategies = ['tfidf', 'bestItemsOfCluster', 'bestItemsOverall', 'tfTfidf', 'random', 'withRatings']
+	this.itemChoiceStrategies = ['tfidf', 'bestItemsOfCluster', 'bestItemsOverall', 'tfTfidf', 'random']
 
-	this.itemChoiceStrategies = ['tfidf', 'bestItemsOfCluster', 'tfTfidf']
-	this.itemChoiceStrategies = ['tfidf', 'bestItemsOfCluster', 'tfTfidf']
+	// this.itemChoiceStrategies = ['tfidf', 'bestItemsOfCluster', 'tfTfidf']
 	//this.itemChoiceStrategies = ['tfidf', 'bestItemsOverall', 'tfTfidf', 'random', 'withRatings']
 
 	this.datasets = [
