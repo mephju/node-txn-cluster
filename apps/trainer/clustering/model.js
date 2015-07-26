@@ -40,6 +40,13 @@ Model.prototype.buildClustersFromDb = function(done) {
 
 	async.wfall([
 		function(next) {
+			this.db.run(
+				'create index if not exists' + this.table.clusterMembers + '_index' + 
+				'on ' + this.table.clusterMembers + '(cluster_id)'
+				next
+			);	
+		}
+		function(next) {
 			this.getCentroidRows(next) 
 		},
 		function(centroidRows, next) {
@@ -128,6 +135,13 @@ Model.prototype.insertClusters = function(clusters, done) {
 		},
 		function(next) {
 			this.db.run('END TRANSACTION', next)
+		},
+		function(next) {
+			this.db.run(
+				'create index if not exists' + this.table.clusterMembers + '_index' + 
+				'on ' + this.table.clusterMembers + '(cluster_id)'
+				next
+			);	
 		}
 	], this, done)
 }
