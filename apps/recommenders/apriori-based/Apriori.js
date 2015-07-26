@@ -56,6 +56,8 @@ Apriori.prototype.initApriori = function(txns) {
 		})
 	})	
 	this.prune(store[1])
+
+	log('initApriori done')
 	return store
 }
 
