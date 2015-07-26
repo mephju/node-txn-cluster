@@ -189,8 +189,9 @@ Apriori.prototype.prune = function(counts) {
 	var keys = Object.keys(counts)
 	for(var i=0,len=keys.length; i<len; i++) {
 		key = keys[i]
-		if((i++ % 2000) === 0) log.write('p' + this.dataset.config.MIN_SUPPORT)
+		
 		if(counts[key] < this.dataset.config.MIN_SUPPORT) {
+			log(key)
 			delete counts[key]
 		}
 	} 
