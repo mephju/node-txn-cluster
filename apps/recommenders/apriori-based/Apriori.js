@@ -194,7 +194,7 @@ Apriori.prototype.prune = function(counts) {
 			delete counts[key]
 		}
 	} 
-
+	var keys = Object.keys(counts)
 	for(var i=0,len=keys.length; i<len; i++) {
 		
 		log(counts[keys[i]])
