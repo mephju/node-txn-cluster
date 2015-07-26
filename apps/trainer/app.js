@@ -55,11 +55,21 @@ var startTraining = function() {
 	})
 
 	log.magenta('About to start trainingRuns', trainingRuns.length, 'using cores', app.config.USE_CORES)
-	
+		
 
-	clustering.buildClustersParallel(trainingRuns, function(err) {
-		log.red(err)
-	})
+	async.eachSeries(
+		trainingRuns,
+		function(dataset, next) {
+			cluster(dataset, next)
+		},
+		function(err) {
+			log(err)
+		}
+	);
+
+	// clustering.buildClustersParallel(trainingRuns, function(err) {
+	// 	log.red(err)
+	// })
 
 }
 

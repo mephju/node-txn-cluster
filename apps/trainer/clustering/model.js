@@ -397,6 +397,27 @@ Model.prototype.tableClusterItemTfidf = function(done) {
 			this.db.run('drop table if exists ' + this.table.clusterItemTfidf, next)
 		},
 		function(next) {
+			self.db.run(
+				'create index if not exists ' + self.table.clusterItemCounts + '_index_item_id ' + 
+				'on ' + self.table.clusterItemCounts + '(item_id)',
+				next
+			);	
+		},
+		function(next) {
+			self.db.run(
+				'create index if not exists ' + self.table.itemClusterCounts + '_index_item_id ' + 
+				'on ' + self.table.itemClusterCounts + '(item_id)',
+				next
+			);	
+		},
+		function(next) {
+			self.db.run(
+				'create index if not exists item_counts_index_item_id ' + 
+				'on item_counts(item_id)',
+				next
+			);	
+		},
+		function(next) {
 			this.db.loadExtension(
 				__dirname + '/../../../sqlite/extension-functions',
 				next
