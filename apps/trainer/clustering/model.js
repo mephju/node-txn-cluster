@@ -45,7 +45,7 @@ Model.prototype.buildClustersFromDb = function(done) {
 				'on ' + this.table.clusterMembers + '(cluster_id)',
 				next
 			);	
-		}
+		},
 		function(next) {
 			this.getCentroidRows(next) 
 		},
