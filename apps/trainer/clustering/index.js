@@ -84,15 +84,15 @@ exports.buildClusters = function(dataset, done) {
 	
 
 	async.waterfall([
-		// function(next) {
-		// 	console.log('clustering')
-		// 	new Clustering(dataset).cluster(next)
-		// },
-		// function(_clusters, next) {
-		// 	clusters = _clusters
-		// 	log.yellow(clusters)
-		// 	clusterModel.insertClusters(clusters, next)
-		// },
+		function(next) {
+			console.log('clustering')
+			new Clustering(dataset).cluster(next)
+		},
+		function(_clusters, next) {
+			clusters = _clusters
+			log.yellow(clusters)
+			clusterModel.insertClusters(clusters, next)
+		},
 		function(next) {
 			_buildClusterTables(clusterModel, next)
 		} 
