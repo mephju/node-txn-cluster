@@ -42,7 +42,7 @@ Model.prototype.buildClustersFromDb = function(done) {
 		function(next) {
 			this.db.run(
 				'create index if not exists' + this.table.clusterMembers + '_index' + 
-				'on ' + this.table.clusterMembers + '(cluster_id)'
+				'on ' + this.table.clusterMembers + '(cluster_id)',
 				next
 			);	
 		}
@@ -139,7 +139,7 @@ Model.prototype.insertClusters = function(clusters, done) {
 		function(next) {
 			this.db.run(
 				'create index if not exists' + this.table.clusterMembers + '_index' + 
-				'on ' + this.table.clusterMembers + '(cluster_id)'
+				'on ' + this.table.clusterMembers + '(cluster_id)',
 				next
 			);	
 		}
