@@ -44,6 +44,38 @@ Model.prototype.createIndices = function(done) {
 			);	
 		},
 		function(next) {
+			log.red('create cluster members index txn_id')
+			self.db.run(
+				'create index if not exists ' + self.table.clusterMembers + '_txn_id_index ' + 
+				'on ' + self.table.clusterMembers + '(txn_id)',
+				next
+			);	
+		},
+		function(next) {
+			log.red('create cluster item counts index')
+			self.db.run(
+				'create index if not exists ' + self.table.clusterItemCounts + '_index ' + 
+				'on ' + self.table.clusterItemCounts + '(cluster_id)',
+				next
+			);	
+		},
+		function(next) {
+			log.red('create cluster item tfidf index')
+			self.db.run(
+				'create index if not exists ' + self.table.clusterItemTfidf + '_index ' + 
+				'on ' + self.table.clusterItemTfidf + '(cluster_id)',
+				next
+			);	
+		},
+		function(next) {
+			log.red('create cluster index: centroid_txn_id')
+			self.db.run(
+				'create index if not exists ' + self.table.clusters + '_index ' + 
+				'on ' + self.table.clusters + '(centroid_txn_id)',
+				next
+			);	
+		},
+		function(next) {
 			done()
 		}
 	])
@@ -269,7 +301,7 @@ Model.prototype.tableClusterItemCounts = function(done) {
 Model.prototype.tableTxnItemRatings = function(done) {
 	log('ClusterModel.tableTxnItemRatings')
 
-	if(this.dataset.name.indexOf('last') != -1) {
+	if(this.dataset.name.indexOf('movielens') === -1) {
 		return done()
 	}
 	
@@ -300,7 +332,7 @@ Model.prototype.tableTxnItemRatings = function(done) {
 Model.prototype.tableClusterItemRatings = function(done) {
 	log('ClusterModel.tableClusterItemRatings')
 
-	if(this.dataset.name.indexOf('last') != -1) {
+	if(this.dataset.name.indexOf('movielens') === -1) {
 		return done()
 	}
 
