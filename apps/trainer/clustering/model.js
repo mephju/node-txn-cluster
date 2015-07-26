@@ -32,6 +32,23 @@ module.exports =  Model
 
 
 
+Model.prototype.createIndices = function(done) {
+	var self = this
+	async.waterfall([
+		function(next) {
+			log('create cluster members index')
+			self.db.run(
+				'create index if not exists ' + self.table.clusterMembers + '_index ' + 
+				'on ' + self.table.clusterMembers + '(cluster_id)',
+				next
+			);	
+		},
+		function(next) {
+			done()
+		}
+	])
+}
+
 
 Model.prototype.buildClustersFromDb = function(done) {
 	log('buildClustersFromDb')
@@ -39,13 +56,6 @@ Model.prototype.buildClustersFromDb = function(done) {
 	var model = this
 
 	async.wfall([
-		function(next) {
-			this.db.run(
-				'create index if not exists ' + this.table.clusterMembers + '_index ' + 
-				'on ' + this.table.clusterMembers + '(cluster_id)',
-				next
-			);	
-		},
 		function(next) {
 			this.getCentroidRows(next) 
 		},

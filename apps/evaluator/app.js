@@ -1,6 +1,8 @@
 require('../init')
 var EvalModel = app.models.EvalModel
 var cp = require('child_process')
+var ClusterModel = require('../trainer/clustering/model')
+
 
 
 
@@ -81,19 +83,38 @@ var start = function() {
 	
 	log('evaluationRuns', evaluationRuns.length)
 
-	async.eachLimit(
-		evaluationRuns, 
-		app.config.USE_CORES, 
-		function(dataset, next) {
-			evaluate(dataset, next)			
-		}, 
-		function(err) {
-			var end = new Date().getTime()
-			var duration = end - start
-			log.yellow('finished evaluating ', duration)
-			if(err) log.red(err)
+	async.waterfall([
+		function(next) {
+			async.eachSeries(
+				evaluationRuns,
+				function(dataset, next) {
+					new ClusterModel(dataset).createIndices(next)
+				},
+				function(err) {
+					next(err)
+				}
+			);
+		},
+		function(next) {
+			async.eachLimit(
+				evaluationRuns, 
+				app.config.USE_CORES, 
+				function(dataset, next) {
+					evaluate(dataset, next)			
+				}, 
+				function(err) {
+					var end = new Date().getTime()
+					var duration = end - start
+					log.yellow('finished evaluating ', duration)
+					if(err) log.red(err)
+				}
+			);
 		}
-	);
+	], function(err) {
+		if(err) throw err
+	})
+
+			
 
 }
 	
