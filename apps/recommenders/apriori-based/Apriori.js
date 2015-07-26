@@ -200,4 +200,6 @@ Apriori.prototype.prune = function(counts) {
 	for(var i=0,len=10; i<len; i++) {
 		log(counts[keys[i]])
 	} 
+
+	log('after pruning we have this many keys', keys.length)
 }
