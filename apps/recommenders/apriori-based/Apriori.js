@@ -28,7 +28,7 @@ Apriori.prototype.algorithm = function(txns) {
 
 
 Apriori.prototype.findFrequentItemsets = function(txns) {
-
+	log('findFrequentItemsets in txns', txns.length)
 	var k = 1
 	
 	var store = this.initApriori(txns)
@@ -181,6 +181,7 @@ Apriori.prototype.makeSubsets = function(itemset, size) {
 Apriori.prototype.prune = function(counts) {
 	console.log('prune')
 	for(var key in counts) {
+		log.write(p)
 		if(counts[key] < this.dataset.config.MIN_SUPPORT) {
 			delete counts[key]
 		}
