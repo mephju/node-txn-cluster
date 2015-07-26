@@ -189,7 +189,7 @@ Apriori.prototype.prune = function(counts) {
 	console.log('prune')
 	var key = 0
 	var keys = Object.keys(counts)
-
+	var max = 0
 	for(var i=0,len=keys.length; i<len; i++) {
 		key = keys[i]
 		
@@ -197,11 +197,9 @@ Apriori.prototype.prune = function(counts) {
 			if((i%1000)===0) log.write('p')
 			delete counts[key]
 		}
-	} 
-	var keys = Object.keys(counts)
-	for(var i=0,len=10; i<len; i++) {
-		log(counts[keys[i]])
-	} 
+		if(counts[key] > max)
+			max = counts[key]
+	}  
 
-	log('after pruning we have this many keys', keys.length)
+	log('after pruning we have this many keys', keys.length, 'max was', max)
 }
