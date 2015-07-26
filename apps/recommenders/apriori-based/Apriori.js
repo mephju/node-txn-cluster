@@ -21,7 +21,7 @@ Apriori.prototype.algorithm = function(txns) {
 		txns[i] = help.toItemset(txn['item_ids'])
 	})
 	txns = txns.filter(function(txn) {
-		return txn.length > 10 && txn.length < 30
+		return txn.length > 30 && txn.length < 30
 	})
 
 	var store = this.findFrequentItemsets(txns)
