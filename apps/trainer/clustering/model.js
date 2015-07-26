@@ -392,6 +392,8 @@ Model.prototype.tableItemClusterCounts = function(done) {
 Model.prototype.tableClusterItemTfidf = function(done) {
 	log('ClusterModel.tableClusterItemTfidf')
 
+	var self = this
+	
 	async.wfall([
 		function(next) {
 			this.db.run('drop table if exists ' + this.table.clusterItemTfidf, next)
