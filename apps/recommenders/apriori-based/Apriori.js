@@ -20,6 +20,9 @@ Apriori.prototype.algorithm = function(txns) {
 	txns.forEach(function(txn, i) {
 		txns[i] = help.toItemset(txn['item_ids'])
 	})
+	txns = txns.filter(function(txn) {
+		return txn.length > 3 && txn.length < 50
+	})
 
 	var store = this.findFrequentItemsets(txns)
 	var rules = this.miner.findRules(store)
@@ -45,6 +48,8 @@ Apriori.prototype.findFrequentItemsets = function(txns) {
 Apriori.prototype.initApriori = function(txns) {
 	console.log('initApriori')
 	var store = [{}, {}]
+	
+
 	txns.forEach(function(txn) {
 		txn.forEach(function(itemId) {
 			increment(store[1], itemId)
