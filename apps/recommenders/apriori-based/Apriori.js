@@ -186,10 +186,9 @@ Apriori.prototype.makeSubsets = function(itemset, size) {
 Apriori.prototype.prune = function(counts) {
 	console.log('prune')
 	var i = 0
-	var keys = Object.keys(counts)
-	for(var i=0,len=keys.length; i<len; i++) {
-		var key = keys[i]
-		if((i++ % 1000) === 0) log.write('p')
+	
+	for(var key in counts) {
+		if((i++ % 2000) === 0) log.write('p')
 		if(counts[key] < this.dataset.config.MIN_SUPPORT) {
 			delete counts[key]
 		}
