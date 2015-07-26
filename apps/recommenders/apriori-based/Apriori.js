@@ -21,7 +21,7 @@ Apriori.prototype.algorithm = function(txns) {
 		txns[i] = help.toItemset(txn['item_ids'])
 	})
 	txns = txns.filter(function(txn) {
-		return txn.length > 5 && txn.length < 30
+		return txn.length > 10 && txn.length < 30
 	})
 
 	var store = this.findFrequentItemsets(txns)
@@ -195,35 +195,3 @@ Apriori.prototype.prune = function(counts) {
 		}
 	} 
 }
-
-
-
-// exports.init = init
-// exports.recommend = recommend
-// exports.reset = reset	
-
-// exports.test = {
-
-// 	init:init,
-// 	prune:prune,
-// 	makeSubsets: makeSubsets,
-// 	algorithm: algorithm,
-// 	genCandidates: genCandidates,
-// 	areSetsIn: areSetsIn,
-// 	iteration: iteration,
-// 	initApriori: initApriori,
-// 	increment: increment,
-// 	findInsertPos: findInsertPos,
-// 	mergeSets: mergeSets
-// }
-
-//work()
-/*
-
-var example = [
-	{}, 						//0
-	{ '1':10, '2':20, '3':5 }, 	//1
-	{ '1,2':5, '2,3': 5 }		//2
-];
-
- */
