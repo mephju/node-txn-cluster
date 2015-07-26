@@ -31,6 +31,7 @@ exports.create = function(dataset, done) {
 		},
 		function(sessionBasedRecommender, next) {
 			recommenders.sessionBased = sessionBasedRecommender
+			return done(null, recommenders)
 			aprioriBased.create(dataset, next) 
 		},
 		function(aprioriBased, next) {
