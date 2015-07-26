@@ -52,7 +52,7 @@ ItemChoice.prototype.fetchMembers = function(clusters, done) {
 	async.eachChain(
 		clusters,
 		function(cluster, next) {
-			log('fetching members for cluster', cluster['cluster_id'])
+			log('fetching members for cluster', cluster['cluster_id'], _this.strategy)
 			clusterId = cluster['cluster_id']			
 			_this.sql.all(clusterId, next)
 		},

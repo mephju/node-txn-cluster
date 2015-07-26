@@ -25,9 +25,13 @@ var evaluate = function(data) {
 		},
 		function(txnRows, next) {
 			//We are only interested in txns having a length greater than N+1
+			txnRows.forEach(function(txnRow, i) {
+				txnRow['item_ids'] = _.unique(txnRow['item_ids'])
+			})
 			txnRows = txnRows.filter(function(txn) {
 				return txn['item_ids'].length > dataset.config.N
 			})
+
 			log.blue('got txnrows')
 			// log.blue('recommender is', recommender)
 			var evalRun = new Run(dataset, recommender, txnRows)
