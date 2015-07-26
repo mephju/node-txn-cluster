@@ -1,0 +1,1 @@
+BASE_PATH=/Users/kokirchn/macthesis/ DATASET=movielens node --max-old-space-size=8192 /Users/kokirchn/macthesis/node-txn-cluster/apps/recommenders/apriori-based/train.js
