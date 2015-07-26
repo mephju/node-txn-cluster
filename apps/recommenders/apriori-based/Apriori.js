@@ -21,7 +21,7 @@ Apriori.prototype.algorithm = function(txns) {
 		txns[i] = help.toItemset(txn['item_ids'])
 	})
 	txns = txns.filter(function(txn) {
-		return txn.length > 5 && txn.length < 40
+		return txn.length > 5 && txn.length < 30
 	})
 
 	var store = this.findFrequentItemsets(txns)
@@ -185,9 +185,10 @@ Apriori.prototype.makeSubsets = function(itemset, size) {
 
 Apriori.prototype.prune = function(counts) {
 	console.log('prune')
-	var i = 0
-	
-	for(var key in counts) {
+	var key = 0
+	var keys = Object.keys(counts)
+	for(var i=0,len=keys.length; i<len; i++) {
+		key = keys[i]
 		if((i++ % 2000) === 0) log.write('p')
 		if(counts[key] < this.dataset.config.MIN_SUPPORT) {
 			delete counts[key]
