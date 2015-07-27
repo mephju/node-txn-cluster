@@ -47,15 +47,15 @@ function EvalConfigDev() {
 	this.markovOrders = [1]
 	
 	this.xValidationRuns = [0, 1, 2]
-	// this.xValidationRuns = [0]
+	this.xValidationRuns = [0]
 	
 	this.distanceMeasures = ['levenshtein', 'jaccard', 'jaccard-bigram', 'jaccard-levenshtein']
 	// this.distanceMeasures = ['jaccard-levenshtein']
-	// this.distanceMeasures = ['levenshtein']
+	this.distanceMeasures = ['levenshtein']
 	
 	this.itemChoiceStrategies = ['tfidf', 'bestItemsOfCluster', 'bestItemsOverall', 'tfTfidf', 'random', 'withRatings']
 	this.itemChoiceStrategies = ['tfidf', 'bestItemsOfCluster', 'bestItemsOverall', 'tfTfidf', 'random']
-	// this.itemChoiceStrategies = ['tfidf']
+	this.itemChoiceStrategies = ['tfidf']
 
 	this.datasets = [{ 
 		dataset: app.datasets.movielensCustom, 

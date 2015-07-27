@@ -25,17 +25,20 @@ var evaluate = function(data) {
 		},
 		function(txnRows, next) {
 			//We are only interested in txns having a length greater than N+1
+			log.blue('got txnrows1', txnRows.length)
 			txnRows.forEach(function(txnRow, i) {
-				txnRow = _.unique(txnRow['item_ids'])
+				txnRows[i] = _.unique(txnRow['item_ids'])
 			})
+			log.blue('got txnrows2', txnRows.length)
 			txnRows = txnRows.filter(function(txn) {
 				return txn.length > dataset.config.N
 			})
+			log.blue('got txnrows3', txnRows.length)
 			txnRows = txnRows.filter(function(txn) {
 				return Math.round(Math.random()*10) > 6
 			})
 
-			log.blue('got txnrows')
+			log.blue('got txnrows4', txnRows.length)
 			// log.blue('recommender is', recommender)
 			var evalRun = new Run(dataset, recommender, txnRows)
 			var precision = evalRun.start()

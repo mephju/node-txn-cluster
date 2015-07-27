@@ -66,7 +66,7 @@ Run.prototype._evalTxn = function(txn) {
 			// 	sessionEnd, 
 			// 	recommendations
 			// );
-			precisionSum += measure.precisionFast(
+			precisionSum += measure.precision(
 				txn,
 				i,
 				i+this.N, 
