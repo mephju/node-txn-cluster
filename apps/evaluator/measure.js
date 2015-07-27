@@ -42,7 +42,7 @@ var precision = function(txn, relevantStart, relevantEnd, retrieved) {
 	
 	var hits = 0
 
-	for(int i=relevantStart; i<relevantEnd; i++) {
+	for(var i=relevantStart; i<relevantEnd; i++) {
 		if(retrieved.indexOf(txn[i]) !== -1) {
 			hits++
 		}
