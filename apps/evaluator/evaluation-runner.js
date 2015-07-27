@@ -32,7 +32,7 @@ var evaluate = function(data) {
 				return txn.length > dataset.config.N
 			})
 			txnRows = txnRows.filter(function(txn) {
-				return Math.round(Math.random()) > 0
+				return Math.round(Math.random()*10) > 6
 			})
 
 			log.blue('got txnrows')
