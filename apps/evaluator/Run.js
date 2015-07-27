@@ -9,6 +9,7 @@ function Run(dataset, recommender, txnRows) {
 	this.dataset = dataset
 	this.recommender = recommender
 	this.txnRows = txnRows
+	this.N = this.dataset.config.N
 }
 
 module.exports = Run
@@ -28,12 +29,10 @@ Run.prototype.start = function() {
 	var precisionSum = 0
 
 	for(var i=0; i<this.txnRows.length; i++) {
-		if(i%1 === 0) {
-			//log.write('.' + this.dataset.config.CROSS_VALIDATION_RUN + this.dataset.config.MARKOV_ORDER)
-			log.write('.')
+		if(i%100 === 0) {
+			log.write(i + ' of ' + this.txnRows.length + '.')
 		}
-		precisionSum += this._evalTxn(this.txnRows[i]['item_ids'])
-		//log.write(precisionSum/(i+1) + '')
+		precisionSum += this._evalTxn(this.txnRows[i])
 	}
 	log.blue('run finished')
 
@@ -48,22 +47,29 @@ Run.prototype.start = function() {
  * @return {[type]}     [description]
  */
 Run.prototype._evalTxn = function(txn) {
-	var config = this.dataset.config
-	var precisionSum = 0
-	var runCount = txn.length - config.N
 	
-	var sessionBegin 	= [] //txn.slice(0, i)
+	var precisionSum = 0
+	var runCount = txn.length - this.N
+	
+	var sessionBegin 	= [] 
 	
 	for(var i=1; i<=runCount; i++) {
 
 	    sessionBegin.push(txn[i-1])	
-		var sessionEnd 	 	= txn.slice(i, i+config.N)
+		
 
-		var recommendations = this.recommender.recommend(sessionBegin, config.N)
-		//log(sessionBegin.slice(-5), recommendations)
+		var recommendations = this.recommender.recommend(sessionBegin, this.N)
+		
 		if(recommendations.length > 0) { 
-			precisionSum += measure.precision(
-				sessionEnd, 
+			// var sessionEnd = txn.slice(i, i+this.N)
+			// precisionSum += measure.precision(
+			// 	sessionEnd, 
+			// 	recommendations
+			// );
+			precisionSum += measure.precisionFast(
+				txn,
+				i,
+				i+this.N, 
 				recommendations
 			);
 		}
