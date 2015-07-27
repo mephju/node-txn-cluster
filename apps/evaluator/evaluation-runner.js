@@ -31,6 +31,9 @@ var evaluate = function(data) {
 			txnRows = txnRows.filter(function(txn) {
 				return txn.length > dataset.config.N
 			})
+			txnRows = txnRows.filter(function(txn) {
+				return Math.round(Math.random()) > 0
+			})
 
 			log.blue('got txnrows')
 			// log.blue('recommender is', recommender)
