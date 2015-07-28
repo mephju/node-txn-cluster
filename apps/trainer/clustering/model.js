@@ -78,7 +78,7 @@ Model.prototype.createIndices = function(done) {
 		function(next) {
 			done()
 		}
-	])
+	],done)
 }
 
 

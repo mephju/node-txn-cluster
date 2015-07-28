@@ -11,6 +11,7 @@ function SessionBasedRecommender(params) {
 	this.itemChoice = params.itemChoice
 	this.fallbackItems = params.fallbackItems
 	this.numRec = new NumRec(params.dataset)
+	this.N = this.params.dataset.config.N
 
 
 	/**
@@ -29,31 +30,30 @@ SessionBasedRecommender.prototype = Object.create(Recommender.prototype, {
 
 
 SessionBasedRecommender.prototype.recommend = function(session) {
-	var config = this.dataset.config
-	var centroidId = this.clusters.findBestMatchSeq(session, true)	
+	
+	var centroidId = this.clusters.findBestMatchSeq(session)	
 
-	this.lastClusters = this._updateLastClusters(centroidId, this.lastClusters)
+	this._updateLastClusters(centroidId, this.lastClusters)
 
-	var topClusters = this.markovInfo.getTopClusters(config.N, this.lastClusters)
+	var topClusters = this.markovInfo.getTopClusters(this.N, this.lastClusters)
 	if(topClusters.length === 0) {
-		//log.write('f')
 		return this.fallbackItems
 	}
 
-	//log.write('r')
 	
-	var topClusters = this.numRec.computeNumRecomms(topClusters)
+	
+	this.numRec.computeNumRecomms(topClusters)
 
 	topClusters.sort(help.objCmp)
 	
 	var recommendations = this._getRecommendations(topClusters)
 	var len = recommendations.length
 	
-	if(len > config.N) {
-		recommendations.length = config.N
+	if(len >= this.N) {
+		recommendations.length = this.N
 	} 
-	else if(len < config.N) {
-		var diff = config.N - len
+	else {
+		var diff = this.N - len
 		for(var i=0; i<diff; i++) {
 			recommendations.push(this.fallbackItems[i])
 		}
@@ -79,8 +79,6 @@ SessionBasedRecommender.prototype._updateLastClusters = function(centroidId, las
 	if(lastClusters.length > config.MARKOV_ORDER) {
 		lastClusters.shift()
 	}
-
-	return lastClusters
 }
 
 

@@ -8,7 +8,7 @@ NumRec.prototype.computeNumRecomms = function(topClusters) {
 
 	if(topClusters.length === 1) {
 		topClusters[0].numRecomms = this.config.N
-		return topClusters
+		return
 	}
 
 	var totalSum = topClusters.reduce(function(left, right) {
@@ -20,8 +20,6 @@ NumRec.prototype.computeNumRecomms = function(topClusters) {
 	topClusters.forEach(function(item) {
 		item.numRecomms 	= Math.round(item.sum / totalSum * this.config.N)
 	}.bind(this))
-	
-	return topClusters
 }
 
 
