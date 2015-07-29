@@ -69,7 +69,7 @@ var configureRuns = function() {
 	log('evaluationRuns before', evaluationRuns.length)
 	evaluationRuns = filter(evaluationRuns)
 	log('evaluationRuns after', evaluationRuns.length)
-	
+
 	return evaluationRuns
 }
 
@@ -105,7 +105,11 @@ var start = function() {
 				evaluationRuns, 
 				app.config.USE_CORES, 
 				function(dataset, next) {
-					evaluate(dataset, next)			
+					evaluate(dataset, function(err) {
+						setTimeout(function() {
+							next(err)
+						}, 300000)
+					})			
 				}, 
 				function(err) {
 					var end = new Date().getTime()
