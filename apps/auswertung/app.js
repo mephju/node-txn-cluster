@@ -20,6 +20,8 @@ else {
 	dataset = app.datsets.movielensCustom
 }
 
+
+dataset = app.datasets.lastFm1k
 	
 
 var baselineResults = function() {
@@ -45,12 +47,14 @@ var baselineResults = function() {
 }
 
 
-baselineResults()
+// baselineResults()
 
 
 
 
 var methodResults = function() {
+
+	console.log(dataset)
 
 	var filename = dataset.basePath + '/results-from-server/evaluation-' + dataset.name + '.db'
 

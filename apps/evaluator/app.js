@@ -1,4 +1,5 @@
 require('../init')
+var filter = require('./filter')
 var EvalModel = app.models.EvalModel
 var cp = require('child_process')
 var ClusterModel = require('../trainer/clustering/model')
@@ -64,22 +65,11 @@ var configureRuns = function() {
 			evaluationRuns.push(dataset)
 		}
 	);
-
-	/*
-		REMOVE FILTER LATER
-	 */
-	// evaluationRuns = evaluationRuns.filter(function(d) {
-
-	// 	if(d.config.CROSS_VALIDATION_RUN === 0 && d.config.MARKOV_ORDER === 1 && d.config.ITEM_CHOICE_STRATEGY === 'bestItemsOfCluster') return false 
-	// 	if(d.config.CROSS_VALIDATION_RUN === 1 && d.config.MARKOV_ORDER === 1 && d.config.ITEM_CHOICE_STRATEGY === 'bestItemsOfCluster') return false
-	// 	if(d.config.CROSS_VALIDATION_RUN === 2 && d.config.MARKOV_ORDER === 1 && d.config.ITEM_CHOICE_STRATEGY === 'bestItemsOfCluster') return false
-	// 	if(d.config.CROSS_VALIDATION_RUN === 0 && d.config.MARKOV_ORDER === 1 && d.config.ITEM_CHOICE_STRATEGY === 'tfidf') return false
-	// 	if(d.config.CROSS_VALIDATION_RUN === 1 && d.config.MARKOV_ORDER === 1 && d.config.ITEM_CHOICE_STRATEGY === 'tfidf') return false
-	// 	if(d.config.CROSS_VALIDATION_RUN === 2 && d.config.MARKOV_ORDER === 1 && d.config.ITEM_CHOICE_STRATEGY === 'tfidf') return false
-
-	// 	return true
-	// })
-
+	
+	log('evaluationRuns before', evaluationRuns.length)
+	evaluationRuns = filter(evaluationRuns)
+	log('evaluationRuns after', evaluationRuns.length)
+	
 	return evaluationRuns
 }
 
