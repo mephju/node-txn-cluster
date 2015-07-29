@@ -134,7 +134,7 @@ ItemChoice.prototype.makeSql = function() {
 
 	this.sqlBestItemsOverall = 
 		'select distinct 					\
-					ic.item_id, ic.count 	\
+					ic.item_id  			\
 		from 	' + table.clusterMembers + ' as cm, 	\
 					txn_items as ti,  		\
 					item_counts as ic 		\
