@@ -1,0 +1,60 @@
+Jaccard Bigram  &  Most Popular  &  1st  &  0.0043  &  0.0044  &  0.0043  &  \\ \hline
+Jaccard Bigram  &  Most Popular  &  2nd  &  0.0043  &  0.0044  &  0.0043  &  \\ \hline
+Jaccard Bigram  &  Most Popular  &  3rd  &  0.004  &  0.0044  &  0.004  &  \\ \hline
+Jaccard Bigram  &  Random  &  1st  &  0.0037  &  0.0037  &  0.0036  &  \\ \hline
+Jaccard Bigram  &  Random  &  2nd  &  0.0038  &  0.0037  &  0.0035  &  \\ \hline
+Jaccard Bigram  &  Random  &  3rd  &  0.0035  &  0.0037  &  0.0033  &  \\ \hline
+Jaccard Bigram  &  TF  &  1st  &  0.0056  &  0.0057  &  0.0052  &  \\ \hline
+Jaccard Bigram  &  TF  &  2nd  &  0.0056  &  0.0057  &  0.0053  &  \\ \hline
+Jaccard Bigram  &  TF  &  3rd  &  0.0054  &  0.0057  &  0.0051  &  \\ \hline
+Jaccard Bigram  &  TF-IDF  &  1st  &  0.0055  &  0.0056  &  0.0051  &  \\ \hline
+Jaccard Bigram  &  TF-IDF  &  2nd  &  0.0055  &  0.0056  &  0.0051  &  \\ \hline
+Jaccard Bigram  &  TF-IDF  &  3rd  &  0.0053  &  0.0056  &  0.005  &  \\ \hline
+Jaccard Bigram  &  TF-TF-IDF  &  1st  &  0.0055  &  0.0056  &  0.0051  &  \\ \hline
+Jaccard Bigram  &  TF-TF-IDF  &  2nd  &  0.0056  &  0.0056  &  0.0051  &  \\ \hline
+Jaccard Bigram  &  TF-TF-IDF  &  3rd  &  0.0053  &  0.0056  &  0.005  &  \\ \hline
+ Jaccard Levenshtein  &  Most Popular  &  1st  &  0.0041  &  0.0042  &  0.0047  &  \\ \hline
+ Jaccard Levenshtein  &  Most Popular  &  2nd  &  0.0041  &  0.0043  &  0.0047  &  \\ \hline
+ Jaccard Levenshtein  &  Most Popular  &  3rd  &  0.0041  &  0.0043  &  0.0044  &  \\ \hline
+ Jaccard Levenshtein  &  Random  &  1st  &  0.0041  &  0.0024  &  0.0027  &  \\ \hline
+ Jaccard Levenshtein  &  Random  &  2nd  &  0.0041  &  0.0024  &  0.0028  &  \\ \hline
+ Jaccard Levenshtein  &  Random  &  3rd  &  0.0041  &  0.0025  &  0.0024  &  \\ \hline
+ Jaccard Levenshtein  &  TF  &  1st  &  0.0041  &  0.0091  &  0.0095  &  \\ \hline
+ Jaccard Levenshtein  &  TF  &  2nd  &  0.0041  &  0.009  &  0.0095  &  \\ \hline
+ Jaccard Levenshtein  &  TF  &  3rd  &  0.0041  &  0.009  &  0.0092  &  \\ \hline
+ Jaccard Levenshtein  &  TF-IDF  &  1st  &  0.0041  &  0.0087  &  0.0092  &  \\ \hline
+ Jaccard Levenshtein  &  TF-IDF  &  2nd  &  0.0041  &  0.0087  &  0.0093  &  \\ \hline
+ Jaccard Levenshtein  &  TF-IDF  &  3rd  &  0.0041  &  0.0087  &  0.0089  &  \\ \hline
+ Jaccard Levenshtein  &  TF-TF-IDF  &  1st  &  0.0041  &  0.0089  &  0.0094  &  \\ \hline
+ Jaccard Levenshtein  &  TF-TF-IDF  &  2nd  &  0.0041  &  0.0089  &  0.0094  &  \\ \hline
+ Jaccard Levenshtein  &  TF-TF-IDF  &  3rd  &  0.0041  &  0.0089  &  0.009  &  \\ \hline
+Jaccard  &  Most Popular  &  1st  &  0.0034  &  0.0042  &  0.0033  &  \\ \hline
+Jaccard  &  Most Popular  &  2nd  &  0.0035  &  0.0036  &  0.0033  &  \\ \hline
+Jaccard  &  Most Popular  &  3rd  &  0.0035  &  0.0036  &  0.0033  &  \\ \hline
+Jaccard  &  Random  &  1st  &  0.0031  &  0.0035  &  0.0027  &  \\ \hline
+Jaccard  &  Random  &  2nd  &  0.0031  &  0.0029  &  0.0028  &  \\ \hline
+Jaccard  &  Random  &  3rd  &  0.0031  &  0.0029  &  0.0027  &  \\ \hline
+Jaccard  &  TF  &  1st  &  0.0037  &  0.0044  &  0.0036  &  \\ \hline
+Jaccard  &  TF  &  2nd  &  0.0037  &  0.0038  &  0.0037  &  \\ \hline
+Jaccard  &  TF  &  3rd  &  0.0038  &  0.0039  &  0.0037  &  \\ \hline
+Jaccard  &  TF-IDF  &  1st  &  0.0037  &  0.0043  &  0.0035  &  \\ \hline
+Jaccard  &  TF-IDF  &  2nd  &  0.0037  &  0.0038  &  0.0036  &  \\ \hline
+Jaccard  &  TF-IDF  &  3rd  &  0.0038  &  0.0039  &  0.0036  &  \\ \hline
+Jaccard  &  TF-TF-IDF  &  1st  &  0.0037  &  0.0044  &  0.0035  &  \\ \hline
+Jaccard  &  TF-TF-IDF  &  2nd  &  0.0037  &  0.0038  &  0.0036  &  \\ \hline
+Jaccard  &  TF-TF-IDF  &  3rd  &  0.0038  &  0.0039  &  0.0036  &  \\ \hline
+Levenshtein  &  Most Popular  &  1st  &  0.0044  &  0.005  &  0.0047  &  \\ \hline
+Levenshtein  &  Most Popular  &  2nd  &  0.0045  &  0.0047  &  0.0046  &  \\ \hline
+Levenshtein  &  Most Popular  &  3rd  &  0.0046  &  0.0045  &  0.0043  &  \\ \hline
+Levenshtein  &  Random  &  1st  &  0.0023  &  0.0031  &  0.0027  &  \\ \hline
+Levenshtein  &  Random  &  2nd  &  0.0024  &  0.0028  &  0.0025  &  \\ \hline
+Levenshtein  &  Random  &  3rd  &  0.0025  &  0.0026  &  0.0022  &  \\ \hline
+Levenshtein  &  TF  &  1st  &  0.0082  &  0.0084  &  0.0084  &  \\ \hline
+Levenshtein  &  TF  &  2nd  &  0.0083  &  0.0082  &  0.0083  &  \\ \hline
+Levenshtein  &  TF  &  3rd  &  0.0084  &  0.008  &  0.0081  &  \\ \hline
+Levenshtein  &  TF-IDF  &  1st  &  0.0078  &  0.0081  &  0.008  &  \\ \hline
+Levenshtein  &  TF-IDF  &  2nd  &  0.0079  &  0.0079  &  0.0079  &  \\ \hline
+Levenshtein  &  TF-IDF  &  3rd  &  0.0081  &  0.0077  &  0.0077  &  \\ \hline
+Levenshtein  &  TF-TF-IDF  &  1st  &  0.0081  &  0.0083  &  0.0082  &  \\ \hline
+Levenshtein  &  TF-TF-IDF  &  2nd  &  0.0081  &  0.0081  &  0.0081  &  \\ \hline
+Levenshtein  &  TF-TF-IDF  &  3rd  &  0.0083  &  0.0078  &  0.0079  &  \\ \hline

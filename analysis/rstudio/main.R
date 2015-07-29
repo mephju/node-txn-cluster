@@ -4,6 +4,7 @@ source('./CreateTopList.R')
 source('./CreateMeans.R')
 source('./CreateTable.R')
 source('./CreateData.R')
+source('./CreateRawDataTable.R')
 
 
 # Create 3 charts
@@ -18,11 +19,11 @@ source('./CreateData.R')
 # 	 is because it does not have too much impact on the results.
 
 CreateDatasetResult <- function() {
-	kDatasetName 	<- 'movielens' #'lastfm' #'movielens'
+	kDatasetName 	<- 'gowalla_k05' #'lastfm' #'movielens'
 	kPathPrefix 	<- '/home/mephju/maproject/thesis/template/Figures/'
 
-	 topResults 		<- CreateTopList(kDatasetName)
-	 chart 			<- CreateBarChart(topResults, kPathPrefix, kDatasetName)
+	 # topResults 		<- CreateTopList(kDatasetName)
+	 # chart 			<- CreateBarChart(topResults, kPathPrefix, kDatasetName)
 
 	
 
@@ -34,11 +35,13 @@ CreateDatasetResult <- function() {
 	# CreateDistancePlot(kDatasetName, kPathPrefix)
 	
 
-	bar.data <- CreateDistanceVsStrategyFrame(kDatasetName)
-	print(bar.data)
-	SaveBarChart(bar.data, kPathPrefix, paste0(kDatasetName, '-results-distance-strategy.pdf'))
+	# bar.data <- CreateDistanceVsStrategyFrame(kDatasetName)
+	# print(bar.data)
+	# SaveBarChart(bar.data, kPathPrefix, paste0(kDatasetName, '-results-distance-strategy.pdf'))
 
 	# CreateTable(kDatasetName)
+	raw.table <- CreateRawDataTable(kDatasetName)
+	# print(raw.table)
 }
 
 CreateDatasetResult()

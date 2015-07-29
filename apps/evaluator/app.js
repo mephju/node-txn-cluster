@@ -65,6 +65,21 @@ var configureRuns = function() {
 		}
 	);
 
+	/*
+		REMOVE FILTER LATER
+	 */
+	evaluationRuns = evaluationRuns.filter(function(d) {
+
+		if(d.config.CROSS_VALIDATION_RUN === 0 && d.config.MARKOV_ORDER === 1 && d.config.ITEM_CHOICE_STRATEGY === 'bestItemsOfCluster') return false 
+		if(d.config.CROSS_VALIDATION_RUN === 1 && d.config.MARKOV_ORDER === 1 && d.config.ITEM_CHOICE_STRATEGY === 'bestItemsOfCluster') return false
+		if(d.config.CROSS_VALIDATION_RUN === 2 && d.config.MARKOV_ORDER === 1 && d.config.ITEM_CHOICE_STRATEGY === 'bestItemsOfCluster') return false
+		if(d.config.CROSS_VALIDATION_RUN === 0 && d.config.MARKOV_ORDER === 1 && d.config.ITEM_CHOICE_STRATEGY === 'tfidf') return false
+		if(d.config.CROSS_VALIDATION_RUN === 1 && d.config.MARKOV_ORDER === 1 && d.config.ITEM_CHOICE_STRATEGY === 'tfidf') return false
+		if(d.config.CROSS_VALIDATION_RUN === 2 && d.config.MARKOV_ORDER === 1 && d.config.ITEM_CHOICE_STRATEGY === 'tfidf') return false
+
+		return true
+	})
+
 	return evaluationRuns
 }
 
