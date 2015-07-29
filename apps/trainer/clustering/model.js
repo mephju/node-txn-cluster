@@ -92,6 +92,14 @@ Model.prototype.createIndices = function(done) {
 			);	
 		},
 		function(next) {
+			log.red('create item_counts.item_id index')
+			self.db.run(
+				'create index if not exists item_counts_item_id_index ' + 
+				'on item_counts(item_id)',
+				next
+			);	
+		},
+		function(next) {
 			done()
 		}
 	],done)
