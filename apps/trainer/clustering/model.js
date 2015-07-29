@@ -76,6 +76,22 @@ Model.prototype.createIndices = function(done) {
 			);	
 		},
 		function(next) {
+			log.red('create txn_items.item_id index')
+			self.db.run(
+				'create index if not exists txn_items_item_id_index ' + 
+				'on txn_items(item_id)',
+				next
+			);	
+		},
+		function(next) {
+			log.red('create item_counts.count index')
+			self.db.run(
+				'create index if not exists item_counts_count_index ' + 
+				'on item_counts(count)',
+				next
+			);	
+		},
+		function(next) {
 			done()
 		}
 	],done)
