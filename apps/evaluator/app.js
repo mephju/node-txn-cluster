@@ -101,18 +101,12 @@ var start = function() {
 			);
 		},
 		function(next) {
-			var interval = 300000
-			var postponedBy = 0
 
 			async.eachLimit(
 				evaluationRuns, 
 				app.config.USE_CORES, 
 				function(dataset, next) {
-					setTimeout(function() {
-						evaluate(dataset, next)
-					}, postponedBy)
-					postponedBy += interval
-						
+					evaluate(dataset, next)
 				}, 
 				function(err) {
 					var end = new Date().getTime()

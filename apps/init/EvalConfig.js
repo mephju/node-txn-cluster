@@ -10,6 +10,7 @@ function EvalConfigProd() {
 
 	this.itemChoiceStrategies = ['tfidf', 'bestItemsOfCluster', 'bestItemsOverall', 'tfTfidf', 'random', 'withRatings']
 	this.itemChoiceStrategies = ['tfidf', 'bestItemsOfCluster', 'bestItemsOverall', 'tfTfidf', 'random']
+	this.itemChoiceStrategies = ['tfidf', 'bestItemsOfCluster', 'tfTfidf', 'random']
 
 	// this.itemChoiceStrategies = ['tfidf', 'bestItemsOfCluster', 'tfTfidf']
 	//this.itemChoiceStrategies = ['tfidf', 'bestItemsOverall', 'tfTfidf', 'random', 'withRatings']
