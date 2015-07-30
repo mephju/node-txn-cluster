@@ -139,7 +139,7 @@ ItemChoice.prototype.makeSql = function() {
 		from 	' + table.clusterMembers + ' as cm, 	\
 					txn_item_counts as tic 		\
 		where 		cm.cluster_id=$1 		\
-		and 		tic.txn_id=cm.txn_id
+		and 		tic.txn_id=cm.txn_id 	\
 		order by 	tic.count desc 			\
 		limit ' 	+ this.config.N 	
 
