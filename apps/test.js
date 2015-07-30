@@ -1,23 +1,17 @@
+var table = {
+	clusterMembers: 'jaccard_bigram_x_validation_run_0_cluster_members',
 
-var counts = {}
-for(var i=0; i<1000000; i++) {
-	counts['' + i] = i
 }
 
-var now = new Date().getTime()
-for(var key in counts) {
-	counts[key]++
-} 
-var duration = new Date().getTime() - now
+var sql = 'select distinct 					\
+					tic.item_id  			\
+		from 	' + table.clusterMembers + ' as cm, 	\
+					txn_item_counts as tic 		\
+		where 		cm.cluster_id=$1 		\
+		and 		tic.txn_id=cm.txn_id    \
+		order by 	tic.count desc 			\
+		limit ' 	+ 5
 
 
-var now = new Date().getTime()
-var keys = Object.keys(counts)
-var key = 0
-for(var i=0, len=keys.length; i<len; i++) {
-	key = keys[i] 
-	counts[key]++
-} 
-var duration2 = new Date().getTime() - now
 
-console.log(duration, duration2)
+console.log(sql)

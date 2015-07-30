@@ -100,6 +100,32 @@ Model.prototype.createIndices = function(done) {
 			);	
 		},
 		function(next) {
+			log.red('create item_counts.item_id index')
+			self.db.run(
+				'create table txn_item_counts as select ti.txn_id, ti.item_id, ic.count from txn_items as ti, item_counts as ic where ti.item_id = ic.item_id',
+				next
+			);	
+		},
+		function(next) {
+			
+			self.db.run(
+				'create index if not exists txn_item_counts_index_txn_id on txn_item_counts(txn_id);',
+				next
+			);	
+		},
+		function(next) {
+			self.db.run(
+				'create index if not exists txn_item_counts_index_item_id on txn_item_counts(item_id);',
+				next
+			);	
+		},
+		function(next) {
+			self.db.run(
+				'create index if not exists txn_item_counts_index_count on txn_item_counts(count);',
+				next
+			);	
+		},
+		function(next) {
 			done()
 		}
 	],done)
