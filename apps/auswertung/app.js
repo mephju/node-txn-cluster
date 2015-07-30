@@ -98,6 +98,13 @@ var methodResults = function() {
 		 	doc.numTxnsValidation,
 		 	doc.precision
 	  	]
+	  	var array = [
+	  		'["' + doc.distance + '"',
+		 	doc.markov,
+		 	'"' + doc.strategy + '"',
+		 	doc.xvalidation,
+		 	'],',
+	  	]
 		console.log(array.join(', '))
 		
 	  })
