@@ -48,7 +48,7 @@ var configureRuns = function() {
 				crossValidationRun: run,
 				txnCount: datasetRaw.txnCount,
 				baseline: baseline,
-				distanceMeasure: 'jaccard',
+				distanceMeasure: 'levenshtein',
 				markovOrder: 1,
 				txnCount: datasetRaw.txnCount,
 			}
@@ -85,11 +85,15 @@ var start = function() {
 	
 	log('evaluationRuns', evaluationRuns.length)
 
+	var timeout = 0
 	async.eachLimit(
 		evaluationRuns, 
 		app.config.USE_CORES, 
 		function(dataset, next) {
-			evaluate(dataset, next)			
+			setTimeout(function() {
+				evaluate(dataset, next)				
+			}, timeout)
+			timeout += 300000
 		}, 
 		function(err) {
 			var end = new Date().getTime()

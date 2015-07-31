@@ -20,9 +20,13 @@ Apriori.prototype.algorithm = function(txns) {
 	txns.forEach(function(txn, i) {
 		txns[i] = help.toItemset(txn['item_ids'])
 	})
-	txns = txns.filter(function(txn) {
-		return txn.length > 20 && txn.length < 30
+	txns = txns.filter(function(txn,i) {
+		return txn.length > 15 && txn.length < 30
 	})
+	txns = txns.filter(function(txn) {
+		return Math.round(Math.random()*100) > 70
+	})
+	log('Apriori after', txns.length)
 
 	var store = this.findFrequentItemsets(txns)
 	var rules = this.miner.findRules(store)
@@ -77,7 +81,7 @@ Apriori.prototype.iteration = function(store, txns, k) {
 	var candidates = this.genCandidates(store, k)
 
 	for(var c=0,clen=candidates.length; c<clen; c++) {
-		if((c%100) === 0) log.write('.')
+		if((c%1000) === 0) log.write('.' + (clen-c) + '.')
 		var candidate = candidates[c]
 		var key = candidate.toString()
 		store[k][key] = 0
@@ -188,18 +192,22 @@ Apriori.prototype.makeSubsets = function(itemset, size) {
 Apriori.prototype.prune = function(counts) {
 	console.log('prune')
 	var key = 0
+	var val = 0
 	var keys = Object.keys(counts)
 	var max = 0
+
 	for(var i=0,len=keys.length; i<len; i++) {
 		key = keys[i]
+		val = counts[key]
 		
-		if(counts[key] < this.dataset.config.MIN_SUPPORT) {
+		if(val < this.dataset.config.MIN_SUPPORT) {
 			if((i%1000)===0) log.write('p')
 			delete counts[key]
 		}
-		if(counts[key] > max)
-			max = counts[key]
+		
 	}  
 
-	log('after pruning we have this many keys', keys.length, 'max was', max)
+	var keys = Object.keys(counts)
+
+	log('after pruning we have this many keys', keys.length)
 }

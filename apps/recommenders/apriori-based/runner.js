@@ -13,6 +13,7 @@ var train = function(dataset) {
 			new app.models.TxnModel(dataset).txnsForTraining(next)
 		},
 		function(txns, next) {
+
 			var Apriori = require('./Apriori')
 			var apriori = new Apriori(dataset)
 			var rules = apriori.algorithm(txns)

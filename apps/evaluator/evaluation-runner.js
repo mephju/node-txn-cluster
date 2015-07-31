@@ -1,7 +1,7 @@
 require('../init')
-var Run = require('./Run')
-var TxnModel = app.models.TxnModel
-var recommenders 		= require('../recommenders')
+var Run 			= require('./Run')
+var TxnModel 		= app.models.TxnModel
+var recommenders 	= require('../recommenders')
 
 process.on('message', function(data) {
 	log('CHILD got message', data)	
@@ -61,21 +61,7 @@ var getRecommender = function(dataset, done) {
 		function(next) {
 			recommenders.create(dataset, next)
 		},
-		function(recommenders, next) {
-			log.blue('gotRecommenders', Object.keys(recommenders))
-			if(dataset.config.RECOMMENDER === 'AprioriBased') {
-				recommender = recommenders.aprioriBased
-			} 
-			else if(dataset.config.RECOMMENDER === 'SessionBased') {
-				recommender = recommenders.sessionBased
-			}
-			else if(dataset.config.RECOMMENDER === 'PopularityBased') {
-				log.blue('returning popularityBased recommender')
-				recommender = recommenders.popularityBased
-			}
-			else {
-				throw new Error('unknown recommender type found', dataset.config.RECOMMENDER)
-			}
+		function(recommender, next) {
 			done(null, recommender)
 		}
 	], done)

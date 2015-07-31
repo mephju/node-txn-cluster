@@ -13,6 +13,12 @@ var create = function(dataset, done) {
 	
 	async.waterfall([
 		function(next) {
+			db.run(
+				'create index if not exists ' + txnModel.table.txnItemGroups + '_index_txn_id on ' + txnModel.table.txnItemGroups + '(txn_id)', 
+				next
+			);
+		},
+		function(next) {
 			txnModel.txnsForTraining(next)
 		},
 		function(txns, next) {
@@ -35,31 +41,19 @@ var create = function(dataset, done) {
 
 exports.create = create 
 
-//
-// get most popular items from the training set
-//
-var getPopularItemsSqlBad = function(txnItemGroupsTable, dataset) {
-	log('getPopularItemsSql')
-	return 'select 	item_id, count(item_id) 	\
-				as count 		\
-	from 		txn_items 		\
-	where 		txn_id in 		\
-		(select txn_id 			\
-		from ' + txnItemGroupsTable + ' \
-		limit ' + dataset.config.N + ') \
-	group by 	item_id			\
-	order by 	count desc  	\
-	limit ' + dataset.config.N
-}
+
 var getPopularItemsSql = function(txnItemGroupsTable, dataset) {
 	log('getPopularItemsSql')
-	return 'select 	item_id, count(item_id) 	\
-				as count 		\
-	from 		txn_items 		\
-	where 		txn_id in 		\
-		(select txn_id 			\
-		from ' + txnItemGroupsTable +  ') \
-	group by 	item_id			\
-	order by 	count desc  	\
+	return 'select distinct item_id from txn_item_counts as tic, ' + txnItemGroupsTable + ' as tig \
+	where tic.txn_id=tig.txn_id \
+	order by tic.count desc \
 	limit ' + dataset.config.N
+
+	// return 'select 	item_id, count \
+	// from 		txn_item_counts		\
+	// where 		txn_id in 		\
+	// 	(select txn_id 			\
+	// 	from ' + txnItemGroupsTable +  ') \
+	// order by 	count desc  	\
+	// limit ' + dataset.config.N
 }

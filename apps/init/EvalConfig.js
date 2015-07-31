@@ -6,7 +6,7 @@ function EvalConfigProd() {
 	this.xValidationRuns = [0,1,2]
 	this.distanceMeasures = ['levenshtein', 'jaccard', 'jaccard-bigram', 'jaccard-levenshtein']
 	this.distanceMeasures = ['levenshtein', 'jaccard-levenshtein', 'jaccard-bigram']
-	this.distanceMeasures = ['jaccard']
+	this.distanceMeasures = ['jaccard-bigram']
 
 	this.itemChoiceStrategies = ['tfidf', 'bestItemsOfCluster', 'bestItemsOverall', 'tfTfidf', 'random', 'withRatings']
 	this.itemChoiceStrategies = ['tfidf', 'bestItemsOfCluster', 'bestItemsOverall', 'tfTfidf', 'random']
@@ -39,7 +39,7 @@ function EvalConfigProd() {
 }
 
 function EvalConfigDev() {
-	this.useCores = 1
+	this.useCores = 3
 	this.baselines = ['PopularityBased', 'AprioriBased']
 	// this.baselines = ['AprioriBased']
 	// this.baselines = ['PopularityBased']
@@ -52,11 +52,11 @@ function EvalConfigDev() {
 	this.distanceMeasures = ['levenshtein', 'jaccard', 'jaccard-bigram', 'jaccard-levenshtein']
 	this.distanceMeasures = ['levenshtein', 'jaccard-bigram', 'jaccard-levenshtein']
 	// this.distanceMeasures = ['jaccard-levenshtein']
-	// this.distanceMeasures = ['levenshtein']
+	this.distanceMeasures = ['levenshtein']
 	
 	this.itemChoiceStrategies = ['tfidf', 'bestItemsOfCluster', 'bestItemsOverall', 'tfTfidf', 'random', 'withRatings']
 	this.itemChoiceStrategies = ['tfidf', 'bestItemsOfCluster', 'bestItemsOverall', 'tfTfidf', 'random']
-	// this.itemChoiceStrategies = ['tfidf']
+	this.itemChoiceStrategies = ['tfidf']
 
 	this.datasets = [{ 
 		dataset: app.datasets.movielensCustom, 

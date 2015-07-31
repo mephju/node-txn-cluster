@@ -3,7 +3,7 @@ var Nedb	= require('nedb')
 
 var dataset = null 
 
-log(process.env.DATASET)
+
 if(process.env.DATASET === 'movielens') {
 	dataset = app.datasets.movielens
 }
@@ -27,6 +27,7 @@ dataset = app.datasets.lastFm1k
 var baselineResults = function() {
 	var filename = dataset.basePath + '/results-from-server/evaluation-baseline-' + dataset.name + '.db'
 
+	log(dataset.name)
 	var db = new Nedb({ 
 		filename:  filename,
 		autoload: true
@@ -47,7 +48,7 @@ var baselineResults = function() {
 }
 
 
-// baselineResults()
+baselineResults()
 
 
 
@@ -138,4 +139,4 @@ var flatten = function(docs) {
 
 }
 
-methodResults()
+// methodResults()

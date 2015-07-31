@@ -350,7 +350,7 @@ Model.prototype.tableClusterItemCounts = function(done) {
 }
 
 
-Model.prototype.tableTxnItemRatings = function(done) {
+Model.prototype.tablepsRatings = function(done) {
 	log('ClusterModel.tableTxnItemRatings')
 
 	if(this.dataset.name.indexOf('movielens') === -1) {

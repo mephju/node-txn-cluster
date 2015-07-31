@@ -1,90 +1,9 @@
-app init done 1
-gowalla
-{ config: undefined,
-  basePath: '/stuff/datamining/',
-  name: 'last_fm_1k',
-  resultPath: '/stuff/datamining/results/',
-  filepath: '/stuff/datamining/datasets/lastfm-dataset-1K/feedback.tsv',
-  dbPath: '/stuff/datamining/results/last_fm_1k.sqlite',
-  datasetSize: 0,
-  trainingSize: 0,
-  separator: '\t',
-  timeDistance: 900,
-  indices: { userId: 0, itemId: 1, timestamp: 3 } }
-{ createdAt: Tue Jul 28 2015 18:34:51 GMT+0200 (CEST),
-  dataset: 
-   { basePath: '/Users/kokirchn/macthesis/',
-     name: 'last_fm_1k',
-     resultPath: '/Users/kokirchn/macthesis/results/',
-     filepath: '/Users/kokirchn/macthesis/datasets//Users/kokirchn/macthesis/datasets/lastfm-dataset-1K/feedback.tsv',
-     dbPath: '/Users/kokirchn/macthesis/results/last_fm_1k.sqlite',
-     datasetSize: 0,
-     trainingSize: 0,
-     separator: '\t',
-     timeDistance: 900,
-     indices: { userId: 0, itemId: 1, timestamp: 3 } },
-  config: 
-   { CROSS_VALIDATION_RUN: 0,
-     MIN_SUPPORT: 3000,
-     TRAINING_SET_SIZE: 0.6666667,
-     VALIDATION_SET_SIZE: 0.33333330000000005,
-     TXN_ID_BATCH_SIZE: 900,
-     MIN_CLUSTER_SIZE: 4,
-     CLUSTERS: 500,
-     MIN_CENTROID_LENGTH: 20,
-     EASY_SEQUENCE_SIZE: 225,
-     N: 5,
-     MAX_CONTRIBUTION: 0.6,
-     BASELINE_ON: true,
-     MARKOV_ORDER: 1,
-     ITEM_CHOICE_STRATEGY: 'bestItemsOfCluster',
-     DISTANCE_MEASURE: 'jaccard',
-     RECOMMENDER: 'SessionBased',
-     configOptions: 
-      { distanceMeasure: 'jaccard',
-        markovOrder: 1,
-        crossValidationRun: 0,
-        txnCount: 0,
-        itemChoiceStrategy: 'bestItemsOfCluster' } },
-  precision: 0.03362745329791191,
-  clusteredTxns: 478937,
-  numClusters: 3941,
-  numTxnsTraining: 784685,
-  numTxnsValidation: 227762,
-  numTxns: 994931,
-  _id: 'x2dtE4oPYRXgHypM' }
-{ dataset: 'last_fm_1k',
-  sessionCutoff: 900,
-  minClusterSize: 4,
-  distance: 'jaccard',
-  markov: 1,
-  strategy: 'bestItemsOfCluster',
-  xvalidation: 0,
-  numClusters: 3941,
-  clusteredTxns: 478937,
-  numTxnsTraining: 784685,
-  numTxnsValidation: 227762,
-  numTxns: 994931,
-  precision: 0.03362745329791191 }
-dataset, sessionCutoff, minClusterSize, distance, markov, strategy, xvalidation, numClusters, clusteredTxns, numTxns, numTxnsTraining, numTxnsValidation, precision
-["jaccard", 1, "bestItemsOfCluster", 0, ],
-["jaccard", 1, "bestItemsOfCluster", 1, ],
-["jaccard", 1, "bestItemsOfCluster", 2, ],
-["jaccard", 1, "random", 0, ],
-["jaccard", 1, "random", 1, ],
-["jaccard", 1, "random", 2, ],
-["jaccard", 1, "tfTfidf", 0, ],
-["jaccard", 1, "tfTfidf", 1, ],
-["jaccard", 1, "tfTfidf", 2, ],
-["jaccard", 1, "tfidf", 0, ],
-["jaccard", 1, "tfidf", 1, ],
-["jaccard", 1, "tfidf", 2, ],
-["jaccard", 2, "bestItemsOfCluster", 0, ],
-["jaccard", 2, "bestItemsOfCluster", 1, ],
-["jaccard", 2, "bestItemsOfCluster", 2, ],
-["jaccard", 2, "tfTfidf", 0, ],
-["jaccard", 2, "tfTfidf", 1, ],
-["jaccard", 2, "tfidf", 0, ],
-["jaccard", 2, "tfidf", 1, ],
-["jaccard", 2, "tfidf", 2, ],
-20
+app init done 3
+last_fm_1k
+baseline, xvalidation, precision
+AprioriBased, 1, 0.00008597118814828088
+AprioriBased, 2, 0.00003959582576790058
+AprioriBased, 0, 0.00011416294271929656
+PopularityBased, 0, 0.00046900488700102837
+PopularityBased, 1, 0.0005985183374891468
+PopularityBased, 2, 0.00048684223045153126
