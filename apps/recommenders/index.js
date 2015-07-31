@@ -30,8 +30,12 @@ exports.create = function(dataset, done) {
 				aprioriBased.create(dataset, next) 
 			} 
 			else if(dataset.config.RECOMMENDER === 'SessionBased') {
-				var fallbackItems = recommenders.popularityBased.popularItems
-				sessionBased.create(dataset, fallbackItems, next)
+				popularityBased.create(dataset, function(err, popularityBased) {
+					if(err) return next(err)
+					var fallbackItems = popularityBased.popularItems
+					sessionBased.create(dataset, fallbackItems, next)
+				})
+					
 			}
 			else if(dataset.config.RECOMMENDER === 'PopularityBased') {
 				popularityBased.create(dataset, next)
