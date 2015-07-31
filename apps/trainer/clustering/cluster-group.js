@@ -67,6 +67,9 @@ ClusterGroup.prototype.findBestMatchSeq = function(txn) {
 		if(d < distance) {
 			distance	= d
 			idx 		= i
+			if(d < 0.5) {
+				return idx
+			}
 		}	
 	};
 	return idx
