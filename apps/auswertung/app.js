@@ -57,7 +57,7 @@ var methodResults = function() {
 
 	console.log(dataset)
 
-	var filename = dataset.basePath + '/results-from-server/frommac/evaluation-' + dataset.name + '.db'
+	var filename = dataset.basePath + '/results-from-server/evaluation-' + dataset.name + '.db'
 
 	var db = new Nedb({ 
 		filename:  filename,
@@ -139,4 +139,4 @@ var flatten = function(docs) {
 
 }
 
-// methodResults()
+methodResults()
