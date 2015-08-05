@@ -18,13 +18,13 @@ AprioriBased, 0, 0.00011416294271929656
 PopularityBased, 0, 0.00046900488700102837
 PopularityBased, 1, 0.0005985183374891468
 PopularityBased, 2, 0.00048684223045153126
-{ createdAt: Fri Jul 31 2015 11:14:48 GMT+0200 (CEST),
+{ createdAt: Tue Jul 28 2015 18:34:51 GMT+0200 (CEST),
   dataset: 
-   { basePath: '/home/kokirchn/thesis/',
+   { basePath: '/Users/kokirchn/macthesis/',
      name: 'last_fm_1k',
-     resultPath: '/home/kokirchn/thesis/results/',
-     filepath: '/home/kokirchn/thesis/datasets//home/kokirchn/thesis/datasets/lastfm-dataset-1K/feedback.tsv',
-     dbPath: '/home/kokirchn/thesis/results/last_fm_1k.sqlite',
+     resultPath: '/Users/kokirchn/macthesis/results/',
+     filepath: '/Users/kokirchn/macthesis/datasets//Users/kokirchn/macthesis/datasets/lastfm-dataset-1K/feedback.tsv',
+     dbPath: '/Users/kokirchn/macthesis/results/last_fm_1k.sqlite',
      datasetSize: 0,
      trainingSize: 0,
      separator: '\t',
@@ -45,117 +45,213 @@ PopularityBased, 2, 0.00048684223045153126
      BASELINE_ON: true,
      MARKOV_ORDER: 1,
      ITEM_CHOICE_STRATEGY: 'bestItemsOfCluster',
-     DISTANCE_MEASURE: 'jaccard-levenshtein',
+     DISTANCE_MEASURE: 'jaccard',
      RECOMMENDER: 'SessionBased',
      configOptions: 
-      { distanceMeasure: 'jaccard-levenshtein',
+      { distanceMeasure: 'jaccard',
         markovOrder: 1,
         crossValidationRun: 0,
         txnCount: 0,
         itemChoiceStrategy: 'bestItemsOfCluster' } },
-  precision: 0.026626790079093746,
-  clusteredTxns: 472226,
-  numClusters: 3943,
+  precision: 0.03362745329791191,
+  clusteredTxns: 478937,
+  numClusters: 3941,
   numTxnsTraining: 784685,
   numTxnsValidation: 227762,
   numTxns: 994931,
-  _id: 'LSjMz0dDvmNN7lvd' }
+  _id: 'x2dtE4oPYRXgHypM' }
 { dataset: 'last_fm_1k',
   sessionCutoff: 900,
   minClusterSize: 4,
-  distance: 'jaccard-levenshtein',
+  distance: 'jaccard',
   markov: 1,
   strategy: 'bestItemsOfCluster',
   xvalidation: 0,
-  numClusters: 3943,
-  clusteredTxns: 472226,
+  numClusters: 3941,
+  clusteredTxns: 478937,
   numTxnsTraining: 784685,
   numTxnsValidation: 227762,
   numTxns: 994931,
-  precision: 0.026626790079093746 }
+  precision: 0.03362745329791191 }
 dataset, sessionCutoff, minClusterSize, distance, markov, strategy, xvalidation, numClusters, clusteredTxns, numTxns, numTxnsTraining, numTxnsValidation, precision
-["jaccard-levenshtein", 1, "bestItemsOfCluster", 0, ],
-["jaccard-levenshtein", 1, "bestItemsOfCluster", 1, ],
-["jaccard-levenshtein", 1, "bestItemsOfCluster", 2, ],
-["jaccard-levenshtein", 1, "bestItemsOverall", 0, ],
-["jaccard-levenshtein", 1, "bestItemsOverall", 1, ],
-["jaccard-levenshtein", 1, "bestItemsOverall", 2, ],
-["jaccard-levenshtein", 1, "random", 0, ],
-["jaccard-levenshtein", 1, "random", 1, ],
-["jaccard-levenshtein", 1, "random", 2, ],
-["jaccard-levenshtein", 1, "tfTfidf", 0, ],
-["jaccard-levenshtein", 1, "tfTfidf", 1, ],
-["jaccard-levenshtein", 1, "tfTfidf", 2, ],
-["jaccard-levenshtein", 1, "tfidf", 0, ],
-["jaccard-levenshtein", 1, "tfidf", 1, ],
-["jaccard-levenshtein", 1, "tfidf", 2, ],
-["jaccard-levenshtein", 2, "bestItemsOfCluster", 0, ],
-["jaccard-levenshtein", 2, "bestItemsOfCluster", 1, ],
-["jaccard-levenshtein", 2, "bestItemsOfCluster", 2, ],
-["jaccard-levenshtein", 2, "bestItemsOverall", 0, ],
-["jaccard-levenshtein", 2, "bestItemsOverall", 1, ],
-["jaccard-levenshtein", 2, "bestItemsOverall", 2, ],
-["jaccard-levenshtein", 2, "random", 0, ],
-["jaccard-levenshtein", 2, "random", 1, ],
-["jaccard-levenshtein", 2, "random", 2, ],
-["jaccard-levenshtein", 2, "tfTfidf", 0, ],
-["jaccard-levenshtein", 2, "tfTfidf", 1, ],
-["jaccard-levenshtein", 2, "tfTfidf", 2, ],
-["jaccard-levenshtein", 2, "tfidf", 0, ],
-["jaccard-levenshtein", 2, "tfidf", 1, ],
-["jaccard-levenshtein", 2, "tfidf", 2, ],
-["jaccard-levenshtein", 3, "bestItemsOfCluster", 0, ],
-["jaccard-levenshtein", 3, "bestItemsOfCluster", 1, ],
-["jaccard-levenshtein", 3, "bestItemsOfCluster", 2, ],
-["jaccard-levenshtein", 3, "bestItemsOverall", 0, ],
-["jaccard-levenshtein", 3, "bestItemsOverall", 1, ],
-["jaccard-levenshtein", 3, "bestItemsOverall", 2, ],
-["jaccard-levenshtein", 3, "random", 0, ],
-["jaccard-levenshtein", 3, "random", 1, ],
-["jaccard-levenshtein", 3, "random", 2, ],
-["jaccard-levenshtein", 3, "tfTfidf", 0, ],
-["jaccard-levenshtein", 3, "tfTfidf", 1, ],
-["jaccard-levenshtein", 3, "tfTfidf", 2, ],
-["jaccard-levenshtein", 3, "tfidf", 0, ],
-["jaccard-levenshtein", 3, "tfidf", 1, ],
-["jaccard-levenshtein", 3, "tfidf", 2, ],
-["levenshtein", 1, "bestItemsOfCluster", 0, ],
-["levenshtein", 1, "bestItemsOfCluster", 1, ],
-["levenshtein", 1, "bestItemsOfCluster", 2, ],
-["levenshtein", 1, "bestItemsOverall", 0, ],
-["levenshtein", 1, "bestItemsOverall", 1, ],
-["levenshtein", 1, "bestItemsOverall", 2, ],
-["levenshtein", 1, "random", 0, ],
-["levenshtein", 1, "random", 1, ],
-["levenshtein", 1, "random", 2, ],
-["levenshtein", 1, "tfTfidf", 0, ],
-["levenshtein", 1, "tfTfidf", 1, ],
-["levenshtein", 1, "tfTfidf", 2, ],
-["levenshtein", 1, "tfidf", 0, ],
-["levenshtein", 1, "tfidf", 1, ],
-["levenshtein", 1, "tfidf", 2, ],
-["levenshtein", 2, "bestItemsOfCluster", 0, ],
-["levenshtein", 2, "bestItemsOfCluster", 1, ],
-["levenshtein", 2, "bestItemsOfCluster", 2, ],
-["levenshtein", 2, "random", 0, ],
-["levenshtein", 2, "random", 1, ],
-["levenshtein", 2, "random", 2, ],
-["levenshtein", 2, "tfTfidf", 0, ],
-["levenshtein", 2, "tfTfidf", 1, ],
-["levenshtein", 2, "tfTfidf", 2, ],
-["levenshtein", 2, "tfidf", 0, ],
-["levenshtein", 2, "tfidf", 1, ],
-["levenshtein", 2, "tfidf", 2, ],
-["levenshtein", 3, "bestItemsOfCluster", 0, ],
-["levenshtein", 3, "bestItemsOfCluster", 1, ],
-["levenshtein", 3, "bestItemsOfCluster", 2, ],
-["levenshtein", 3, "random", 0, ],
-["levenshtein", 3, "random", 1, ],
-["levenshtein", 3, "random", 2, ],
-["levenshtein", 3, "tfTfidf", 0, ],
-["levenshtein", 3, "tfTfidf", 1, ],
-["levenshtein", 3, "tfTfidf", 2, ],
-["levenshtein", 3, "tfidf", 0, ],
-["levenshtein", 3, "tfidf", 1, ],
-["levenshtein", 3, "tfidf", 2, ],
-84
+last_fm_1k, 900, 4, jaccard, 1, bestItemsOfCluster, 0, 3941, 478937, 994931, 784685, 227762, 0.03362745329791191
+last_fm_1k, 900, 4, jaccard, 1, bestItemsOfCluster, 1, 3958, 481164, 994931, 784685, 227523, 0.03413711721856448
+last_fm_1k, 900, 4, jaccard, 1, bestItemsOfCluster, 2, 3925, 479377, 994931, 784685, 228145, 0.03324867184674982
+last_fm_1k, 900, 4, jaccard, 1, bestItemsOverall, 0, 3941, 478937, 994931, 784685, 227762, 0.000737544197573571
+last_fm_1k, 900, 4, jaccard, 1, bestItemsOverall, 1, 3958, 481164, 994931, 784685, 227523, 0.0007714166763394571
+last_fm_1k, 900, 4, jaccard, 1, bestItemsOverall, 2, 3925, 479377, 994931, 784685, 228145, 0.0009937493458592036
+last_fm_1k, 900, 4, jaccard, 1, random, 0, 3941, 478937, 994931, 784685, 227762, 0.0008176207158202836
+last_fm_1k, 900, 4, jaccard, 1, random, 1, 3958, 481164, 994931, 784685, 227523, 0.0007396454347828264
+last_fm_1k, 900, 4, jaccard, 1, random, 2, 3925, 479377, 994931, 784685, 228145, 0.0009297627869587864
+last_fm_1k, 900, 4, jaccard, 1, tfTfidf, 0, 3941, 478937, 994931, 784685, 227762, 0.0329659364968528
+last_fm_1k, 900, 4, jaccard, 1, tfTfidf, 1, 3958, 481164, 994931, 784685, 227523, 0.032622137040207576
+last_fm_1k, 900, 4, jaccard, 1, tfTfidf, 2, 3925, 479377, 994931, 784685, 228145, 0.032941171956250466
+last_fm_1k, 900, 4, jaccard, 1, tfidf, 0, 3941, 478937, 994931, 784685, 227762, 0.03552931670928515
+last_fm_1k, 900, 4, jaccard, 1, tfidf, 1, 3958, 481164, 994931, 784685, 227523, 0.03500878362185137
+last_fm_1k, 900, 4, jaccard, 1, tfidf, 2, 3925, 479377, 994931, 784685, 228145, 0.03533379965630077
+last_fm_1k, 900, 4, jaccard, 2, bestItemsOfCluster, 0, 3941, 478937, 994931, 784685, 227762, 0.033191393147554454
+last_fm_1k, 900, 4, jaccard, 2, bestItemsOfCluster, 1, 3958, 481164, 994931, 784685, 227523, 0.03314594226852605
+last_fm_1k, 900, 4, jaccard, 2, bestItemsOfCluster, 2, 3925, 479377, 994931, 784685, 228145, 0.03379269900688567
+last_fm_1k, 900, 4, jaccard, 2, bestItemsOverall, 0, 3941, 478937, 994931, 784685, 227762, 0.0007575116405764998
+last_fm_1k, 900, 4, jaccard, 2, bestItemsOverall, 1, 3958, 481164, 994931, 784685, 227523, 0.0007130611100044545
+last_fm_1k, 900, 4, jaccard, 2, bestItemsOverall, 2, 3925, 479377, 994931, 784685, 228145, 0.0011436202347298173
+last_fm_1k, 900, 4, jaccard, 2, random, 0, 3941, 478937, 994931, 784685, 227762, 0.0006907418069004804
+last_fm_1k, 900, 4, jaccard, 2, random, 1, 3958, 481164, 994931, 784685, 227523, 0.0007065096204056921
+last_fm_1k, 900, 4, jaccard, 2, random, 2, 3925, 479377, 994931, 784685, 228145, 0.0007398038841381554
+last_fm_1k, 900, 4, jaccard, 2, tfTfidf, 0, 3941, 478937, 994931, 784685, 227762, 0.03304284997025255
+last_fm_1k, 900, 4, jaccard, 2, tfTfidf, 1, 3958, 481164, 994931, 784685, 227523, 0.03290618205223259
+last_fm_1k, 900, 4, jaccard, 2, tfTfidf, 2, 3925, 479377, 994931, 784685, 228145, 0.03294574726008706
+last_fm_1k, 900, 4, jaccard, 2, tfidf, 0, 3941, 478937, 994931, 784685, 227762, 0.03524020939250177
+last_fm_1k, 900, 4, jaccard, 2, tfidf, 1, 3958, 481164, 994931, 784685, 227523, 0.0347486266042044
+last_fm_1k, 900, 4, jaccard, 2, tfidf, 2, 3925, 479377, 994931, 784685, 228145, 0.033872516708815886
+last_fm_1k, 900, 4, jaccard, 3, bestItemsOfCluster, 0, 3941, 478937, 994931, 784685, 227762, 0.03245854413965223
+last_fm_1k, 900, 4, jaccard, 3, bestItemsOfCluster, 1, 3958, 481164, 994931, 784685, 227523, 0.03270866941565332
+last_fm_1k, 900, 4, jaccard, 3, bestItemsOfCluster, 2, 3925, 479377, 994931, 784685, 228145, 0.032080961368996484
+last_fm_1k, 900, 4, jaccard, 3, bestItemsOverall, 0, 3941, 478937, 994931, 784685, 227762, 0.0007800353833770634
+last_fm_1k, 900, 4, jaccard, 3, bestItemsOverall, 1, 3958, 481164, 994931, 784685, 227523, 0.0009841807586631873
+last_fm_1k, 900, 4, jaccard, 3, bestItemsOverall, 2, 3925, 479377, 994931, 784685, 228145, 0.0009592086285373858
+last_fm_1k, 900, 4, jaccard, 3, random, 0, 3941, 478937, 994931, 784685, 227762, 0.0008592031546708303
+last_fm_1k, 900, 4, jaccard, 3, random, 1, 3958, 481164, 994931, 784685, 227523, 0.0008669877363635261
+last_fm_1k, 900, 4, jaccard, 3, random, 2, 3925, 479377, 994931, 784685, 228145, 0.0007727207937561519
+last_fm_1k, 900, 4, jaccard, 3, tfTfidf, 0, 3941, 478937, 994931, 784685, 227762, 0.03227389127056635
+last_fm_1k, 900, 4, jaccard, 3, tfTfidf, 1, 3958, 481164, 994931, 784685, 227523, 0.03283770552912777
+last_fm_1k, 900, 4, jaccard, 3, tfTfidf, 2, 3925, 479377, 994931, 784685, 228145, 0.03373043211634828
+last_fm_1k, 900, 4, jaccard, 3, tfidf, 0, 3941, 478937, 994931, 784685, 227762, 0.03412100052708279
+last_fm_1k, 900, 4, jaccard, 3, tfidf, 1, 3958, 481164, 994931, 784685, 227523, 0.034239194027889115
+last_fm_1k, 900, 4, jaccard, 3, tfidf, 2, 3925, 479377, 994931, 784685, 228145, 0.03473520734768798
+last_fm_1k, 900, 4, jaccard-bigram, 1, bestItemsOfCluster, 0, 3145, 137283, 994931, 784685, 227762, 0.012899616375046847
+last_fm_1k, 900, 4, jaccard-bigram, 1, bestItemsOfCluster, 1, 3134, 137593, 994931, 784685, 227523, 0.012671994786465903
+last_fm_1k, 900, 4, jaccard-bigram, 1, bestItemsOfCluster, 2, 3182, 140260, 994931, 784685, 228145, 0.012922936957698956
+last_fm_1k, 900, 4, jaccard-bigram, 1, bestItemsOverall, 0, 3145, 137283, 994931, 784685, 227762, 0.000902363046494617
+last_fm_1k, 900, 4, jaccard-bigram, 1, bestItemsOverall, 1, 3134, 137593, 994931, 784685, 227523, 0.0007630883872369184
+last_fm_1k, 900, 4, jaccard-bigram, 1, bestItemsOverall, 2, 3182, 140260, 994931, 784685, 228145, 0.0008468567963092648
+last_fm_1k, 900, 4, jaccard-bigram, 1, random, 0, 3145, 137283, 994931, 784685, 227762, 0.0009007666746208558
+last_fm_1k, 900, 4, jaccard-bigram, 1, random, 1, 3134, 137593, 994931, 784685, 227523, 0.0010406584217800897
+last_fm_1k, 900, 4, jaccard-bigram, 1, random, 2, 3182, 140260, 994931, 784685, 228145, 0.0009082004840084427
+last_fm_1k, 900, 4, jaccard-bigram, 1, tfTfidf, 0, 3145, 137283, 994931, 784685, 227762, 0.012732166180020233
+last_fm_1k, 900, 4, jaccard-bigram, 1, tfTfidf, 1, 3134, 137593, 994931, 784685, 227523, 0.01234695634108939
+last_fm_1k, 900, 4, jaccard-bigram, 1, tfTfidf, 2, 3182, 140260, 994931, 784685, 228145, 0.012973366142548773
+last_fm_1k, 900, 4, jaccard-bigram, 1, tfidf, 0, 3145, 137283, 994931, 784685, 227762, 0.014059043130349747
+last_fm_1k, 900, 4, jaccard-bigram, 1, tfidf, 1, 3134, 137593, 994931, 784685, 227523, 0.01397859781215483
+last_fm_1k, 900, 4, jaccard-bigram, 1, tfidf, 2, 3182, 140260, 994931, 784685, 228145, 0.01452390040147774
+last_fm_1k, 900, 4, jaccard-bigram, 2, bestItemsOfCluster, 0, 3145, 137283, 994931, 784685, 227762, 0.014751909798963283
+last_fm_1k, 900, 4, jaccard-bigram, 2, bestItemsOfCluster, 1, 3134, 137593, 994931, 784685, 227523, 0.014366960166817632
+last_fm_1k, 900, 4, jaccard-bigram, 2, bestItemsOfCluster, 2, 3182, 140260, 994931, 784685, 228145, 0.014734611989091033
+last_fm_1k, 900, 4, jaccard-bigram, 2, bestItemsOverall, 0, 3145, 137283, 994931, 784685, 227762, 0.000979906813575129
+last_fm_1k, 900, 4, jaccard-bigram, 2, bestItemsOverall, 1, 3134, 137593, 994931, 784685, 227523, 0.0008126265330020972
+last_fm_1k, 900, 4, jaccard-bigram, 2, bestItemsOverall, 2, 3182, 140260, 994931, 784685, 228145, 0.0008674330365560852
+last_fm_1k, 900, 4, jaccard-bigram, 2, random, 0, 3145, 137283, 994931, 784685, 227762, 0.0009911633698112992
+last_fm_1k, 900, 4, jaccard-bigram, 2, random, 1, 3134, 137593, 994931, 784685, 227523, 0.0006978853278148382
+last_fm_1k, 900, 4, jaccard-bigram, 2, random, 2, 3182, 140260, 994931, 784685, 228145, 0.0007560520389146315
+last_fm_1k, 900, 4, jaccard-bigram, 2, tfTfidf, 0, 3145, 137283, 994931, 784685, 227762, 0.014850859158082465
+last_fm_1k, 900, 4, jaccard-bigram, 2, tfTfidf, 1, 3134, 137593, 994931, 784685, 227523, 0.014167771491661619
+last_fm_1k, 900, 4, jaccard-bigram, 2, tfTfidf, 2, 3182, 140260, 994931, 784685, 228145, 0.014354947033077338
+last_fm_1k, 900, 4, jaccard-bigram, 2, tfidf, 0, 3145, 137283, 994931, 784685, 227762, 0.015365000805083184
+last_fm_1k, 900, 4, jaccard-bigram, 2, tfidf, 1, 3134, 137593, 994931, 784685, 227523, 0.01569968106190236
+last_fm_1k, 900, 4, jaccard-bigram, 2, tfidf, 2, 3182, 140260, 994931, 784685, 228145, 0.01657117398969696
+last_fm_1k, 900, 4, jaccard-bigram, 3, bestItemsOfCluster, 0, 3145, 137283, 994931, 784685, 227762, 0.015761606584554687
+last_fm_1k, 900, 4, jaccard-bigram, 3, bestItemsOfCluster, 1, 3134, 137593, 994931, 784685, 227523, 0.015243891267934377
+last_fm_1k, 900, 4, jaccard-bigram, 3, bestItemsOfCluster, 2, 3182, 140260, 994931, 784685, 228145, 0.016053899972566132
+last_fm_1k, 900, 4, jaccard-bigram, 3, bestItemsOverall, 0, 3145, 137283, 994931, 784685, 227762, 0.0011980104432939072
+last_fm_1k, 900, 4, jaccard-bigram, 3, bestItemsOverall, 1, 3134, 137593, 994931, 784685, 227523, 0.0008105272019570457
+last_fm_1k, 900, 4, jaccard-bigram, 3, bestItemsOverall, 2, 3182, 140260, 994931, 784685, 228145, 0.0008166514733024017
+last_fm_1k, 900, 4, jaccard-bigram, 3, random, 0, 3145, 137283, 994931, 784685, 227762, 0.001008091263784695
+last_fm_1k, 900, 4, jaccard-bigram, 3, random, 1, 3134, 137593, 994931, 784685, 227523, 0.0008041185944712121
+last_fm_1k, 900, 4, jaccard-bigram, 3, random, 2, 3182, 140260, 994931, 784685, 228145, 0.0008863058744245732
+last_fm_1k, 900, 4, jaccard-bigram, 3, tfTfidf, 0, 3145, 137283, 994931, 784685, 227762, 0.015707447077419327
+last_fm_1k, 900, 4, jaccard-bigram, 3, tfTfidf, 1, 3134, 137593, 994931, 784685, 227523, 0.015422958925022694
+last_fm_1k, 900, 4, jaccard-bigram, 3, tfTfidf, 2, 3182, 140260, 994931, 784685, 228145, 0.015145610426472732
+last_fm_1k, 900, 4, jaccard-bigram, 3, tfidf, 0, 3145, 137283, 994931, 784685, 227762, 0.016620823013902757
+last_fm_1k, 900, 4, jaccard-bigram, 3, tfidf, 1, 3134, 137593, 994931, 784685, 227523, 0.016134445040945352
+last_fm_1k, 900, 4, jaccard-bigram, 3, tfidf, 2, 3182, 140260, 994931, 784685, 228145, 0.01693420749091598
+last_fm_1k, 900, 4, jaccard-levenshtein, 1, bestItemsOfCluster, 0, 3943, 472226, 994931, 784685, 227762, 0.026626790079093746
+last_fm_1k, 900, 4, jaccard-levenshtein, 1, bestItemsOfCluster, 1, 3944, 471907, 994931, 784685, 227523, 0.027065442954665616
+last_fm_1k, 900, 4, jaccard-levenshtein, 1, bestItemsOfCluster, 2, 3950, 474539, 994931, 784685, 228145, 0.026644711703787977
+last_fm_1k, 900, 4, jaccard-levenshtein, 1, bestItemsOverall, 0, 3943, 472226, 994931, 784685, 227762, 0.001097774246055633
+last_fm_1k, 900, 4, jaccard-levenshtein, 1, bestItemsOverall, 1, 3944, 471907, 994931, 784685, 227523, 0.0010391300059615376
+last_fm_1k, 900, 4, jaccard-levenshtein, 1, bestItemsOverall, 2, 3950, 474539, 994931, 784685, 228145, 0.001004264037747748
+last_fm_1k, 900, 4, jaccard-levenshtein, 1, random, 0, 3943, 472226, 994931, 784685, 227762, 0.0006920271219765322
+last_fm_1k, 900, 4, jaccard-levenshtein, 1, random, 1, 3944, 471907, 994931, 784685, 227523, 0.0008421182902642052
+last_fm_1k, 900, 4, jaccard-levenshtein, 1, random, 2, 3950, 474539, 994931, 784685, 228145, 0.0007887348216202411
+last_fm_1k, 900, 4, jaccard-levenshtein, 1, tfTfidf, 0, 3943, 472226, 994931, 784685, 227762, 0.027024472171253876
+last_fm_1k, 900, 4, jaccard-levenshtein, 1, tfTfidf, 1, 3944, 471907, 994931, 784685, 227523, 0.02650390231040791
+last_fm_1k, 900, 4, jaccard-levenshtein, 1, tfTfidf, 2, 3950, 474539, 994931, 784685, 228145, 0.026904359765602768
+last_fm_1k, 900, 4, jaccard-levenshtein, 1, tfidf, 0, 3943, 472226, 994931, 784685, 227762, 0.02866318339257449
+last_fm_1k, 900, 4, jaccard-levenshtein, 1, tfidf, 1, 3944, 471907, 994931, 784685, 227523, 0.027158552533679436
+last_fm_1k, 900, 4, jaccard-levenshtein, 1, tfidf, 2, 3950, 474539, 994931, 784685, 228145, 0.027952120268473227
+last_fm_1k, 900, 4, jaccard-levenshtein, 2, bestItemsOfCluster, 0, 3943, 472226, 994931, 784685, 227762, 0.02650299973633398
+last_fm_1k, 900, 4, jaccard-levenshtein, 2, bestItemsOfCluster, 1, 3944, 471907, 994931, 784685, 227523, 0.026041528680276173
+last_fm_1k, 900, 4, jaccard-levenshtein, 2, bestItemsOfCluster, 2, 3950, 474539, 994931, 784685, 228145, 0.026793656517380998
+last_fm_1k, 900, 4, jaccard-levenshtein, 2, bestItemsOverall, 0, 3943, 472226, 994931, 784685, 227762, 0.0010355820330738526
+last_fm_1k, 900, 4, jaccard-levenshtein, 2, bestItemsOverall, 1, 3944, 471907, 994931, 784685, 227523, 0.0011266278249663724
+last_fm_1k, 900, 4, jaccard-levenshtein, 2, bestItemsOverall, 2, 3950, 474539, 994931, 784685, 228145, 0.0010545758096596105
+last_fm_1k, 900, 4, jaccard-levenshtein, 2, random, 0, 3943, 472226, 994931, 784685, 227762, 0.0006058214989359494
+last_fm_1k, 900, 4, jaccard-levenshtein, 2, random, 1, 3944, 471907, 994931, 784685, 227523, 0.0007905871140190162
+last_fm_1k, 900, 4, jaccard-levenshtein, 2, random, 2, 3950, 474539, 994931, 784685, 228145, 0.0005525351987538193
+last_fm_1k, 900, 4, jaccard-levenshtein, 2, tfTfidf, 0, 3943, 472226, 994931, 784685, 227762, 0.025949574990439466
+last_fm_1k, 900, 4, jaccard-levenshtein, 2, tfTfidf, 1, 3944, 471907, 994931, 784685, 227523, 0.025736460961010222
+last_fm_1k, 900, 4, jaccard-levenshtein, 2, tfTfidf, 2, 3950, 474539, 994931, 784685, 228145, 0.027000414043191583
+last_fm_1k, 900, 4, jaccard-levenshtein, 2, tfidf, 0, 3943, 472226, 994931, 784685, 227762, 0.026721589544036375
+last_fm_1k, 900, 4, jaccard-levenshtein, 2, tfidf, 1, 3944, 471907, 994931, 784685, 227523, 0.02711456025527692
+last_fm_1k, 900, 4, jaccard-levenshtein, 2, tfidf, 2, 3950, 474539, 994931, 784685, 228145, 0.026493971245620838
+last_fm_1k, 900, 4, jaccard-levenshtein, 3, bestItemsOfCluster, 0, 3943, 472226, 994931, 784685, 227762, 0.02573591515543404
+last_fm_1k, 900, 4, jaccard-levenshtein, 3, bestItemsOfCluster, 1, 3944, 471907, 994931, 784685, 227523, 0.024797391497446836
+last_fm_1k, 900, 4, jaccard-levenshtein, 3, bestItemsOfCluster, 2, 3950, 474539, 994931, 784685, 228145, 0.02601734342667151
+last_fm_1k, 900, 4, jaccard-levenshtein, 3, bestItemsOverall, 0, 3943, 472226, 994931, 784685, 227762, 0.0010294620882589061
+last_fm_1k, 900, 4, jaccard-levenshtein, 3, bestItemsOverall, 1, 3944, 471907, 994931, 784685, 227523, 0.0010250367559223198
+last_fm_1k, 900, 4, jaccard-levenshtein, 3, bestItemsOverall, 2, 3950, 474539, 994931, 784685, 228145, 0.0010118088501323503
+last_fm_1k, 900, 4, jaccard-levenshtein, 3, random, 0, 3943, 472226, 994931, 784685, 227762, 0.0009000784922594568
+last_fm_1k, 900, 4, jaccard-levenshtein, 3, random, 1, 3944, 471907, 994931, 784685, 227523, 0.0007478931693337386
+last_fm_1k, 900, 4, jaccard-levenshtein, 3, random, 2, 3950, 474539, 994931, 784685, 228145, 0.0007013761010619832
+last_fm_1k, 900, 4, jaccard-levenshtein, 3, tfTfidf, 0, 3943, 472226, 994931, 784685, 227762, 0.025362816783112214
+last_fm_1k, 900, 4, jaccard-levenshtein, 3, tfTfidf, 1, 3944, 471907, 994931, 784685, 227523, 0.025185013582683664
+last_fm_1k, 900, 4, jaccard-levenshtein, 3, tfTfidf, 2, 3950, 474539, 994931, 784685, 228145, 0.026032822075900002
+last_fm_1k, 900, 4, jaccard-levenshtein, 3, tfidf, 0, 3943, 472226, 994931, 784685, 227762, 0.026815443873767345
+last_fm_1k, 900, 4, jaccard-levenshtein, 3, tfidf, 1, 3944, 471907, 994931, 784685, 227523, 0.026209952754018436
+last_fm_1k, 900, 4, jaccard-levenshtein, 3, tfidf, 2, 3950, 474539, 994931, 784685, 228145, 0.02697449759684539
+last_fm_1k, 900, 4, levenshtein, 1, bestItemsOfCluster, 0, 3936, 436222, 994931, 784685, 227762, 0.022969179609061755
+last_fm_1k, 900, 4, levenshtein, 1, bestItemsOfCluster, 1, 3927, 432925, 994931, 784685, 227523, 0.021970821503410558
+last_fm_1k, 900, 4, levenshtein, 1, bestItemsOfCluster, 2, 3919, 433335, 994931, 784685, 228145, 0.022839160250471557
+last_fm_1k, 900, 4, levenshtein, 1, bestItemsOverall, 0, 3936, 436222, 994931, 784685, 227762, 0.0013245894421803838
+last_fm_1k, 900, 4, levenshtein, 1, bestItemsOverall, 1, 3927, 432925, 994931, 784685, 227523, 0.001495301807842754
+last_fm_1k, 900, 4, levenshtein, 1, bestItemsOverall, 2, 3919, 433335, 994931, 784685, 228145, 0.0012839349790609055
+last_fm_1k, 900, 4, levenshtein, 1, random, 0, 3936, 436222, 994931, 784685, 227762, 0.0010007044969809484
+last_fm_1k, 900, 4, levenshtein, 1, random, 1, 3927, 432925, 994931, 784685, 227523, 0.00086849753684115
+last_fm_1k, 900, 4, levenshtein, 1, random, 2, 3919, 433335, 994931, 784685, 228145, 0.0008495200214875619
+last_fm_1k, 900, 4, levenshtein, 1, tfTfidf, 0, 3936, 436222, 994931, 784685, 227762, 0.023242397504472614
+last_fm_1k, 900, 4, levenshtein, 1, tfTfidf, 1, 3927, 432925, 994931, 784685, 227523, 0.021975998332556233
+last_fm_1k, 900, 4, levenshtein, 1, tfTfidf, 2, 3919, 433335, 994931, 784685, 228145, 0.02265832729324817
+last_fm_1k, 900, 4, levenshtein, 1, tfidf, 0, 3936, 436222, 994931, 784685, 227762, 0.023929465898067468
+last_fm_1k, 900, 4, levenshtein, 1, tfidf, 1, 3927, 432925, 994931, 784685, 227523, 0.023458425548104046
+last_fm_1k, 900, 4, levenshtein, 1, tfidf, 2, 3919, 433335, 994931, 784685, 228145, 0.0242545585580728
+last_fm_1k, 900, 4, levenshtein, 2, bestItemsOfCluster, 0, 3936, 436222, 994931, 784685, 227762, 0.022050982955649397
+last_fm_1k, 900, 4, levenshtein, 2, bestItemsOfCluster, 1, 3927, 432925, 994931, 784685, 227523, 0.022174049660755795
+last_fm_1k, 900, 4, levenshtein, 2, bestItemsOfCluster, 2, 3919, 433335, 994931, 784685, 228145, 0.022797150974887843
+last_fm_1k, 900, 4, levenshtein, 2, bestItemsOverall, 0, 3936, 436222, 994931, 784685, 227762, 0.001045518612773047
+last_fm_1k, 900, 4, levenshtein, 2, bestItemsOverall, 1, 3927, 432925, 994931, 784685, 227523, 0.001258792058964026
+last_fm_1k, 900, 4, levenshtein, 2, bestItemsOverall, 2, 3919, 433335, 994931, 784685, 228145, 0.0011283126673251882
+last_fm_1k, 900, 4, levenshtein, 2, random, 0, 3936, 436222, 994931, 784685, 227762, 0.0009210852730053392
+last_fm_1k, 900, 4, levenshtein, 2, random, 1, 3927, 432925, 994931, 784685, 227523, 0.0008679938862849807
+last_fm_1k, 900, 4, levenshtein, 2, random, 2, 3919, 433335, 994931, 784685, 228145, 0.001003564504458345
+last_fm_1k, 900, 4, levenshtein, 2, tfTfidf, 0, 3936, 436222, 994931, 784685, 227762, 0.02242497430167699
+last_fm_1k, 900, 4, levenshtein, 2, tfTfidf, 1, 3927, 432925, 994931, 784685, 227523, 0.02173985580403695
+last_fm_1k, 900, 4, levenshtein, 2, tfTfidf, 2, 3919, 433335, 994931, 784685, 228145, 0.022757896214051127
+last_fm_1k, 900, 4, levenshtein, 2, tfidf, 0, 3936, 436222, 994931, 784685, 227762, 0.023068696054170352
+last_fm_1k, 900, 4, levenshtein, 2, tfidf, 1, 3927, 432925, 994931, 784685, 227523, 0.02348212410791567
+last_fm_1k, 900, 4, levenshtein, 2, tfidf, 2, 3919, 433335, 994931, 784685, 228145, 0.024282906342172672
+last_fm_1k, 900, 4, levenshtein, 3, bestItemsOfCluster, 0, 3936, 436222, 994931, 784685, 227762, 0.021584500526539294
+last_fm_1k, 900, 4, levenshtein, 3, bestItemsOfCluster, 1, 3927, 432925, 994931, 784685, 227523, 0.02181054918436771
+last_fm_1k, 900, 4, levenshtein, 3, bestItemsOfCluster, 2, 3919, 433335, 994931, 784685, 228145, 0.022602297491548882
+last_fm_1k, 900, 4, levenshtein, 3, bestItemsOverall, 0, 3936, 436222, 994931, 784685, 227762, 0.0011557853419998298
+last_fm_1k, 900, 4, levenshtein, 3, bestItemsOverall, 1, 3927, 432925, 994931, 784685, 227523, 0.001336756846143612
+last_fm_1k, 900, 4, levenshtein, 3, bestItemsOverall, 2, 3919, 433335, 994931, 784685, 228145, 0.0012874869555969568
+last_fm_1k, 900, 4, levenshtein, 3, random, 0, 3936, 436222, 994931, 784685, 227762, 0.000958662803566137
+last_fm_1k, 900, 4, levenshtein, 3, random, 1, 3927, 432925, 994931, 784685, 227523, 0.000888514155099476
+last_fm_1k, 900, 4, levenshtein, 3, random, 2, 3919, 433335, 994931, 784685, 228145, 0.0009264646801433022
+last_fm_1k, 900, 4, levenshtein, 3, tfTfidf, 0, 3936, 436222, 994931, 784685, 227762, 0.022239472743453562
+last_fm_1k, 900, 4, levenshtein, 3, tfTfidf, 1, 3927, 432925, 994931, 784685, 227523, 0.021687188359289556
+last_fm_1k, 900, 4, levenshtein, 3, tfTfidf, 2, 3919, 433335, 994931, 784685, 228145, 0.023032100765648367
+last_fm_1k, 900, 4, levenshtein, 3, tfidf, 0, 3936, 436222, 994931, 784685, 227762, 0.022971432317667174
+last_fm_1k, 900, 4, levenshtein, 3, tfidf, 1, 3927, 432925, 994931, 784685, 227523, 0.02263150223883429
+last_fm_1k, 900, 4, levenshtein, 3, tfidf, 2, 3919, 433335, 994931, 784685, 228145, 0.023892330508640584
+180
