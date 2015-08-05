@@ -35,7 +35,7 @@ var evaluate = function(data) {
 			})
 			log.blue('got txnrows3', txnRows.length)
 			txnRows = txnRows.filter(function(txn) {
-				return Math.round(Math.random()*100) > 91
+				return Math.round(Math.random()*100) > 99
 			})
 
 			log.blue('got txnrows4', txnRows.length)
