@@ -21,11 +21,11 @@ Apriori.prototype.algorithm = function(txns) {
 		txns[i] = help.toItemset(txn['item_ids'])
 	})
 	txns = txns.filter(function(txn,i) {
-		return txn.length > 15 && txn.length < 30
+		return txn.length > 1
 	})
-	txns = txns.filter(function(txn) {
-		return Math.round(Math.random()*100) > 70
-	})
+	// txns = txns.filter(function(txn) {
+	// 	return Math.round(Math.random()*100) > 70
+	// })
 	log('Apriori after', txns.length)
 
 	var store = this.findFrequentItemsets(txns)
