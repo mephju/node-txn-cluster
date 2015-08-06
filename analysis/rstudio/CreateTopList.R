@@ -44,7 +44,7 @@ CreateMethodResults <- function(kDatasetName) {
 	res <- res[order(-res$precision),]
 
 	#res$precision = round(res$precision, digits=4)
-	res <- res[1:6,]
+	res <- res[1:10,]
 	
 	return(res)
 } 

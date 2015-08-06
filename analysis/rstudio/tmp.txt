@@ -1,12 +1,289 @@
-jaccard & 1 & \cy 0.0353 & \cy 0.0328 & \cy 0.0008 & \cy 0.0337 & \cy 0.0008 \\ \hline
-jaccard & 2 & \cy 0.0346 & \cy 0.0330 & \cy 0.0007 & \cy 0.0334 & \cy 0.0009 \\ \hline
-jaccard & 3 & \cy 0.0344 & \cy 0.0329 & \cy 0.0008 & \cy 0.0324 & \cy 0.0009 \\ \hline
-jaccard-bigram & 1 & \cy 0.0142 & \cy 0.0127 & \cy 0.0009 & \cy 0.0128 & \cy 0.0008 \\ \hline
-jaccard-bigram & 2 & \cy 0.0159 & \cy 0.0145 & \cy 0.0008 & \cy 0.0146 & \cy 0.0009 \\ \hline
-jaccard-bigram & 3 & \cy 0.0166 & \cy 0.0154 & \cy 0.0009 & \cy 0.0157 & \cy 0.0009 \\ \hline
-jaccard-levenshtein & 1 & \cy 0.0279 & \cy 0.0268 & \cy 0.0008 & \cy 0.0268 & \cy 0.0010 \\ \hline
-jaccard-levenshtein & 2 & \cy 0.0268 & \cy 0.0262 & \cy 0.0006 & \cy 0.0264 & \cy 0.0011 \\ \hline
-jaccard-levenshtein & 3 & \cy 0.0267 & \cy 0.0255 & \cy 0.0008 & \cy 0.0255 & \cy 0.0010 \\ \hline
-levenshtein & 1 & \cy 0.0239 & \cy 0.0226 & \cy 0.0009 & \cy 0.0226 & \cy 0.0014 \\ \hline
-levenshtein & 2 & \cy 0.0236 & \cy 0.0223 & \cy 0.0009 & \cy 0.0223 & \cy 0.0011 \\ \hline
-levenshtein & 3 & \cy 0.0232 & \cy 0.0223 & \cy 0.0009 & \cy 0.0220 & \cy 0.0013 \\ \hline
+    xvalidation            distance           strategy markov   precision
+1             0             jaccard bestItemsOfCluster      1 0.024297636
+2             1             jaccard bestItemsOfCluster      1 0.023971133
+3             2             jaccard bestItemsOfCluster      1 0.023711302
+4             0             jaccard   bestItemsOverall      1 0.012623545
+5             1             jaccard   bestItemsOverall      1 0.014284179
+6             2             jaccard   bestItemsOverall      1 0.012870147
+7             0             jaccard             random      1 0.006693719
+8             1             jaccard             random      1 0.007234037
+9             2             jaccard             random      1 0.006926294
+10            0             jaccard            tfTfidf      1 0.024160538
+11            1             jaccard            tfTfidf      1 0.023318107
+12            2             jaccard            tfTfidf      1 0.023381752
+13            0             jaccard              tfidf      1 0.024162261
+14            1             jaccard              tfidf      1 0.022956362
+15            2             jaccard              tfidf      1 0.021886167
+16            0             jaccard        withRatings      1 0.020046704
+17            1             jaccard        withRatings      1 0.019743802
+18            2             jaccard        withRatings      1 0.018836086
+19            0             jaccard bestItemsOfCluster      2 0.024384900
+20            1             jaccard bestItemsOfCluster      2 0.024062133
+21            2             jaccard bestItemsOfCluster      2 0.022764299
+22            0             jaccard   bestItemsOverall      2 0.013170764
+23            1             jaccard   bestItemsOverall      2 0.014340823
+24            2             jaccard   bestItemsOverall      2 0.013019264
+25            0             jaccard             random      2 0.007038882
+26            1             jaccard             random      2 0.007231974
+27            2             jaccard             random      2 0.006256376
+28            0             jaccard            tfTfidf      2 0.024203371
+29            1             jaccard            tfTfidf      2 0.023403526
+30            2             jaccard            tfTfidf      2 0.022456632
+31            0             jaccard              tfidf      2 0.024332629
+32            1             jaccard              tfidf      2 0.023029133
+33            2             jaccard              tfidf      2 0.021158741
+34            0             jaccard        withRatings      2 0.019928364
+35            1             jaccard        withRatings      2 0.019940333
+36            2             jaccard        withRatings      2 0.018859303
+37            0             jaccard bestItemsOfCluster      3 0.023818422
+38            1             jaccard bestItemsOfCluster      3 0.023722614
+39            2             jaccard bestItemsOfCluster      3 0.022658415
+40            0             jaccard   bestItemsOverall      3 0.013577060
+41            1             jaccard   bestItemsOverall      3 0.014658573
+42            2             jaccard   bestItemsOverall      3 0.013343815
+43            0             jaccard             random      3 0.008107164
+44            1             jaccard             random      3 0.008361357
+45            2             jaccard             random      3 0.007858190
+46            0             jaccard            tfTfidf      3 0.023614046
+47            1             jaccard            tfTfidf      3 0.023143480
+48            2             jaccard            tfTfidf      3 0.022389908
+49            0             jaccard              tfidf      3 0.023494049
+50            1             jaccard              tfidf      3 0.022685926
+51            2             jaccard              tfidf      3 0.021208457
+52            0             jaccard        withRatings      3 0.019766366
+53            1             jaccard        withRatings      3 0.019763623
+54            2             jaccard        withRatings      3 0.018744293
+55            0      jaccard-bigram bestItemsOfCluster      1 0.017795500
+56            1      jaccard-bigram bestItemsOfCluster      1 0.019501060
+57            2      jaccard-bigram bestItemsOfCluster      1 0.018153615
+58            0      jaccard-bigram   bestItemsOverall      1 0.012136952
+59            1      jaccard-bigram   bestItemsOverall      1 0.009621822
+60            2      jaccard-bigram   bestItemsOverall      1 0.013166617
+61            0      jaccard-bigram             random      1 0.010905905
+62            1      jaccard-bigram             random      1 0.009455546
+63            2      jaccard-bigram             random      1 0.011654882
+64            0      jaccard-bigram            tfTfidf      1 0.017721785
+65            1      jaccard-bigram            tfTfidf      1 0.019527960
+66            2      jaccard-bigram            tfTfidf      1 0.018148094
+67            0      jaccard-bigram              tfidf      1 0.015099198
+68            1      jaccard-bigram              tfidf      1 0.012545463
+69            2      jaccard-bigram              tfidf      1 0.016352522
+70            0      jaccard-bigram        withRatings      1 0.017555783
+71            1      jaccard-bigram        withRatings      1 0.019471310
+72            2      jaccard-bigram        withRatings      1 0.018344684
+73            0      jaccard-bigram bestItemsOfCluster      2 0.018026004
+74            1      jaccard-bigram bestItemsOfCluster      2 0.019226390
+75            2      jaccard-bigram bestItemsOfCluster      2 0.018495054
+76            0      jaccard-bigram   bestItemsOverall      2 0.012205339
+77            1      jaccard-bigram   bestItemsOverall      2 0.010629263
+78            2      jaccard-bigram   bestItemsOverall      2 0.013352610
+79            0      jaccard-bigram             random      2 0.011233037
+80            1      jaccard-bigram             random      2 0.010116567
+81            2      jaccard-bigram             random      2 0.012143090
+82            0      jaccard-bigram            tfTfidf      2 0.017931310
+83            1      jaccard-bigram            tfTfidf      2 0.019233841
+84            2      jaccard-bigram            tfTfidf      2 0.018445999
+85            0      jaccard-bigram              tfidf      2 0.015005667
+86            1      jaccard-bigram              tfidf      2 0.013210443
+87            2      jaccard-bigram              tfidf      2 0.016553546
+88            0      jaccard-bigram        withRatings      2 0.017561218
+89            1      jaccard-bigram        withRatings      2 0.019518694
+90            2      jaccard-bigram        withRatings      2 0.018445416
+91            0      jaccard-bigram bestItemsOfCluster      3 0.020191525
+92            1      jaccard-bigram bestItemsOfCluster      3 0.019776821
+93            2      jaccard-bigram bestItemsOfCluster      3 0.018680519
+94            0      jaccard-bigram   bestItemsOverall      3 0.013641590
+95            1      jaccard-bigram   bestItemsOverall      3 0.011276252
+96            2      jaccard-bigram   bestItemsOverall      3 0.012636774
+97            0      jaccard-bigram             random      3 0.012480870
+98            1      jaccard-bigram             random      3 0.011730687
+99            2      jaccard-bigram             random      3 0.011284604
+100           0      jaccard-bigram            tfTfidf      3 0.019725256
+101           1      jaccard-bigram            tfTfidf      3 0.019915547
+102           2      jaccard-bigram            tfTfidf      3 0.018567766
+103           0      jaccard-bigram              tfidf      3 0.016485194
+104           1      jaccard-bigram              tfidf      3 0.013837276
+105           2      jaccard-bigram              tfidf      3 0.015587413
+106           0      jaccard-bigram        withRatings      3 0.018802317
+107           1      jaccard-bigram        withRatings      3 0.019553832
+108           2      jaccard-bigram        withRatings      3 0.018432688
+109           0 jaccard-levenshtein bestItemsOfCluster      1 0.023041569
+110           1 jaccard-levenshtein bestItemsOfCluster      1 0.023097965
+111           2 jaccard-levenshtein bestItemsOfCluster      1 0.021092932
+112           0 jaccard-levenshtein   bestItemsOverall      1 0.013452909
+113           1 jaccard-levenshtein   bestItemsOverall      1 0.012703380
+114           2 jaccard-levenshtein   bestItemsOverall      1 0.012082160
+115           0 jaccard-levenshtein             random      1 0.006853633
+116           1 jaccard-levenshtein             random      1 0.006966506
+117           2 jaccard-levenshtein             random      1 0.006115907
+118           0 jaccard-levenshtein            tfTfidf      1 0.022698038
+119           1 jaccard-levenshtein            tfTfidf      1 0.023098422
+120           2 jaccard-levenshtein            tfTfidf      1 0.020991127
+121           0 jaccard-levenshtein              tfidf      1 0.020796658
+122           1 jaccard-levenshtein              tfidf      1 0.021628079
+123           2 jaccard-levenshtein              tfidf      1 0.019658051
+124           0 jaccard-levenshtein        withRatings      1 0.018195281
+125           1 jaccard-levenshtein        withRatings      1 0.020539979
+126           2 jaccard-levenshtein        withRatings      1 0.018143153
+127           0 jaccard-levenshtein bestItemsOfCluster      2 0.022368495
+128           1 jaccard-levenshtein bestItemsOfCluster      2 0.022315493
+129           2 jaccard-levenshtein bestItemsOfCluster      2 0.020875204
+130           0 jaccard-levenshtein   bestItemsOverall      2 0.013436989
+131           1 jaccard-levenshtein   bestItemsOverall      2 0.012878450
+132           2 jaccard-levenshtein   bestItemsOverall      2 0.012276896
+133           0 jaccard-levenshtein             random      2 0.006889500
+134           1 jaccard-levenshtein             random      2 0.007070037
+135           2 jaccard-levenshtein             random      2 0.006295472
+136           0 jaccard-levenshtein            tfTfidf      2 0.022256404
+137           1 jaccard-levenshtein            tfTfidf      2 0.022323993
+138           2 jaccard-levenshtein            tfTfidf      2 0.020749148
+139           0 jaccard-levenshtein              tfidf      2 0.020477628
+140           1 jaccard-levenshtein              tfidf      2 0.021045444
+141           2 jaccard-levenshtein              tfidf      2 0.019310305
+142           0 jaccard-levenshtein        withRatings      2 0.018223208
+143           1 jaccard-levenshtein        withRatings      2 0.020505885
+144           2 jaccard-levenshtein        withRatings      2 0.018112616
+145           0 jaccard-levenshtein bestItemsOfCluster      3 0.021399110
+146           1 jaccard-levenshtein bestItemsOfCluster      3 0.021517974
+147           2 jaccard-levenshtein bestItemsOfCluster      3 0.020699858
+148           0 jaccard-levenshtein   bestItemsOverall      3 0.013757157
+149           1 jaccard-levenshtein   bestItemsOverall      3 0.013251834
+150           2 jaccard-levenshtein   bestItemsOverall      3 0.012701272
+151           0 jaccard-levenshtein             random      3 0.007670916
+152           1 jaccard-levenshtein             random      3 0.007158589
+153           2 jaccard-levenshtein             random      3 0.007448998
+154           0 jaccard-levenshtein            tfTfidf      3 0.021284512
+155           1 jaccard-levenshtein            tfTfidf      3 0.021545170
+156           2 jaccard-levenshtein            tfTfidf      3 0.020504595
+157           0 jaccard-levenshtein              tfidf      3 0.019601387
+158           1 jaccard-levenshtein              tfidf      3 0.020612165
+159           2 jaccard-levenshtein              tfidf      3 0.019184062
+160           0 jaccard-levenshtein        withRatings      3 0.018232368
+161           1 jaccard-levenshtein        withRatings      3 0.020320788
+162           2 jaccard-levenshtein        withRatings      3 0.018238584
+163           0         levenshtein bestItemsOfCluster      1 0.020128727
+164           1         levenshtein bestItemsOfCluster      1 0.018215112
+165           2         levenshtein bestItemsOfCluster      1 0.019296726
+166           0         levenshtein   bestItemsOverall      1 0.013619760
+167           1         levenshtein   bestItemsOverall      1 0.012890344
+168           2         levenshtein   bestItemsOverall      1 0.012376635
+169           0         levenshtein             random      1 0.006778230
+170           1         levenshtein             random      1 0.006680349
+171           2         levenshtein             random      1 0.005702744
+172           0         levenshtein            tfTfidf      1 0.019376198
+173           1         levenshtein            tfTfidf      1 0.017749480
+174           2         levenshtein            tfTfidf      1 0.018826871
+175           0         levenshtein              tfidf      1 0.018880657
+176           1         levenshtein              tfidf      1 0.017098421
+177           2         levenshtein              tfidf      1 0.018526117
+178           0         levenshtein        withRatings      1 0.018720995
+179           1         levenshtein        withRatings      1 0.019643844
+180           2         levenshtein        withRatings      1 0.018150366
+181           0         levenshtein bestItemsOfCluster      2 0.019567804
+182           1         levenshtein bestItemsOfCluster      2 0.018358645
+183           2         levenshtein bestItemsOfCluster      2 0.018679939
+184           0         levenshtein   bestItemsOverall      2 0.013766176
+185           1         levenshtein   bestItemsOverall      2 0.013534059
+186           2         levenshtein   bestItemsOverall      2 0.012902217
+187           0         levenshtein             random      2 0.007391186
+188           1         levenshtein             random      2 0.007209572
+189           2         levenshtein             random      2 0.006874175
+190           0         levenshtein            tfTfidf      2 0.018964280
+191           1         levenshtein            tfTfidf      2 0.018024727
+192           2         levenshtein            tfTfidf      2 0.018431229
+193           0         levenshtein              tfidf      2 0.018792766
+194           1         levenshtein              tfidf      2 0.017176881
+195           2         levenshtein              tfidf      2 0.018377064
+196           0         levenshtein        withRatings      2 0.018564838
+197           1         levenshtein        withRatings      2 0.019629588
+198           2         levenshtein        withRatings      2 0.018116723
+199           0         levenshtein bestItemsOfCluster      3 0.019507718
+200           1         levenshtein bestItemsOfCluster      3 0.017996932
+201           2         levenshtein bestItemsOfCluster      3 0.018516769
+202           0         levenshtein   bestItemsOverall      3 0.014096717
+203           1         levenshtein   bestItemsOverall      3 0.013770257
+204           2         levenshtein   bestItemsOverall      3 0.013534364
+205           0         levenshtein             random      3 0.007808412
+206           1         levenshtein             random      3 0.006986686
+207           2         levenshtein             random      3 0.006736929
+208           0         levenshtein            tfTfidf      3 0.019071594
+209           1         levenshtein            tfTfidf      3 0.017597553
+210           2         levenshtein            tfTfidf      3 0.018232387
+211           0         levenshtein              tfidf      3 0.018416026
+212           1         levenshtein              tfidf      3 0.016967577
+213           2         levenshtein              tfidf      3 0.018248236
+214           0         levenshtein        withRatings      3 0.018594016
+215           1         levenshtein        withRatings      3 0.019588242
+216           2         levenshtein        withRatings      3 0.018134070
+Jaccard Bigram  &  Most Popular  &  1st  &  0.0121  &  0.0096  &  0.0132    \\ \hline
+Jaccard Bigram  &  Most Popular  &  2nd  &  0.0122  &  0.0106  &  0.0134    \\ \hline
+Jaccard Bigram  &  Most Popular  &  3rd  &  0.0136  &  0.0113  &  0.0126    \\ \hline
+Jaccard Bigram  &  Random  &  1st  &  0.0109  &  0.0095  &  0.0117    \\ \hline
+Jaccard Bigram  &  Random  &  2nd  &  0.0112  &  0.0101  &  0.0121    \\ \hline
+Jaccard Bigram  &  Random  &  3rd  &  0.0125  &  0.0117  &  0.0113    \\ \hline
+Jaccard Bigram  &  TF  &  1st  &  0.0178  &  0.0195  &  0.0182    \\ \hline
+Jaccard Bigram  &  TF  &  2nd  &  0.0180  &  0.0192  &  0.0185    \\ \hline
+Jaccard Bigram  &  TF  &  3rd  &  0.0202  &  0.0198  &  0.0187    \\ \hline
+Jaccard Bigram  &  TF-IDF  &  1st  &  0.0151  &  0.0125  &  0.0164    \\ \hline
+Jaccard Bigram  &  TF-IDF  &  2nd  &  0.0150  &  0.0132  &  0.0166    \\ \hline
+Jaccard Bigram  &  TF-IDF  &  3rd  &  0.0165  &  0.0138  &  0.0156    \\ \hline
+Jaccard Bigram  &  TF-TF-IDF  &  1st  &  0.0177  &  0.0195  &  0.0181    \\ \hline
+Jaccard Bigram  &  TF-TF-IDF  &  2nd  &  0.0179  &  0.0192  &  0.0184    \\ \hline
+Jaccard Bigram  &  TF-TF-IDF  &  3rd  &  0.0197  &  0.0199  &  0.0186    \\ \hline
+Jaccard Bigram  &  withRatings  &  1st  &  0.0176  &  0.0195  &  0.0183    \\ \hline
+Jaccard Bigram  &  withRatings  &  2nd  &  0.0176  &  0.0195  &  0.0184    \\ \hline
+Jaccard Bigram  &  withRatings  &  3rd  &  0.0188  &  0.0196  &  0.0184    \\ \hline
+ Jaccard Levenshtein  &  Most Popular  &  1st  &  0.0135  &  0.0127  &  0.0121    \\ \hline
+ Jaccard Levenshtein  &  Most Popular  &  2nd  &  0.0134  &  0.0129  &  0.0123    \\ \hline
+ Jaccard Levenshtein  &  Most Popular  &  3rd  &  0.0138  &  0.0133  &  0.0127    \\ \hline
+ Jaccard Levenshtein  &  Random  &  1st  &  0.0069  &  0.0070  &  0.0061    \\ \hline
+ Jaccard Levenshtein  &  Random  &  2nd  &  0.0069  &  0.0071  &  0.0063    \\ \hline
+ Jaccard Levenshtein  &  Random  &  3rd  &  0.0077  &  0.0072  &  0.0074    \\ \hline
+ Jaccard Levenshtein  &  TF  &  1st  &  0.0230  &  0.0231  &  0.0211    \\ \hline
+ Jaccard Levenshtein  &  TF  &  2nd  &  0.0224  &  0.0223  &  0.0209    \\ \hline
+ Jaccard Levenshtein  &  TF  &  3rd  &  0.0214  &  0.0215  &  0.0207    \\ \hline
+ Jaccard Levenshtein  &  TF-IDF  &  1st  &  0.0208  &  0.0216  &  0.0197    \\ \hline
+ Jaccard Levenshtein  &  TF-IDF  &  2nd  &  0.0205  &  0.0210  &  0.0193    \\ \hline
+ Jaccard Levenshtein  &  TF-IDF  &  3rd  &  0.0196  &  0.0206  &  0.0192    \\ \hline
+ Jaccard Levenshtein  &  TF-TF-IDF  &  1st  &  0.0227  &  0.0231  &  0.0210    \\ \hline
+ Jaccard Levenshtein  &  TF-TF-IDF  &  2nd  &  0.0223  &  0.0223  &  0.0207    \\ \hline
+ Jaccard Levenshtein  &  TF-TF-IDF  &  3rd  &  0.0213  &  0.0215  &  0.0205    \\ \hline
+ Jaccard Levenshtein  &  withRatings  &  1st  &  0.0182  &  0.0205  &  0.0181    \\ \hline
+ Jaccard Levenshtein  &  withRatings  &  2nd  &  0.0182  &  0.0205  &  0.0181    \\ \hline
+ Jaccard Levenshtein  &  withRatings  &  3rd  &  0.0182  &  0.0203  &  0.0182    \\ \hline
+Jaccard  &  Most Popular  &  1st  &  0.0126  &  0.0143  &  0.0129    \\ \hline
+Jaccard  &  Most Popular  &  2nd  &  0.0132  &  0.0143  &  0.0130    \\ \hline
+Jaccard  &  Most Popular  &  3rd  &  0.0136  &  0.0147  &  0.0133    \\ \hline
+Jaccard  &  Random  &  1st  &  0.0067  &  0.0072  &  0.0069    \\ \hline
+Jaccard  &  Random  &  2nd  &  0.0070  &  0.0072  &  0.0063    \\ \hline
+Jaccard  &  Random  &  3rd  &  0.0081  &  0.0084  &  0.0079    \\ \hline
+Jaccard  &  TF  &  1st  &  0.0243  &  0.0240  &  0.0237    \\ \hline
+Jaccard  &  TF  &  2nd  &  0.0244  &  0.0241  &  0.0228    \\ \hline
+Jaccard  &  TF  &  3rd  &  0.0238  &  0.0237  &  0.0227    \\ \hline
+Jaccard  &  TF-IDF  &  1st  &  0.0242  &  0.0230  &  0.0219    \\ \hline
+Jaccard  &  TF-IDF  &  2nd  &  0.0243  &  0.0230  &  0.0212    \\ \hline
+Jaccard  &  TF-IDF  &  3rd  &  0.0235  &  0.0227  &  0.0212    \\ \hline
+Jaccard  &  TF-TF-IDF  &  1st  &  0.0242  &  0.0233  &  0.0234    \\ \hline
+Jaccard  &  TF-TF-IDF  &  2nd  &  0.0242  &  0.0234  &  0.0225    \\ \hline
+Jaccard  &  TF-TF-IDF  &  3rd  &  0.0236  &  0.0231  &  0.0224    \\ \hline
+Jaccard  &  withRatings  &  1st  &  0.0200  &  0.0197  &  0.0188    \\ \hline
+Jaccard  &  withRatings  &  2nd  &  0.0199  &  0.0199  &  0.0189    \\ \hline
+Jaccard  &  withRatings  &  3rd  &  0.0198  &  0.0198  &  0.0187    \\ \hline
+Levenshtein  &  Most Popular  &  1st  &  0.0136  &  0.0129  &  0.0124    \\ \hline
+Levenshtein  &  Most Popular  &  2nd  &  0.0138  &  0.0135  &  0.0129    \\ \hline
+Levenshtein  &  Most Popular  &  3rd  &  0.0141  &  0.0138  &  0.0135    \\ \hline
+Levenshtein  &  Random  &  1st  &  0.0068  &  0.0067  &  0.0057    \\ \hline
+Levenshtein  &  Random  &  2nd  &  0.0074  &  0.0072  &  0.0069    \\ \hline
+Levenshtein  &  Random  &  3rd  &  0.0078  &  0.0070  &  0.0067    \\ \hline
+Levenshtein  &  TF  &  1st  &  0.0201  &  0.0182  &  0.0193    \\ \hline
+Levenshtein  &  TF  &  2nd  &  0.0196  &  0.0184  &  0.0187    \\ \hline
+Levenshtein  &  TF  &  3rd  &  0.0195  &  0.0180  &  0.0185    \\ \hline
+Levenshtein  &  TF-IDF  &  1st  &  0.0189  &  0.0171  &  0.0185    \\ \hline
+Levenshtein  &  TF-IDF  &  2nd  &  0.0188  &  0.0172  &  0.0184    \\ \hline
+Levenshtein  &  TF-IDF  &  3rd  &  0.0184  &  0.0170  &  0.0182    \\ \hline
+Levenshtein  &  TF-TF-IDF  &  1st  &  0.0194  &  0.0177  &  0.0188    \\ \hline
+Levenshtein  &  TF-TF-IDF  &  2nd  &  0.0190  &  0.0180  &  0.0184    \\ \hline
+Levenshtein  &  TF-TF-IDF  &  3rd  &  0.0191  &  0.0176  &  0.0182    \\ \hline
+Levenshtein  &  withRatings  &  1st  &  0.0187  &  0.0196  &  0.0182    \\ \hline
+Levenshtein  &  withRatings  &  2nd  &  0.0186  &  0.0196  &  0.0181    \\ \hline
+Levenshtein  &  withRatings  &  3rd  &  0.0186  &  0.0196  &  0.0181    \\ \hline
