@@ -34,11 +34,7 @@ var evaluate = function(data) {
 				return txn.length > dataset.config.N
 			})
 			log.blue('got txnrows3', txnRows.length)
-			txnRows = txnRows.filter(function(txn) {
-				return Math.round(Math.random()*100) > 80
-			})
 
-			log.blue('got txnrows4', txnRows.length)
 			// log.blue('recommender is', recommender)
 			var evalRun = new Run(dataset, recommender, txnRows)
 			var precision = evalRun.start()
