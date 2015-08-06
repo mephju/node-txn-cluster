@@ -1,12 +1,12 @@
-             distance markov           strategy          x
-1 jaccard-levenshtein      1 bestItemsOfCluster 0.01836893
-2         levenshtein      1 bestItemsOfCluster 0.01683927
-3 jaccard-levenshtein      1              tfidf 0.01739103
-4         levenshtein      1              tfidf 0.01597351
-5 jaccard-levenshtein      1            tfTfidf 0.01767600
-6         levenshtein      1            tfTfidf 0.01632327
-NA & NA & \cy NA & \cy NA & \cy NA & \cy NA & \cy NA \\ \hline
- &  & \cy  & \cy  & \cy  & \cy  & \cy  \\ \hline
-[1] distance           markov             tfidf              tfTfidf           
-[5] random             bestItemsOfCluster bestItemsOverall  
-<0 rows> (or 0-length row.names)
+jaccard & 1 & \cy 0.0353 & \cy 0.0328 & \cy 0.0008 & \cy 0.0337 & \cy 0.0008 \\ \hline
+jaccard & 2 & \cy 0.0346 & \cy 0.0330 & \cy 0.0007 & \cy 0.0334 & \cy 0.0009 \\ \hline
+jaccard & 3 & \cy 0.0344 & \cy 0.0329 & \cy 0.0008 & \cy 0.0324 & \cy 0.0009 \\ \hline
+jaccard-bigram & 1 & \cy 0.0142 & \cy 0.0127 & \cy 0.0009 & \cy 0.0128 & \cy 0.0008 \\ \hline
+jaccard-bigram & 2 & \cy 0.0159 & \cy 0.0145 & \cy 0.0008 & \cy 0.0146 & \cy 0.0009 \\ \hline
+jaccard-bigram & 3 & \cy 0.0166 & \cy 0.0154 & \cy 0.0009 & \cy 0.0157 & \cy 0.0009 \\ \hline
+jaccard-levenshtein & 1 & \cy 0.0279 & \cy 0.0268 & \cy 0.0008 & \cy 0.0268 & \cy 0.0010 \\ \hline
+jaccard-levenshtein & 2 & \cy 0.0268 & \cy 0.0262 & \cy 0.0006 & \cy 0.0264 & \cy 0.0011 \\ \hline
+jaccard-levenshtein & 3 & \cy 0.0267 & \cy 0.0255 & \cy 0.0008 & \cy 0.0255 & \cy 0.0010 \\ \hline
+levenshtein & 1 & \cy 0.0239 & \cy 0.0226 & \cy 0.0009 & \cy 0.0226 & \cy 0.0014 \\ \hline
+levenshtein & 2 & \cy 0.0236 & \cy 0.0223 & \cy 0.0009 & \cy 0.0223 & \cy 0.0011 \\ \hline
+levenshtein & 3 & \cy 0.0232 & \cy 0.0223 & \cy 0.0009 & \cy 0.0220 & \cy 0.0013 \\ \hline

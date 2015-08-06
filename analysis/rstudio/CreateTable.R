@@ -1,6 +1,18 @@
+# Takes a frame's values which are equal to colname
+# and creates a new column based on these values 
+MakeStrategyFrame <- function(frame, colname) {
 
+	subframe <- frame[frame$strategy == colname,]
+	
+	names(subframe)[names(subframe) == 'precision'] <- colname
+
+	subframe <- subframe[-3]
+
+	return(subframe)
+}
 
 CreateTable <- function(kDatasetName) {
+	options(scipen=10)
 	eval <- read.csv(
 		paste0('../', kDatasetName, '_more.csv'), 
 		header=TRUE,
@@ -28,18 +40,15 @@ CreateTable <- function(kDatasetName) {
 		FUN=mean
 	)
 
-	print(res)
-
-	
-
 	names(res)[names(res) == 'x'] <- 'precision'
 
 	res <- res[order(res$distance),]
 
-	res$precision = round(res$precision, digits=4)
+	# res$precision = round(res$precision, digits=4)
+	res$precision = formatC(res$precision, format='f', digits=4)
 
+	# print(res)
 	
-
 	strategies = c(
 		'tfidf', 
 		'tfTfidf', 
@@ -54,7 +63,7 @@ CreateTable <- function(kDatasetName) {
 	for(strategy in strategies) {
 		assign(
 			paste0('subframes.', strategy), 
-			MakeSubFrame(res, strategy)
+			MakeStrategyFrame(res, strategy)
 		)
 	}
 
@@ -81,17 +90,6 @@ CreateTable <- function(kDatasetName) {
 		))
 		
 	}
-
-	return(res)
 } 
 
 
-# Takes a frame's values which are equal to colname
-# and creates a new column based on these values 
-MakeSubFrame <- function(frame, colname) {
-	subframe = frame[frame$strategy == colname,]
-	
-	names(subframe)[names(subframe) == 'precision'] <- colname
-	subframe <- subframe[-3]
-	return(subframe)
-}
