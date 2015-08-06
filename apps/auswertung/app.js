@@ -139,4 +139,4 @@ var flatten = function(docs) {
 
 }
 
-methodResults()
+//methodResults()
