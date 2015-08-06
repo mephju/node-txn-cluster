@@ -34,11 +34,12 @@ var baselineResults = function() {
 	});
 	db
 	.find({})
-	.sort({ 'config.RECOMMENDER': 1 })
+	.sort({ 'config.RECOMMENDER': 1, 'config.MIN_SUPPORT':1 })
 	.exec(function(err, docs) {
 		console.log('baseline, xvalidation, precision')
 		docs.forEach(function(doc) {
 			console.log(
+				doc.config.MIN_SUPPORT + ',',
 				doc.config.RECOMMENDER + ',',
 				doc.config.CROSS_VALIDATION_RUN + ',',
 				doc.precision
