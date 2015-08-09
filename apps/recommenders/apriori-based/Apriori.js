@@ -1,5 +1,6 @@
 require('../../init')
 var RuleMiner = require('./RuleMiner')
+var Worker = require('webworker-threads').Worker
 
 function Apriori(dataset) {
 	this.dataset = dataset
