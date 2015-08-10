@@ -32,6 +32,7 @@ exports.prune = function(params, done) {
 		})
 		.spawn(findRareKeys)
 		.then(function(res) {
+			log.blue('prune slice finished')
 			finishedCount++
 
 			res.forEach(function(item, i) {

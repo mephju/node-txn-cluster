@@ -34,7 +34,7 @@ var countItemsetsOfSlice = function(data) {
 	var counts = {}
 
 	for(var c=0,clen=candidates.length; c<clen; c++) {
-		
+		console.log(c, 'of', clen)
 		var candidate = candidates[c]
 		var key = candidate.toString()
 		

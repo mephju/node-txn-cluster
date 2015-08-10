@@ -59,6 +59,8 @@ var genCandidatesFromSlice = function(data) {
 
 	for(var i=idx; i<len; i++) {
 		
+		console.log(i-idx, 'of', sliceLen)
+
 		for(var h=i+1; h<len; h++) {
 			
 			var c = mergeSets(frequent[i], frequent[h])
