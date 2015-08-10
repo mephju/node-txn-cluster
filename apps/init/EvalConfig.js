@@ -40,7 +40,7 @@ function EvalConfigProd() {
 }
 
 function EvalConfigDev() {
-	this.useCores = 3
+	this.useCores = 1
 	this.baselines = ['PopularityBased', 'AprioriBased']
 	// this.baselines = ['AprioriBased']
 	// this.baselines = ['PopularityBased']
@@ -65,10 +65,10 @@ function EvalConfigDev() {
 	}]
 	
 	this.datasets = [
-		// { 
-		// 	dataset: app.datasets.movielensCustom, 
-		// 	txnCount: 2000,
-		// },
+		{ 
+			dataset: app.datasets.movielensCustom, 
+			txnCount: 2000,
+		},
 		// { 
 		// 	dataset: app.datasets.lastFmSmall, 
 		// 	txnCount: 1870,
@@ -85,10 +85,10 @@ function EvalConfigDev() {
 		// 	dataset: app.datasets.lastFm,
 		// 	txnCount:0
 		// },
-		{
-			dataset: app.datasets.lastFm1k,
-			txnCount:0
-		}
+		// {
+		// 	dataset: app.datasets.lastFm1k,
+		// 	txnCount:0
+		// }
 	];
 }
 

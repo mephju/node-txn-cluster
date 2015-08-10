@@ -7,6 +7,8 @@ module.exports = RuleMiner
 
 RuleMiner.prototype.findRules = function(store) {
 
+	log.blue('findRules')
+
 	var rules = {}
 	for(var k=2; k<store.length; k++) {
 		var keys = Object.keys(store[k])
@@ -20,6 +22,8 @@ RuleMiner.prototype.findRules = function(store) {
 	}
 
 	sortRules(rules)
+
+	log.blue(rules)
 
 	return rules
 }

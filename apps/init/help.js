@@ -430,12 +430,12 @@ var locationOf = function(element, array, start, end) {
 
 Array.prototype.hasArray = function(array) {
 	 if(!this.hash) {
-			this.hash = {}
-			for(var i=0; i<this.length; i++) {
-				 //console.log('hash', i)
-				 this.hash[this[i]] = i
-			}
-			//console.log('hash', this.hash, this.length)
+		this.hash = {}
+		for(var i=0; i<this.length; i++) {
+			 //console.log('hash', i)
+			 this.hash[this[i]] = i
+		}
+		//console.log('hash', this.hash, this.length)
 	 }
 
 	 return this.hash.hasOwnProperty(array)

@@ -10,6 +10,7 @@
     "line-reader": "^0.2.4",
     "nedb": "^1.1.1",
     "node-mysql": "^0.4.2",
+    "paralleljs": "^0.2.1",
     "sqlite3": "*",
     "webworker-threads": "^0.5.6"
   },

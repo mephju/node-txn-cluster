@@ -3,8 +3,9 @@
 
 function Config(options) {
 
+	this.USE_CORES 					= 8
 	this.CROSS_VALIDATION_RUN 		= options.crossValidationRun ? options.crossValidationRun : 0
-	this.MIN_SUPPORT				= 450// lastfm: 60, movielens: 250, 
+	this.MIN_SUPPORT				= 20//100// lastfm: 60, movielens: 250, 
 	this.TRAINING_SET_SIZE 			= 0.6666667
 	//this.TRAINING_SET_SIZE 			= 0.8
 	this.VALIDATION_SET_SIZE 		= 1 - this.TRAINING_SET_SIZE
@@ -14,21 +15,16 @@ function Config(options) {
 	//this.AVG_TXNS_PER_CLUSTER 		= 60
 	this.MIN_CENTROID_LENGTH		= 20
 
-	this.EASY_SEQUENCE_SIZE = 225 //225 
+	this.EASY_SEQUENCE_SIZE 		= 225 //225 
 	//number of recommendations which are requested
-	this.N = 5
-	this.MAX_CONTRIBUTION = 0.6
-	this.BASELINE_ON = true
-	this.MARKOV_ORDER = options.markovOrder ? options.markovOrder : 2
+	this.N 							= 5
+	this.MAX_CONTRIBUTION 			= 0.6
+	this.BASELINE_ON 				= true
+	this.MARKOV_ORDER 				= options.markovOrder ? options.markovOrder : 2
 
-	this.ITEM_CHOICE_STRATEGY = options.itemChoiceStrategy ? options.itemChoiceStrategy : 'bestItemsOfCluster'
-	//this.DISTANCE_MEASURE = 'jaccard-levenshtein'
-	this.DISTANCE_MEASURE = options.distanceMeasure ? options.distanceMeasure : 'levenshtein'
-	// this.ITEM_CHOICE_STRATEGY = 'tfTfidf'
-	// this.ITEM_CHOICE_STRATEGY = 'tfidf'
-	// this.ITEM_CHOICE_STRATEGY = 'bestItemsOverall'
-	// this.ITEM_CHOICE_STRATEGY = 'withRatings'
-
+	this.ITEM_CHOICE_STRATEGY 		= options.itemChoiceStrategy ? options.itemChoiceStrategy : 'bestItemsOfCluster'
+	this.DISTANCE_MEASURE 			= options.distanceMeasure ? options.distanceMeasure : 'levenshtein'
+	
 
 
 	this.RECOMMENDER = 'SessionBased'

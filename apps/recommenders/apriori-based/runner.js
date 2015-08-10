@@ -16,9 +16,11 @@ var train = function(dataset) {
 
 			var Apriori = require('./Apriori')
 			var apriori = new Apriori(dataset)
-			var rules = apriori.algorithm(txns)
-			
-			// log.green(rules)
+			var rules = apriori.algorithm(txns, function(err, rules) {
+				next(err, rules, apriori)
+			})
+		},
+		function(rules, apriori, next) {
 			fs.writeFile(
 				apriori.filename, 
 				JSON.stringify(rules), 
