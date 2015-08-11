@@ -25,7 +25,7 @@ CreateDatasetResult <- function() {
 	topResults 		<- CreateTopList(kDatasetName)
 	# chart 			<- CreateBarChart(topResults, kPathPrefix, kDatasetName)
 
-	print(topResults)
+	return(topResults)
 	
 
 	# #CreateMeans(kDatasetName, kPathPrefix)

@@ -68,6 +68,9 @@ CreateBaselineResults <- function(kDatasetName) {
 
 	print(res)
 
+	# Only keep best performing apriori-based
+	#
+
 	names(res) = c('method', 'support', 'precision') 
 	
 	res$method = mapvalues(
@@ -76,12 +79,20 @@ CreateBaselineResults <- function(kDatasetName) {
 		to=c('Apriori-Based', 'Popularity-Based')
 	)
 
-	res$method = paste(res$method, '/', res$support)
-	res$support = NULL
+	popular <- res[grep('Popular', res$method), ]
+	apriori <- res[grep('Apriori', res$method), ]
+	apriori <- apriori[order(-apriori$precision), ]
+	apriori <- apriori[1, ]
 
+
+	apriori$method = paste(apriori$method, '/', apriori$support)
+	apriori$support = NULL
+	popular$support = NULL
+
+	res <- rbind(apriori, popular)
 	print(res)
 
-	# Only keep best performing apriori-based
+
 
 	
 
@@ -93,6 +104,8 @@ CreateBaselineResults <- function(kDatasetName) {
 CreateTopList <- function(kDatasetName) {
 	methodResults			= CreateMethodResults(kDatasetName)
 	baselineResults 		= CreateBaselineResults(kDatasetName)
+
+	
 	
 	methodCol <- paste(methodResults$distance, '/', methodResults$markov, '/',  methodResults$strategy)
 	merged <- data.frame(
