@@ -77,6 +77,11 @@ CreateBaselineResults <- function(kDatasetName) {
 	)
 
 	res$method = paste(res$method, '/', res$support)
+	res$support = NULL
+
+	print(res)
+
+	# Only keep best performing apriori-based
 
 	
 
