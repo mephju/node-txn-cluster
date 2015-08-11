@@ -36,7 +36,7 @@ var baselineResults = function() {
 	.find({})
 	.sort({ 'config.RECOMMENDER': 1, 'config.MIN_SUPPORT':1 })
 	.exec(function(err, docs) {
-		console.log('baseline, xvalidation, precision')
+		console.log('support, baseline, xvalidation, precision')
 		docs.forEach(function(doc) {
 			console.log(
 				doc.config.MIN_SUPPORT + ',',
