@@ -22,10 +22,10 @@ CreateDatasetResult <- function() {
 	kDatasetName 	<- 'movielens' #'lastfm_1k' #'gowalla_k05' #'lastfm' #'movielens'
 	kPathPrefix 	<- '/home/mephju/maproject/thesis/template/Figures/'
 
-	# topResults 		<- CreateTopList(kDatasetName)
+	topResults 		<- CreateTopList(kDatasetName)
 	# chart 			<- CreateBarChart(topResults, kPathPrefix, kDatasetName)
 
-	# print(chart)
+	print(topResults)
 	
 
 	# #CreateMeans(kDatasetName, kPathPrefix)
@@ -41,7 +41,7 @@ CreateDatasetResult <- function() {
 	# SaveBarChart(bar.data, kPathPrefix, paste0(kDatasetName, '-results-distance-strategy.pdf'))
 
 	# CreateTable(kDatasetName)
-	raw.table <- CreateRawDataTable(kDatasetName)
+	# raw.table <- CreateRawDataTable(kDatasetName)
 }
 
 CreateDatasetResult()

@@ -58,19 +58,25 @@ CreateBaselineResults <- function(kDatasetName) {
 		strip.white=TRUE
 	)
 
+	# print(eval)
+
 	res <- aggregate(
 		eval$precision,
-		by=list(baseline=eval$baseline),
+		by=list(baseline=eval$baseline, support=eval$support),
 		FUN=mean
 	)
 
-	names(res) = c('method', 'precision') 
+	print(res)
+
+	names(res) = c('method', 'support', 'precision') 
 	
 	res$method = mapvalues(
 		res$method, 
 		from=c('AprioriBased', 'PopularityBased'),
 		to=c('Apriori-Based', 'Popularity-Based')
 	)
+
+	res$method = paste(res$method, '/', res$support)
 
 	
 
