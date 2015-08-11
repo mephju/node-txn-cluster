@@ -21,7 +21,7 @@ else {
 }
 
 
-dataset = app.datasets.lastFm1k
+dataset = app.datasets.movielens
 	
 
 var baselineResults = function() {
