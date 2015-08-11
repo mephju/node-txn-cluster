@@ -28,14 +28,14 @@ function EvalConfigProd() {
 		// 	dataset: app.datasets.lastFm,
 		// 	txnCount:0
 		// },
-		{
-			dataset: app.datasets.gowalla,
-			txnCount:0
-		}
 		// {
-		// 	dataset: app.datasets.lastFm1k,
+		// 	dataset: app.datasets.gowalla,
 		// 	txnCount:0
 		// }
+		{
+			dataset: app.datasets.lastFm1k,
+			txnCount:0
+		}
 	];
 }
 
