@@ -23,7 +23,7 @@ CreateDatasetResult <- function() {
 	kPathPrefix 	<- '/home/mephju/maproject/thesis/template/Figures/'
 
 	topResults 		<- CreateTopList(kDatasetName)
-	# chart 			<- CreateBarChart(topResults, kPathPrefix, kDatasetName)
+	chart 			<- CreateBarChart(topResults, kPathPrefix, kDatasetName)
 
 	return(topResults)
 	

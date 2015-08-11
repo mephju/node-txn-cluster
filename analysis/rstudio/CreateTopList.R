@@ -66,6 +66,7 @@ CreateBaselineResults <- function(kDatasetName) {
 		FUN=mean
 	)
 
+	print('These are the aggregated baseline values')
 	print(res)
 
 	# Only keep best performing apriori-based
@@ -90,7 +91,7 @@ CreateBaselineResults <- function(kDatasetName) {
 	popular$support = NULL
 
 	res <- rbind(apriori, popular)
-	print(res)
+	
 
 
 
